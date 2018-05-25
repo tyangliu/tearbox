@@ -23,6 +23,7 @@ export const RECEIVE_BOX_NOT_FOUND = 'RECEIVE_BOX_NOT_FOUND';
 
 export const TOGGLE_GROUP = 'TOGGLE_GROUP';
 export const SEARCH = 'SEARCH';
+export const TOGGLE_SORT = 'TOGGLE_SORT';
 
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
@@ -86,6 +87,13 @@ export function search(searchTerm) {
   return {
     type: SEARCH,
     searchTerm,
+  };
+}
+
+export function toggleSort(key) {
+  return {
+    type: TOGGLE_SORT,
+    key,
   };
 }
 

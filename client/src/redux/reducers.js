@@ -21,6 +21,7 @@ import {
 
   TOGGLE_GROUP,
   SEARCH,
+  TOGGLE_SORT,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -43,7 +44,7 @@ function tears(state = tearsState, action) {
 
 const boxDisplayOptions = {
   sort: {
-    key: 'color',
+    key: null,
     order: ASCENDING,
   },
   filter: {
@@ -55,6 +56,23 @@ const boxState = {
   data: {},
   options: boxDisplayOptions,
 };
+
+function updateOptions(state, options) { 
+  const newData = state.data.groups ? {
+    ...state.data,
+    groupDisplays: filterSortGroups(
+      state.data.groups,
+      state.data.groupIndices,
+      options,
+    ),
+  } : {};
+
+  return {
+    ...state,
+    data: newData,
+    options,
+  };
+}
 
 
 function box(state = boxState, action) {
@@ -79,24 +97,30 @@ function box(state = boxState, action) {
         },
       }; 
     case SEARCH:
-      const newOptions = {
+      const optionsWithNewSearch = {
         ...state.options,
         searchTerm: action.searchTerm,
       };
-      const newData = state.data.groups ? {
-        ...state.data,
-        groupDisplays: filterSortGroups(
-          state.data.groups,
-          state.data.groupIndices,
-          newOptions,
-        ),
-      } : {};
-
-      return {
-        ...state,
-        data: newData,
-        options: newOptions,
+      return updateOptions(state, optionsWithNewSearch);
+    case TOGGLE_SORT:
+      const {key} = action;
+      const {sort} = state.options;
+      const newSort = {};
+      if (key == sort.key && sort.order == ASCENDING) {
+        newSort.key = key;
+        newSort.order = DESCENDING;
+      } else if (key == sort.key) {
+        newSort.key = null,
+        newSort.order = ASCENDING;
+      } else {
+        newSort.key = key;
+        newSort.order = ASCENDING;
+      }
+      const optionsWithNewSort = {
+        ...options,
+        sort: newSort,
       };
+      return updateOptions(state, optionsWithNewSort);
     default:
       return state;
   }

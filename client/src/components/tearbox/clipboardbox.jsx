@@ -37,6 +37,7 @@ const styles = styler`
     line-height: 24px
     display: block
     float: left
+    user-select: none
 
   linkIcon
     margin-top: 2px

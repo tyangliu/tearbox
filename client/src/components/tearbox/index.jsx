@@ -32,7 +32,6 @@ class Tearbox extends React.Component {
 
   render() {
     const {tears, box, groupVisibilities, toggleGroupFn} = this.props;
-    console.log(tears);
     return (
       <div style={styles.tearbox}>
         <div style={styles.tearboxContainer}>
@@ -157,11 +156,13 @@ const styles = styler`
     line-height: 24px
     display: block
     float: left
+    user-select: none
 
   footnote
     text-align: right
     font-style: italic
     color: rgba(0,0,0,0.5)
+    user-select: none
 
   clearfix
     clear: both

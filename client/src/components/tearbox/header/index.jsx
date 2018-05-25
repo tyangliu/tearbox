@@ -92,8 +92,10 @@ const styles = styler`
     line-height: 24px
     display: block
     float: left
+    user-select: none
 
   filterButton
+    user-select: none
     border: 0
     margin-left: 20px
     padding: 4px 10px

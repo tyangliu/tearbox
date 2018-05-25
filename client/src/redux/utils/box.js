@@ -35,10 +35,11 @@ const keyToIdx = {
   'color': 0,
   'effect': 1,
   'piece': 2,
-  'rarity': 3,
+  'type': 3,
+  'rarity': 4,
 };
 
-const keys = ['color.id', 'effect.id', 'piece.id', 'rarity.id'];
+const keys = ['color.id', 'effect.id', 'piece.id', 'type.id', 'rarity.id'];
 
 const withFirst = (keys, i) => [keys[i], ...keys.slice(0).splice(i,1)];
 const getSortKeys = key => key ? withFirst(keys, keyToIdx[key]) : [[],[]];

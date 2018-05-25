@@ -30,7 +30,8 @@ const styles = styler`
     text-align: left
     display: block
     background: rgba(255,255,255,1)
-    transition: background 0.06s ease-in-out color 0.1s ease-in-out
+    transition: background 0.06s ease-in-out color 0.06s ease-in-out
+    user-select: none
 
     :hover
       color: rgba(217,52,35,1)

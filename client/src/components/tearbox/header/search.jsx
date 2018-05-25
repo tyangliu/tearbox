@@ -70,6 +70,7 @@ const styles = styler`
     line-height: 24px
     display: block
     float: left
+    user-select: none
 
   searchInput
     margin-left: 8px

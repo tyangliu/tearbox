@@ -48,6 +48,7 @@ const styles = styler`
       border: 1px solid rgba(55,67,79,0.15)
       padding: 0
       outline: none
+      user-select: none
 
     h2
       font-size: 18px

@@ -19,8 +19,8 @@ export default class Section extends React.Component {
             <span style={styles.sectionHeadingText}>
               {title}
             </span>
-            <i style={[styles.icon, styles.dropdownIcon]} className='material-icons'>
-              {visible ? 'arrow_drop_down' : 'arrow_drop_up'}
+            <i style={[styles.icon, styles.dropdownIcon[visible ? 'normal' : 'flipped']]} className='material-icons'>
+              arrow_drop_down
             </i>
             <div style={styles.clearfix}/>
           </h3>
@@ -47,7 +47,8 @@ const styles = styler`
     text-transform: uppercase
     letter-spacing: 1px
     margin-bottom: 12px
-    transition: color 0.1s ease-in-out
+    transition: color 0.06s ease-in-out
+    user-select: none
 
     :hover
       color: rgba(217,52,35,1)
@@ -65,18 +66,28 @@ const styles = styler`
   dropdownIcon
     float: left
     display: block
-    line-height: 17px
+    line-height: 18px
     font-size: 24px
-    margin-left: 6px
+    margin-left: 3px
+    transform-origin: 50% 52%
+    transition: transform 0.15s ease-in-out
+
+    &normal
+      transform: rotateX(0deg)
+
+    &flipped
+      transform: rotateX(-180deg)
 
   collapsableContainer
     position: relative
-
-    show
+    
+    &show
       height: auto
+      opacity: 1
 
-    hide
+    &hide
       height: 0
+      opacity: 0
 
   clearfix
     clear: both
