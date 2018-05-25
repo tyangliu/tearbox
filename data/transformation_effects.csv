@@ -1,0 +1,19 @@
+value_table,description,1% value,value_is_pct,tags
+6,Physical Defense Level,,0,Phys Def
+6,Magical Defense Level,,0,Mag Def
+9,Critical,143,0,crit rate
+7,Critical Damage,,1,Crit Dmg
+8,All Resistance,,0,res!resist
+9,Maximize,143,0,
+9,Attack Speed,143,0,Attk!Atk!Spd
+10,Movement Speed,143,0,Mvmt!Spd
+10,Jump Speed,143,0,Jmp!Spd
+9,Awakening Charge Speed,143,0,Awk Charge
+11,Awakening Time,143,1,Awk Time
+9,Add. Damage,143,0,add dmg!additional
+9,Red. Damage,143,0,red dmg!reduction
+10,HP,1510,0,health points
+9,Specialization A,143,0,Spec A
+9,Specialization B,143,0,Spec B
+9,MP Gain when Attacking,143,0,mana
+9,MP Gain when Attacked,143,0,mana

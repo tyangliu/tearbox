@@ -1,0 +1,33 @@
+value_table,description,description_orig,exclusive_piece,tags
+3,Flexibility Skill Cooldown Time -{}%,,,Flex CDR
+3,Tenacity Skill Cooldown Time -{}%,,,Tena CDR
+3,Strength Skill Cooldown Time -{}%,,,Strength CDR! Str. CDR! Str CDR
+3,Bravery Skill Cooldown Time -{}%,,,Bravery CDR! Brav. CDR! Brav CDR
+3,Ignores Physical Defense Power {}%,,,Physical Ignore! Phy Ignore! Phy Def Ignore
+3,Ignores Magical Defense Power {}%,,,Magical Ignore! Mag Ignore! Mag Def Ignore
+3,MP Cost -{}%,MP Cost -{}% (Dungeon),,Mana Cost! MPR! Mana Red
+3,Recovery Item Effect +{}%,,,RIE! Rec Item Effect! Item Recovery
+3,Item Drop Rate +{}%,,,IDR
+3,Debuff Effect Duration -{}%,,,DED! Effect Duration
+3,Damage upon attacking an enemy with 30% HP or less +{}%,,,30% HP! attacking enemy
+3,Damage received when 30% HP or less -{}%,,,30% HP! received
+3,Damage dealt to Boss Monsters +{}%,,,Boss dmg! Boss damage! boss
+3,Damage dealt by Boss Monsters -{}%,,,boss
+3,Skill Cooldown Time upon defeating a Supreme Monster -{}%,,,CDR! Supreme
+3,Damage increase in proportion to HP lost +{}%,,,Dmg Increase
+4,Attack/Attacked Damage +{}%,Attack/Attacked Damage +{}% (Dungeon),t,a/a! attk/attkd
+3,Party's Critical +{}%,,t,Party Crit
+4,Party's Physical Attack Power +{}%,,b,party phy
+4,Party's Magical Attack Power +{}%,,b,party mag
+4,Party's Attack Speed +{}%,,b,party attack speed! party attk speed
+3,Party's Damage Reduction +{}%,,b,party dmg red! party damage reduction
+3,Party's Physical Defense Power +{}%,,b,party phy def
+3,Party's Magical Defense Power +{}%,,b,party mag def
+3,Skill Cooldown Time after 10th Attack -{}%,,g,10th Attack! CDR
+3,Party's Additional Damage +{}%,,g,Party Add Dmg
+4,Flexibility Skill's Damage for 10 seconds +{}% (5 Stacks),"Upon using Flexibility Skill Flexibility Skill's Damage for 10 seconds +{}% (5 Stacks) (Dungeon)",g,Flex Stack
+4,Tenacity Skill's Damage for 10 seconds +{}% (5 Stacks),"Upon using Tenacity Skill Tenacity Skill's Damage for 10 seconds +{}% (5 Stacks) (Dungeon)",g,Tena Stack
+4,Strength Skill's Damage for 10 seconds +{}% (5 Stacks),"Upon using Strength Skill Strength Skill's Damage for 10 seconds +{}% (5 Stacks) (Dungeon)",g,Strenght Stack! Str Stack
+4,Bravery Skill's Damage for 10 seconds +{}% (5 Stacks),"Upon using Bravery Skill Bravery Skill's Damage for 10 seconds +{}% (5 Stacks) (Dungeon)",g,Brav Stack! Bravery Stack
+3,Party's Maximize +{}%,,s,Party Maxi
+5,Command Attack Reduce Defense {}%,"During a Command Attack reduce the opponent's defense for 5 sec. +{}% (10 Stacks) (Dungeon)",s,cmd
