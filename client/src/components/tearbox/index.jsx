@@ -99,7 +99,7 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 1200px
+    min-width: 960px
     display: flex
     flex-direction: column
     align-items: center
@@ -117,7 +117,7 @@ const styles = styler`
   container
     display: flex
     flex-direction: row
-    flex-wrap: wrap
+    flex-wrap: nowrap
     justify-content: flex-start
     align-items: stretch
     padding: 10px 0
@@ -133,7 +133,8 @@ const styles = styler`
     flex: 1
 
   left
-    flex-basis: 230px
+    min-width: 220px
+    flex-basis: 220px
     margin: 0 40px 0 0
     order: 1
 

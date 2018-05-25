@@ -29,7 +29,8 @@
     "react-styling": "^1.6.2",
     "react-transition-group": "^2.2.1",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "xdate": "^0.8.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

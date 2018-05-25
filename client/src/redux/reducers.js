@@ -106,15 +106,19 @@ function box(state = boxState, action) {
       const {key} = action;
       const {sort} = state.options;
       const newSort = {};
-      if (key == sort.key && sort.order == ASCENDING) {
+      if (
+        key == sort.key &&
+        ((sort.order == ASCENDING && key != 'created') ||
+         (sort.order == DESCENDING && key == 'created'))
+      ) {
         newSort.key = key;
-        newSort.order = DESCENDING;
+        newSort.order = !sort.order;
       } else if (key == sort.key) {
         newSort.key = null,
         newSort.order = ASCENDING;
       } else {
         newSort.key = key;
-        newSort.order = ASCENDING;
+        newSort.order = key == 'created' ? DESCENDING : ASCENDING;
       }
       const optionsWithNewSort = {
         ...options,

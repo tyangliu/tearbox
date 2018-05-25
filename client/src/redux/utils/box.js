@@ -27,8 +27,10 @@ export const searchOpts = {
 };
 
 const orderTemplates = [
-  ['asc', 'asc', 'asc', 'asc'],
-  ['desc', 'asc', 'asc', 'asc'],
+  ['asc', 'asc', 'asc', 'asc', 'asc', 'desc'],
+  ['desc', 'asc', 'asc', 'asc', 'asc', 'desc'],
+  ['asc', 'asc', 'asc', 'asc', 'asc', 'asc'],
+  ['desc', 'asc', 'asc', 'asc', 'asc', 'asc'],
 ];
 
 const keyToIdx = {
@@ -37,16 +39,18 @@ const keyToIdx = {
   'piece': 2,
   'type': 3,
   'rarity': 4,
+  'created': 5,
 };
 
-const keys = ['color.id', 'effect.id', 'piece.id', 'type.id', 'rarity.id'];
+const keys = ['color.id', 'effect.id', 'piece.id', 'type.id', 'rarity.id', 'created'];
 
 const withFirst = (keys, i) => [keys[i], ...keys.slice(0).splice(i,1)];
 const getSortKeys = key => key ? withFirst(keys, keyToIdx[key]) : [[],[]];
 
 export function sortItems(items, sortOpts) {
   const keys = getSortKeys(sortOpts.key);
-  const orders = orderTemplates[sortOpts.order];
+  const orderIdx = sortOpts.order + (sortOpts.key == 'created' ? 2 : 0);
+  const orders = orderTemplates[orderIdx];
 
   return orderBy(items, keys, orders);
 }

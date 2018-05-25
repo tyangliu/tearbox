@@ -63,7 +63,8 @@ const styles = styler`
     padding: 10px 0
 
   left
-    flex-basis: 230px
+    min-width: 220px
+    flex-basis: 220px
     margin: 0 40px 0 0
     order: 1
 

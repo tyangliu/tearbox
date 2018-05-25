@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import XDate from 'xdate';
 
 import TearIcon from './tearicon';
 
@@ -17,7 +18,8 @@ const headers = [
   {key: 'piece', text: 'Piece'},
   {key: 'type', text: 'Type'},
   {key: 'rarity', text: 'Rarity'},
-  {key: 'notes', text: 'Notes'},
+  {key: 'created', text: 'Added'},
+  {key: 'note', text: 'Note'},
 ];
 
 @Radium
@@ -73,7 +75,8 @@ class ItemTable extends React.Component {
                 <li style={[styles.itemCol3]}>{item.piece.name}</li>
                 <li style={[styles.itemCol4]}>{item.type.name}</li>
                 <li style={[styles.itemCol5]}>{item.rarity.name}</li>
-                <li style={[styles.itemCol6]}>{item.note}</li>
+                <li style={[styles.itemCol6]}>{new XDate(item.created).toString('MMM d')}</li>
+                <li style={[styles.itemCol7]}>{item.note}</li>
               </ul>
             </li>
           )}
@@ -102,6 +105,7 @@ export default connect(
 
 const styles = styler`
   itemRow
+    font-size: 11px
     display: flex
     flex-direction: row
     line-height: 24px
@@ -109,7 +113,6 @@ const styles = styler`
 
   itemTableLabels
     border-bottom: 1px solid rgba(55,67,79,0.15)
-    margin-bottom: 3px
     user-select: none
 
   itemTableLabel
@@ -149,6 +152,7 @@ const styles = styler`
     margin-top: 1px
     line-height: 23px
     margin-left: 4px
+    width: 14px
     float: left
 
     &visible
@@ -170,29 +174,34 @@ const styles = styler`
 
   itemCol0
     width: 40px
-    padding-right: 10px
+    padding-right: 8px
 
   itemCol1
-    width: 70px
-    padding-right: 10px
+    width: 64px
+    padding-right: 8px
 
   itemCol2
     flex: 1
+    padding-right: 8px
 
   itemCol3
-    width: 70px
-    padding-right: 10px
+    width: 64px
+    padding-right: 8px
 
   itemCol4
-    width: 110px
-    padding-right: 10px
+    width: 90px
+    padding-right: 8px
 
   itemCol5
-    width: 70px
-    padding-right: 10px
+    width: 64px
+    padding-right: 8px
 
   itemCol6
-    width: 160px
+    width: 64px
+    padding-right: 8px
+
+  itemCol7
+    width: 120px
 
   clearfix
     clear: both
