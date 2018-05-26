@@ -59,7 +59,7 @@ const options = [
 ];
 
 const selectedColor = 'rgba(78,95,130,1)';
-const unselectedColor = 'rgba(55,67,79,0.3)';
+const unselectedColor = 'rgba(55,67,79,1)';
 
 const getChoiceColor = (key, choice, filterOpts) => {
   return filterOpts[key][choice.value]
@@ -103,6 +103,10 @@ class FilterMenu extends React.Component {
         <Popover style={styles.popover}
                  visible={visible}
                  onClose={closeFilterMenuFn}>
+          <button style={styles.closeButton}
+                  onClick={this.handleButtonClick}>
+            <Icon name='close' style={styles.closeIcon}/>
+          </button>
           <ul style={styles.popoverSections}>
             {options.map((opt, i) =>
               <li style={styles.popoverSection} key={i}>
@@ -113,6 +117,7 @@ class FilterMenu extends React.Component {
                   {opt.choices.map((choice, j) =>
                     <li style={[
                           styles.sectionChoice[opt.layout],
+                          styles.sectionChoiceVisibility[filterOpts[opt.key][choice.value] ? 'normal' : 'dim'],
                           {
                             color: getChoiceColor(opt.key, choice, filterOpts),
                           }]}
@@ -121,7 +126,7 @@ class FilterMenu extends React.Component {
                           event.stopPropagation();
                           event.nativeEvent.stopImmediatePropagation();
                         }}
-                        key={j}>
+                        key={`filterChoice${i}${j}`}>
                       {choice.label}
                     </li>
                   )}
@@ -197,11 +202,24 @@ const styles = styler`
   icon
     float: left
 
+  closeButton
+    color: rgba(55,67,79,0.7)
+    border: 0
+    padding: 1px 4px
+    float: right
+    margin: 0
+
+    :hover
+      color: rgba(217,52,35,1)
+
+  closeIcon
+    line-height: 21px
+    font-size: 13px
+
   filterLabel
     float: left
     margin-left: 5px
     margin-right: 10px
-
 
   popover 
     user-select: none
@@ -209,6 +227,9 @@ const styles = styler`
     width: 260px
     top: 25px
     left: 15px
+
+  popoverSections
+    margin-top: 4px
 
   popoverSection
     padding: 0 10px
@@ -248,6 +269,15 @@ const styles = styler`
     &v
       padding: 0
       display: block
+
+  sectionChoiceVisibility
+    &normal
+      opacity: 1
+    &dim
+      opacity: 0.3
+
+      :hover
+        opacity: 0.6
 
   buttonContainer
     text-align: center

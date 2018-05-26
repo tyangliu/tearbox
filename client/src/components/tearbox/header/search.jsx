@@ -70,10 +70,14 @@ const styles = styler`
     line-height: 21px
 
   closeButton
+    color: rgba(55,67,79,0.7)
     border: 0
     padding: 0 2px
     float: right
     margin: 0
+
+    :hover
+      color: rgba(217,52,35,1)
 
     &visible:
       opacity: 1
