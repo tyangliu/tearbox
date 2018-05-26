@@ -6,6 +6,7 @@ import styler from 'react-styling';
 import Logo from '../../common/logo';
 import Icon from '../../common/icon';
 import Search from './search';
+import FilterMenu from './filtermenu';
 
 @Radium
 class Header extends React.Component {
@@ -17,13 +18,7 @@ class Header extends React.Component {
         </div>
         <div style={[styles.right, styles.headerRight]}>
           <Search style={styles.search}/>
-          <button style={styles.filterButton}>
-            <Icon name='filter_list' style={styles.icon}/>
-            <div style={styles.filterLabel}>
-              Filter
-            </div>
-            <div style={styles.clearfix}/>
-          </button>
+          <FilterMenu style={styles.filterMenu}/>
           <button style={styles.optionsButton}>
             <Icon name='more_horiz' style={styles.icon}/>
             <div style={styles.clearfix}/>
@@ -87,22 +82,14 @@ const styles = styler`
   icon
     float: left
 
-  filterButton
-    user-select: none
-    border: 0
-    margin-left: 20px
-    padding: 4px 10px
-    line-height: 22px
+  filterMenu
     float: left
-
-  filterLabel
-    float: left
-    margin-left: 5px
-    margin-right: 10px
 
   optionsButton
     border: 0
     margin-left: 20px
     padding: 4px 4px
     float: right
+  clearfix
+    clear: both
 `;

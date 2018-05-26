@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
-
 import Fuse from 'fuse.js';
+import cloneDeep from 'lodash.clonedeep';
 
 import {
   UNAVAILABLE,
@@ -25,6 +25,12 @@ import {
 
   SET_COPIED,
   UNSET_COPIED,
+
+  TOGGLE_FILTER_MENU,
+  CLOSE_FILTER_MENU,
+  TOGGLE_FILTER,
+  SELECT_ALL_FILTER,
+  UNSELECT_ALL_FILTER,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -45,13 +51,26 @@ function tears(state = tearsState, action) {
   }
 }
 
+const filterSelectAll = {
+  color:  [true, true, true],
+  piece:  [true, true, true, true],
+  type:   [true, true, true, true],
+  rarity: [true, true], 
+};
+
+const filterUnselectAll = {
+  color:  [false, false, false],
+  piece:  [false, false, false, false],
+  type:   [false, false, false, false],
+  rarity: [false, false], 
+};
+
 const boxDisplayOptions = {
   sort: {
     key: null,
     order: ASCENDING,
   },
-  filter: {
-  },
+  filter: filterUnselectAll,
   searchTerm: '',
 };
 
@@ -106,28 +125,36 @@ function box(state = boxState, action) {
       };
       return updateOptions(state, optionsWithNewSearch);
     case TOGGLE_SORT:
-      const {key} = action;
       const {sort} = state.options;
       const newSort = {};
       if (
-        key == sort.key &&
-        ((sort.order == ASCENDING && key != 'created') ||
-         (sort.order == DESCENDING && key == 'created'))
+        action.key == sort.key &&
+        ((sort.order == ASCENDING && action.key != 'created') ||
+         (sort.order == DESCENDING && action.key == 'created'))
       ) {
-        newSort.key = key;
+        newSort.key = action.key;
         newSort.order = !sort.order;
-      } else if (key == sort.key) {
+      } else if (action.key == sort.key) {
         newSort.key = null,
         newSort.order = ASCENDING;
       } else {
-        newSort.key = key;
-        newSort.order = key == 'created' ? DESCENDING : ASCENDING;
+        newSort.key = action.key;
+        newSort.order = action.key == 'created' ? DESCENDING : ASCENDING;
       }
       const optionsWithNewSort = {
         ...options,
         sort: newSort,
       };
       return updateOptions(state, optionsWithNewSort);
+    case TOGGLE_FILTER:
+      const {filter} = state.options;
+      const newFilter = cloneDeep(filter);
+      newFilter[action.key][action.choice] = !filter[action.key][action.choice];
+      return updateOptions(state, {...options, filter: newFilter});
+    case SELECT_ALL_FILTER:
+      return updateOptions(state, {...options, filter: filterSelectAll});
+    case UNSELECT_ALL_FILTER: 
+      return updateOptions(state, {...options, filter: filterUnselectAll});
     default:
       return state;
   }
@@ -139,6 +166,7 @@ const uiState = {
   boxStatus: UNAVAILABLE,
   groupVisibilities: null,
   copied: false,
+  filterVisibility: false,
 };
 
 function ui(state = uiState, action) {
@@ -185,6 +213,16 @@ function ui(state = uiState, action) {
       return {
         ...state,
         copied: false,
+      };
+    case TOGGLE_FILTER_MENU:
+      return {
+        ...state,
+        filterVisibility: !state.filterVisibility,
+      };
+    case CLOSE_FILTER_MENU:
+      return {
+        ...state,
+        filterVisibility: false,
       };
     default:
       return state;

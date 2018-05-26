@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const unsetCopiedFn = () => dispatch(unsetCopied());
   const setCopiedFn = () => {
     dispatch(setCopied());
-    setTimeout(unsetCopiedFn, 2000);
+    setTimeout(unsetCopiedFn, 1500);
   };
 
   return {

@@ -94,7 +94,7 @@ const styles = styler`
     margin-left: -12px
 
   button
-    width: 160px
+    padding-right: 18px
     display: block
     float: right
     margin-top: 34px

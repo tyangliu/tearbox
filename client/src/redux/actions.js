@@ -28,6 +28,12 @@ export const TOGGLE_SORT = 'TOGGLE_SORT';
 export const SET_COPIED = 'SET_COPIED';
 export const UNSET_COPIED = 'UNSET_COPIED';
 
+export const TOGGLE_FILTER_MENU = 'TOGGLE_FILTER_MENU';
+export const CLOSE_FILTER_MENU = 'CLOSE_FILTER_MENU';
+export const TOGGLE_FILTER = 'TOGGLE_FILTER';
+export const SELECT_ALL_FILTER = 'SELECT_ALL_FILTER';
+export const UNSELECT_ALL_FILTER = 'UNSELECT_ALL_FILTER';
+
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
 
@@ -109,6 +115,38 @@ export function setCopied() {
 export function unsetCopied() {
   return {
     type: UNSET_COPIED,
+  };
+}
+
+export function toggleFilterMenu() {
+  return {
+    type: TOGGLE_FILTER_MENU,
+  };
+}
+
+export function closeFilterMenu() {
+  return {
+    type: CLOSE_FILTER_MENU,
+  };
+}
+
+export function toggleFilter(key, choice) {
+  return {
+    type: TOGGLE_FILTER,
+    key,
+    choice,
+  };
+}
+
+export function selectAllFilter() {
+  return {
+    type: SELECT_ALL_FILTER,
+  };
+}
+
+export function unselectAllFilter() {
+  return {
+    type: UNSELECT_ALL_FILTER,
   };
 }
 

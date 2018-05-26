@@ -29,11 +29,11 @@ const styles = styler`
 
   contactItemLabel
     color: rgba(55,67,79,0.65)
+    font-style: italic
     display: inline-block
     width: 70px
 
   contactItemValue
-    font-style: italic
     margin-left: 10px
     display: inline-block
 `;

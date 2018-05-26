@@ -44,6 +44,13 @@ const keyToIdx = {
 
 const keys = ['color.id', 'effect.id', 'piece.id', 'type.id', 'rarity.id', 'created'];
 
+const filterKeys = [
+  'color',
+  'piece',
+  'type',
+  'rarity',
+];
+
 const withFirst = (keys, i) => [keys[i], ...keys.slice(0).splice(i,1)];
 const getSortKeys = key => key ? withFirst(keys, keyToIdx[key]) : [[],[]];
 
@@ -56,7 +63,11 @@ export function sortItems(items, sortOpts) {
 }
 
 export function filterItems(items, filterOpts) {
-  return items;
+  return items.filter(item =>
+    filterKeys
+      .filter(key => filterOpts[key].some(v => v))
+      .every(key => filterOpts[key][item[key].id])
+  );
 }
 
 export function filterSortGroups(groups, indices, options) {
