@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 
 import Logo from '../../common/logo';
+import Icon from '../../common/icon';
 import Search from './search';
 
 @Radium
@@ -17,18 +18,14 @@ class Header extends React.Component {
         <div style={[styles.right, styles.headerRight]}>
           <Search style={styles.search}/>
           <button style={styles.filterButton}>
-            <i style={styles.icon} className='material-icons'>
-              filter_list
-            </i>
+            <Icon name='filter_list' style={styles.icon}/>
             <div style={styles.filterLabel}>
               Filter
             </div>
             <div style={styles.clearfix}/>
           </button>
           <button style={styles.optionsButton}>
-            <i style={styles.icon} className='material-icons'>
-              more_horiz
-            </i>
+            <Icon name='more_horiz' style={styles.icon}/>
             <div style={styles.clearfix}/>
           </button>
           <div style={styles.clearfix}/>
@@ -84,23 +81,18 @@ const styles = styler`
     margin-left: -12px
 
   search
-    padding: 4px 10px 0 0
+    padding: 4px 4px 0 0
     float: left
 
   icon
-    width: 20px
-    font-size: 17px
-    line-height: 24px
-    display: block
     float: left
-    user-select: none
 
   filterButton
     user-select: none
     border: 0
     margin-left: 20px
     padding: 4px 10px
-    line-height: 24px
+    line-height: 22px
     float: left
 
   filterLabel
@@ -111,7 +103,6 @@ const styles = styler`
   optionsButton
     border: 0
     margin-left: 20px
-    padding: 4px 10px
-    line-height: 24px
+    padding: 4px 4px
     float: right
 `;

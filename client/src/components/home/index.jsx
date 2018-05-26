@@ -97,7 +97,7 @@ const styles = styler`
     width: 160px
     display: block
     float: right
-    margin-top: 32px
+    margin-top: 34px
 
   hero
     flex: 1

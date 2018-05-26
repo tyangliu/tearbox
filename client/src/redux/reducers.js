@@ -22,6 +22,9 @@ import {
   TOGGLE_GROUP,
   SEARCH,
   TOGGLE_SORT,
+
+  SET_COPIED,
+  UNSET_COPIED,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -135,6 +138,7 @@ const uiState = {
   tearsStatus: UNAVAILABLE,
   boxStatus: UNAVAILABLE,
   groupVisibilities: null,
+  copied: false,
 };
 
 function ui(state = uiState, action) {
@@ -171,6 +175,16 @@ function ui(state = uiState, action) {
           !groupVisibilities[idx],
           ...groupVisibilities.slice(idx+1),
         ],
+      };
+    case SET_COPIED:
+      return {
+        ...state,
+        copied: true,
+      };
+    case UNSET_COPIED:
+      return {
+        ...state,
+        copied: false,
       };
     default:
       return state;

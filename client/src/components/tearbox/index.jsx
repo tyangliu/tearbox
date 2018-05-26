@@ -44,7 +44,7 @@ class Tearbox extends React.Component {
                   {box.name}'s Box
                 </h2>
                 <ContactList fields={box.fields || []}/>
-                <ClipboardBox value={`tearbox.io/box/${box.id}`} style={styles.linkshare}/>
+                <ClipboardBox value={`https://tearbox.io/box/${box.id}`} style={styles.linkshare}/>
                 <Button label='Make your own Box' icon='note_add' style={styles.button}/>
                 <Button label='Edit this Box' icon='edit' style={styles.button}/>
                 <p style={styles.footnote}>
@@ -99,7 +99,7 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 960px
+    min-width: 1020px
     display: flex
     flex-direction: column
     align-items: center

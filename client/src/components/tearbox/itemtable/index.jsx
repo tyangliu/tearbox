@@ -5,6 +5,7 @@ import styler from 'react-styling';
 import XDate from 'xdate';
 
 import TearIcon from './tearicon';
+import Icon from '../../common/icon';
 
 const white = 'rgba(255,255,255,1)';
 const grey = 'rgba(55,67,79,0.06)';
@@ -48,14 +49,10 @@ class ItemTable extends React.Component {
                   <span style={styles.itemTableLabelText}>
                     {text}
                   </span>
-                  <i style={[
-                      styles.icon,
-                      styles.sortIcon[isActive ? 'visible' : 'hidden'],
-                      styles.sortIconRotation[sort.order ? 'flipped' : 'normal'],
-                    ]}
-                    className='material-icons'>
-                    keyboard_arrow_down
-                  </i>
+                  <Icon name='keyboard_arrow_down' style={[
+                    styles.sortIcon[isActive ? 'visible' : 'hidden'],
+                    styles.sortIconRotation[sort.order ? 'flipped' : 'normal'],
+                  ]}/>
                 </div>
                 <div style={styles.clearfix}/>
               </li>
@@ -139,18 +136,9 @@ const styles = styler`
     display: block
     float: left
 
-  icon
-    width: 20px
-    font-size: 17px
-    line-height: 24px
-    display: block
-    float: left
-    user-select: none
-
   sortIcon
     font-size: 13px
-    margin-top: 1px
-    line-height: 23px
+    margin-top: 2px
     margin-left: 4px
     width: 14px
     float: left

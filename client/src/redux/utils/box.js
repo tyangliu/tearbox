@@ -4,7 +4,7 @@ import orderBy from 'lodash.orderby';
 
 export const searchOpts = {
   shouldSort: true,
-  threshold: 0.6,
+  threshold: 0.5,
   location: 0,
   distance: 100,
   maxPatternLength: 32,
@@ -91,7 +91,7 @@ export function unpackItem(tears, item) {
 export function unpackBox(tears, box) {
   const unpackedGroups = box.groups.map(group => ({
     ...group,
-    items: group.items.map(item => unpackItem(tears, item)),
+    items: group.items.map((item, i) => ({idx: i, ...unpackItem(tears, item)})),
   }));
   return {
     ...box,

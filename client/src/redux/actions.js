@@ -25,6 +25,9 @@ export const TOGGLE_GROUP = 'TOGGLE_GROUP';
 export const SEARCH = 'SEARCH';
 export const TOGGLE_SORT = 'TOGGLE_SORT';
 
+export const SET_COPIED = 'SET_COPIED';
+export const UNSET_COPIED = 'UNSET_COPIED';
+
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
 
@@ -94,6 +97,18 @@ export function toggleSort(key) {
   return {
     type: TOGGLE_SORT,
     key,
+  };
+}
+
+export function setCopied() {
+  return {
+    type: SET_COPIED,
+  };
+}
+
+export function unsetCopied() {
+  return {
+    type: UNSET_COPIED,
   };
 }
 

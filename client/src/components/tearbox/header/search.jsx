@@ -5,6 +5,7 @@ import styler from 'react-styling';
 import debounce from 'lodash.debounce';
 
 import {search} from '../../../redux/actions';
+import Icon from '../../common/icon';
 
 @Radium
 class Search extends React.Component {
@@ -12,9 +13,8 @@ class Search extends React.Component {
     searchTermOptimistic: '',
   };
 
-  onChange = e => {
+  updateTerm = term => {
     const {searchFn} = this.props;
-    const term = e.target.value;
     searchFn(term);
     this.setState({searchTermOptimistic: term});
   };
@@ -22,16 +22,20 @@ class Search extends React.Component {
   render() {
     const {searchTerm, searchFn, style} = this.props;
     const {searchTermOptimistic} = this.state;
+    const showClose = searchTermOptimistic.length > 0;
     return (
       <div style={[styles.searchBox, style]}>
-        <i style={[styles.icon, styles.searchIcon]} className='material-icons'>
-          search
-        </i>
+        <Icon name='search' style={styles.searchIcon}/>
         <input type='text'
                style={styles.searchInput}
                value={searchTermOptimistic}
+               maxLength={32}
                placeholder="Search"
-               onChange={this.onChange}/>
+               onChange={e => this.updateTerm(e.target.value)}/>
+        <button style={styles.closeButton[showClose ? 'visible' : 'hidden']}
+                onClick={() => this.updateTerm('')}>
+          <Icon name='close' style={styles.closeIcon}/>
+        </button>
         <div style={styles.clearfix}/>
       </div>
     );
@@ -61,22 +65,34 @@ const styles = styler`
     border-bottom: 1px solid rgba(0,0,0,0.15)
 
   searchIcon
-    margin-top: 1px
-    line-height: 23px
-
-  icon
-    width: 20px
-    font-size: 17px
-    line-height: 24px
-    display: block
     float: left
-    user-select: none
+    margin-top: 1px
+    line-height: 21px
+
+  closeButton
+    border: 0
+    padding: 0 2px
+    float: right
+    margin: 0
+
+    &visible:
+      opacity: 1
+      pointer-events: auto
+
+    &hidden:
+      opacity: 0
+      pointer-events: none
+
+  closeIcon
+    margin-top: 1px
+    line-height: 21px
+    font-size: 13px
 
   searchInput
-    margin-left: 8px
-    line-height: 24px
+    margin-left: 10px
+    line-height: 22px
     float: left
-    width: 340px
+    width: 220px
     outline: none
     padding: 0
 `;

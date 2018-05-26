@@ -3,6 +3,8 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 
+import Icon from '../common/icon';
+
 @Radium
 export default class Section extends React.Component {
   static defaultProps = {
@@ -19,9 +21,8 @@ export default class Section extends React.Component {
             <span style={styles.sectionHeadingText}>
               {title}
             </span>
-            <i style={[styles.icon, styles.dropdownIcon[visible ? 'normal' : 'flipped']]} className='material-icons'>
-              arrow_drop_down
-            </i>
+            <Icon name='arrow_drop_down'
+                  style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
             <div style={styles.clearfix}/>
           </h3>
           <div style={styles.clearfix}/>
@@ -46,7 +47,7 @@ const styles = styler`
     font-weight: bold
     text-transform: uppercase
     letter-spacing: 1px
-    margin-bottom: 12px
+    margin-bottom: 5px
     transition: color 0.06s ease-in-out
     user-select: none
 
@@ -54,20 +55,13 @@ const styles = styler`
       color: rgba(217,52,35,1)
 
   sectionHeadingText
-    float: left
-
-  icon
-    width: 20px
-    font-size: 17px
-    line-height: 24px
     display: block
     float: left
 
   dropdownIcon
     float: left
-    display: block
-    line-height: 18px
     font-size: 24px
+    line-height: 15px
     margin-left: 3px
     transform-origin: 50% 52%
     transition: transform 0.15s ease-in-out

@@ -26,7 +26,7 @@ const styles = styler`
     display: flex
     flex-direction: column
     font-family: "ff-tisa-sans-web-pro", sans-serif
-    font-size: 12px
+    font-size: 11px
     height: 100vh
     line-height: 1.5em
 
@@ -58,4 +58,7 @@ const styles = styler`
     ::-webkit-input-placeholder, :-ms-input-placeholder, ::-moz-placeholder, :-moz-placeholder
       color: rgba(55,67,79,0.65)
       font-style: italic
+
+    ::selection
+      background: rgba(37,174,215,0.4)
 `;
