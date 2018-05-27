@@ -120,6 +120,8 @@ const styles = styler`
       color: inherit
 
   itemTableLabelContainer
+    display: flex
+    flex-direction: row
     cursor: pointer
     float: left
     transition: color 0.06s ease-in-out
@@ -134,14 +136,12 @@ const styles = styler`
   itemTableLabelText
     font-weight: bold
     display: block
-    float: left
 
   sortIcon
     font-size: 15px
-    margin-top: 4px
+    line-height: 28px
     margin-left: 4px
     width: 14px
-    float: left
 
     &visible
       pointer-events: auto
@@ -173,7 +173,7 @@ const styles = styler`
     padding-right: 8px
 
   itemCol3
-    width: 70px
+    width: 76px
     padding-right: 8px
 
   itemCol4

@@ -6,7 +6,7 @@ import styler from 'react-styling';
 import {Icon, Button} from '../common';
 
 @Radium
-export default class Section extends React.Component {
+export default class EditableSection extends React.Component {
   static defaultProps = {
     visible: true,
     onToggle: () => {},
@@ -18,22 +18,30 @@ export default class Section extends React.Component {
       <section style={styles.section}>
         <div style={styles.sectionHeadingContainer}>
           <div style={styles.sectionHeadingLeft}>
+            <Icon style={styles.dragIcon} name='drag_indicator'/>
             <h3 style={styles.sectionHeading}
-                onClick={onToggle}>
-                <span style={styles.sectionHeadingText}>
-                  {title}
-                </span>
-              <span style={styles.dropdownIconContainer}>
+                key={`sectionHeading_${title}`}>
+              <input type='text'
+                     maxLength={24}
+                     value={title}
+                     style={styles.sectionHeadingInput}
+                     onChange={() => {}}/>
+              <span style={styles.dropdownIconContainer}
+                    onClick={onToggle}>
                 <Icon name='arrow_drop_down'
                       style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
               </span>
               <div style={styles.clearfix}/>
             </h3>
           </div>
+          <Button icon='delete'
+                  style={styles.deleteButton}>
+            Delete Section
+          </Button>
           <div style={styles.clearfix}/>
         </div>
         <div style={styles.collapsableContainer[visible ? 'show' : 'hide']}>
-        {this.props.children}
+          {this.props.children}
         </div>
       </section>
     );
@@ -63,9 +71,6 @@ const styles = styler`
     display: flex
     flex-direction: row
 
-    :hover
-      color: rgba(217,52,35,1)
-
   sectionHeadingText
     display: block
 
@@ -81,6 +86,30 @@ const styles = styler`
     padding: 0
     outline: none
     border-bottom: 1px solid rgba(55,67,79,0.2)
+
+  dragIcon
+    line-height: 28.5px
+    color: rgba(55,67,79,0.3)
+    cursor: move
+    margin-right: 6px
+
+    :hover
+      color: rgba(55,67,79,0.6)
+
+    :active
+      color: rgba(55,67,79,1)
+      
+
+  deleteButton
+    float: right
+    color: rgba(55,67,79,0.6)
+    cursor: pointer
+    padding: 2px 9px
+
+  dropdownIconContainer 
+    :hover
+      color: rgba(217,52,35,1)
+
 
   dropdownIcon
     font-size: 24px

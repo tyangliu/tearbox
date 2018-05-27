@@ -47,6 +47,7 @@ const styles = styler`
       display: flex
       border-bottom: 1px solid rgba(55,67,79,0.2)
       padding: 4px 0
+      cursor: text
 
       &normal
 

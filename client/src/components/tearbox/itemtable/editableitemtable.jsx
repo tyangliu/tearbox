@@ -21,11 +21,35 @@ const headers = [
   {key: 'delete', text: ''},
 ];
 
+const colorOpts = [
+  {label: 'Red', value: 0},
+  {label: 'Blue', value: 1},
+  {label: 'Purple', value: 2},
+];
+
+const pieceOpts = [
+  {label: 'Top', value: 0},
+  {label: 'Bottom', value: 1},
+  {label: 'Gloves', value: 2},
+  {label: 'Shoes', value: 3},
+];
+
+const typeOpts = [
+  {label: 'Balance', value: 0},
+  {label: 'Destruction', value: 1},
+  {label: 'Proficiency', value: 2},
+  {label: 'Transformation', value: 3},
+];
+
+const rarityOpts = [
+  {label: 'Elite', value: 0},
+  {label: 'Unique', value: 1},
+];
+
 @Radium
 class EditableItemTable extends React.Component {
   render() {
     const {items, tears} = this.props;
-    const colorOpts = tears.colors.map(color => ({label: color.name, value: color.id}));
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
@@ -74,19 +98,19 @@ class EditableItemTable extends React.Component {
                 <li style={[styles.itemCol4]}>
                   <SelectBox
                     value={{label: item.piece.name, value: item.piece.id}}
-                    options={[]}
+                    options={pieceOpts}
                   />
                 </li>
                 <li style={[styles.itemCol5]}>
                   <SelectBox
                     value={{label: item.type.name, value: item.type.id}}
-                    options={[]}
+                    options={typeOpts}
                   />
                 </li>
                 <li style={[styles.itemCol6]}>
                   <SelectBox
                     value={{label: item.rarity.name, value: item.rarity.id}}
-                    options={[]}
+                    options={rarityOpts}
                   />
                 </li>
                 <li style={[styles.itemCol7]}>
@@ -103,7 +127,7 @@ class EditableItemTable extends React.Component {
               </ul>
             </li>
           )}
-          <li style={styles.addItem}>
+          <li style={styles.addItem} tabIndex={0}>
             <Icon style={styles.addIcon} name='add'/>
             <span style={styles.addItemText}>Add Item</span>
           </li>
@@ -195,7 +219,7 @@ const styles = styler`
     padding-right: 8px
 
   itemCol4
-    width: 70px
+    width: 76px
     padding-right: 8px
 
   itemCol5
@@ -244,9 +268,11 @@ const styles = styler`
     margin: 2px 0
     padding: 1px 0
     border: 2px dashed rgba(55,67,79,0.15)
+    border-radius: 3px
     color: rgba(55,67,79,0.5)
 
-    :hover
+    :hover, :focus
+      outline: none
       border: 2px dashed rgba(180,40,36,0.2)
       color: rgba(217,52,35,1)
       background: rgba(180,40,36,0.05)

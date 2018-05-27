@@ -4,9 +4,10 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 
 import {EditableHeader} from './header';
+import {Icon} from '../common';
 import InfoBox from './infobox';
 import {EditableItemTable} from './itemtable';
-import Section from './section';
+import EditableSection from './editablesection';
 import Footer from './footer';
 
 import {
@@ -48,14 +49,17 @@ class EditableTearbox extends React.Component {
 
             <div style={styles.right}>
               {(box.groupDisplays || []).map((group, i) => 
-                <Section title={group.label}
+                <EditableSection title={group.label}
                          key={i}
                          visible={groupVisibilities[i]}
-                         editable={true}
                          onToggle={() => toggleGroupFn(i)}>
                   <EditableItemTable items={group.items}/>
-                </Section>
+                </EditableSection>
               )}
+              <div style={styles.addSection} tabIndex={0}>
+                <Icon style={styles.addIcon} name='create_new_folder'/>
+                <span style={styles.addSectionText}>Add Section</span>
+              </div>
             </div>
 
           </div>
@@ -152,6 +156,38 @@ const styles = styler`
     font-style: italic
     color: rgba(0,0,0,0.5)
     user-select: none
+
+  addSection
+    cursor: pointer
+    user-select: none
+    display: flex
+    flex-direction: row
+    margin: 2px 0
+    padding: 1px 0
+    border: 2px dashed rgba(55,67,79,0.15)
+    border-radius: 3px
+    color: rgba(55,67,79,0.5)
+
+    :hover, :focus
+      outline: none
+      border: 2px dashed rgba(180,40,36,0.2)
+      color: rgba(217,52,35,1)
+      background: rgba(180,40,36,0.05)
+
+    :active
+      background: rgba(180,40,36,0.2)
+
+  addIcon
+    padding: 0 4px
+    line-height: 40px
+    margin: 0 20px 0 23px
+
+  addSectionText
+    font-weight: bold
+    font-size: 11px
+    text-transform: uppercase
+    letter-spacing: 0.5px
+    line-height: 40px
 
   clearfix
     clear: both
