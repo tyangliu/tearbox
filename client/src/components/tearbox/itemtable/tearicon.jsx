@@ -84,8 +84,8 @@ export default class TearIcon extends React.Component {
 
 const styles = styler`
   itemIcon
-    width: 24px
-    height: 24px
+    width: 28px
+    height: 28px
     background-repeat: no-repeat
     background-size: contain
 `;

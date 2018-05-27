@@ -105,7 +105,7 @@ const styles = styler`
     font-size: 13px
     display: flex
     flex-direction: row
-    line-height: 26px
+    line-height: 28px
     padding: 3px 0
 
   itemTableLabels
@@ -162,7 +162,7 @@ const styles = styler`
       transform: rotateX(-180deg)
 
   itemCol0
-    width: 40px
+    width: 46px
     padding-right: 8px
 
   itemCol1
@@ -190,7 +190,7 @@ const styles = styler`
     padding-right: 8px
 
   itemCol7
-    width: 150px
+    width: 130px
 
   clearfix
     clear: both

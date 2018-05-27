@@ -78,7 +78,7 @@ const styles = styler`
 
   modalHeading
     float: left
-    font-size: 21px
+    font-size: 19px
     font-style: normal
     text-transform: uppercase
     letter-spacing: 1px
