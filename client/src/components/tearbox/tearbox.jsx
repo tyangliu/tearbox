@@ -137,7 +137,6 @@ const styles = styler`
     flex-wrap: nowrap
     justify-content: flex-start
     align-items: stretch
-    padding: 10px 0
 
   main
     flex: 1
@@ -156,6 +155,7 @@ const styles = styler`
     order: 1
 
   right
+    margin-top: 5px
     flex-grow: 1
     order: 2
 

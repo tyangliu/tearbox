@@ -41,6 +41,7 @@ export default connect(
 
 const styles = styler`
   boxHeader
+    margin-top: 10px
     font-size: 21px
     margin-bottom: 1em
 

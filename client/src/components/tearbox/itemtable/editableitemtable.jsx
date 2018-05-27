@@ -219,10 +219,22 @@ const styles = styler`
     line-height: 30px
     cursor: move
 
+    :hover
+      color: rgba(55,67,79,0.6)
+
+    :active
+      color: rgba(55,67,79,1)
+
   closeIcon
     color: rgba(55,67,79,0.3)
     line-height: 30px
     cursor: pointer
+
+    :hover
+      color: rgba(217,52,35,0.6)
+
+    :active
+      color: rgba(217,52,35,1)
   
   addItem
     cursor: pointer

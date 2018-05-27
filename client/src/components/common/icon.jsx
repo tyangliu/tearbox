@@ -17,7 +17,7 @@ export default class Icon extends React.Component {
 const styles = styler`
   icon
     font-size: 17px
-    line-height: 22px
+    line-height: 19.5px
     display: block
     user-select: none
 `;
