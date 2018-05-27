@@ -1,2 +1,2 @@
-export {default as Tearbox} from './tearbox';
+export {Tearbox, EditableTearbox} from './tearbox';
 export {default as Home} from './home';

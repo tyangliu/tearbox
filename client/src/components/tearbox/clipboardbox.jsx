@@ -65,32 +65,24 @@ const styles = styler`
   clipboardBox
     background: rgba(55,67,79,0.1)
     border-radius: 3px
-    padding: 0 4px
+    padding: 0 6px
 
   clipboardText
-    padding: 6px 4px
+    padding: 9px 3px
     line-height: 18px
     display: inline-block
 
-  linkIcon
-    margin-left: 4px
-    padding: 3px 0 4.5px 0
-    margin-top: 1px
-    line-height: 21px
-    font-size: 14px
-    float: left
-
   copyButton
-    border: 1px solid rgba(55,67,79,0.2)
+    border: 1px solid rgba(55,67,79,0.3)
     text-transform: uppercase
     letter-spacing: 0.6px
     font-weight: bold
-    font-size: 8px
+    font-size: 11px
+    line-height: 10px
     float: right
-    line-height: 20px
     border-radius: 3px
-    margin-top: 3px
-    padding: 1px 6px 0
+    margin-top: 4px
+    padding: 8px 8px 7px
     transition: background 0.1s ease-in-out
 
     &normal

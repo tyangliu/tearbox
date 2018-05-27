@@ -33,6 +33,7 @@ module.exports = {
     hot: true,
     inline: true,
     historyApiFallback: true,
+    disableHostCheck: true,
     port: PORT,
     host: HOST,
   },

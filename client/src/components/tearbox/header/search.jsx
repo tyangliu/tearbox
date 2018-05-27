@@ -30,7 +30,7 @@ class Search extends React.Component {
                style={styles.searchInput}
                value={searchTermOptimistic}
                maxLength={32}
-               placeholder="Search"
+               placeholder='Search'
                onChange={e => this.updateTerm(e.target.value)}/>
         <button style={styles.closeButton[showClose ? 'visible' : 'hidden']}
                 onClick={() => this.updateTerm('')}>
@@ -62,7 +62,7 @@ export default connect(
 
 const styles = styler`
   searchBox
-    border-bottom: 1px solid rgba(0,0,0,0.15)
+    border-bottom: 1px solid rgba(55,67,79,0.2)
 
   searchIcon
     float: left
@@ -90,7 +90,7 @@ const styles = styler`
   closeIcon
     margin-top: 1px
     line-height: 21px
-    font-size: 13px
+    font-size: 16px
 
   searchInput
     margin-left: 10px

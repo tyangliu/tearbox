@@ -43,11 +43,11 @@ const styles = styler`
   sectionHeading
     cursor: pointer
     float: left
-    font-size: 16px
+    font-size: 19px
     font-weight: bold
     text-transform: uppercase
     letter-spacing: 1px
-    margin-bottom: 5px
+    margin-bottom: 14px
     transition: color 0.06s ease-in-out
     user-select: none
 
@@ -61,7 +61,7 @@ const styles = styler`
   dropdownIcon
     float: left
     font-size: 24px
-    line-height: 15px
+    line-height: 18px
     margin-left: 3px
     transform-origin: 50% 52%
     transition: transform 0.15s ease-in-out

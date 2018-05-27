@@ -31,6 +31,9 @@ import {
   TOGGLE_FILTER,
   SELECT_ALL_FILTER,
   UNSELECT_ALL_FILTER,
+
+  OPEN_MODAL,
+  CLOSE_MODAL,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -167,6 +170,10 @@ const uiState = {
   groupVisibilities: null,
   copied: false,
   filterVisibility: false,
+  modalVisibilities: {
+    newBox: false,
+    editBox: false,
+  },
 };
 
 function ui(state = uiState, action) {
@@ -223,6 +230,22 @@ function ui(state = uiState, action) {
       return {
         ...state,
         filterVisibility: false,
+      };
+    case OPEN_MODAL:
+      return {
+        ...state,
+        modalVisibilities: {
+          ...state.modalVisibilities,
+          [action.key]: true,
+        },
+      };
+    case CLOSE_MODAL:
+      return {
+        ...state,
+        modalVisibilities: {
+          ...state.modalVisibilities,
+          [action.key]: false,
+        },
       };
     default:
       return state;

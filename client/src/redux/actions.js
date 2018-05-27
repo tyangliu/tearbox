@@ -34,6 +34,9 @@ export const TOGGLE_FILTER = 'TOGGLE_FILTER';
 export const SELECT_ALL_FILTER = 'SELECT_ALL_FILTER';
 export const UNSELECT_ALL_FILTER = 'UNSELECT_ALL_FILTER';
 
+export const OPEN_MODAL = 'OPEN_MODAL';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
 
@@ -147,6 +150,20 @@ export function selectAllFilter() {
 export function unselectAllFilter() {
   return {
     type: UNSELECT_ALL_FILTER,
+  };
+}
+
+export function openModal(key) {
+  return {
+    type: OPEN_MODAL,
+    key,
+  };
+}
+
+export function closeModal(key) {
+  return {
+    type: CLOSE_MODAL,
+    key,
   };
 }
 

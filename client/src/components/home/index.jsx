@@ -3,18 +3,25 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 
-import Logo from '../common/logo';
-import Button from '../common/button';
+import {Logo, Button} from '../common';
+import NewBoxModal, {modalKey as newBoxKey} from '../modals/newbox';
+
+import {openModal} from '../../redux/actions';
 
 @Radium
 class Home extends React.Component {
   render() {
+    const {openModalFn} = this.props;
     return (
       <div style={styles.home}>
         <div style={styles.homeContainer}>
           <header style={styles.header}>
             <div style={styles.headerContainer}>
-              <Button label='Make your own Box' icon='note_add' style={styles.button}/>
+              <Button icon='note_add'
+                      style={styles.button}
+                      onClick={() => openModalFn(newBoxKey)}>
+                Make your own Box
+              </Button>
               <Logo style={styles.logo}/>
             </div>
           </header>
@@ -41,6 +48,7 @@ class Home extends React.Component {
             </ul>
           </footer>
         </div>
+        <NewBoxModal/>
       </div>
     );
   }
@@ -53,6 +61,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    openModalFn: key => dispatch(openModal(key)),
   };
 };
 
@@ -94,10 +103,9 @@ const styles = styler`
     margin-left: -12px
 
   button
-    padding-right: 18px
-    display: block
+    padding: 7px 20px 7px 11px
     float: right
-    margin-top: 34px
+    margin-top: 30px
 
   hero
     flex: 1
@@ -117,6 +125,7 @@ const styles = styler`
     background-size: 258px 198px
 
   heroHeading
+    font-size: 24px
     font-weight: normal
     font-style: normal
     display: block
@@ -126,13 +135,13 @@ const styles = styler`
     color: rgba(55,67,79,1)
 
   infoSection
-    min-height: 400px
+    min-height: 420px
     display: flex
     flex-direction: column
     flex-basis: 400px
     align-items: center
     justify-content: center
-    padding: 30px 0
+    padding: 40px 0
     border-top: 1px solid rgba(55,67,79, 0.15)
     border-bottom: 1px solid rgba(55, 67, 79, 0.15)
 
@@ -147,13 +156,13 @@ const styles = styler`
 
   infoHeading
     font-weight: bold
-    font-size: 14px
+    font-size: 17px
     text-transform: uppercase
     letter-spacing: 1px
     margin-bottom: 12px
 
   infoText
-    font-size: 14px
+    font-size: 15px
     position: absolute
 
   infoText1
@@ -163,16 +172,16 @@ const styles = styler`
     left: 15px
     
   infoText2
-    width: 240px
+    width: 280px
     text-align: center
     top: 30px
-    left: 520px
+    left: 500px
 
   infoText3
-    width: 240px
+    width: 280px
     text-align: center
     top: 180px
-    left: 520px
+    left: 500px
 
   footer
     margin: 0 auto
@@ -180,7 +189,7 @@ const styles = styler`
   creditsItem
     color: rgba(55,67,79,0.65)
     display: inline-block
-    padding: 16px 8px
+    padding: 24px 8px
 
   clearfix
     clear: both

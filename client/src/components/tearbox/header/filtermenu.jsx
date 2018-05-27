@@ -5,6 +5,7 @@ import styler from 'react-styling';
 
 import Icon from '../../common/icon';
 import Popover from '../../common/popover';
+import Button from '../../common/button';
 
 import {
   toggleFilterMenu,
@@ -136,16 +137,16 @@ class FilterMenu extends React.Component {
             )}
           </ul>
           <div style={styles.buttonContainer}>
-            <button style={styles.selectButton}
+            <Button style={styles.selectButton}
                     key={'unselectAll'}
                     onClick={unselectAllFilterFn}>
               Clear
-            </button>
-            <button style={styles.selectButton}
+            </Button>
+            <Button style={styles.selectButton}
                     key={'selectAll'}
                     onClick={selectAllFilterFn}>
               Select All
-            </button>
+            </Button>
           </div>
         </Popover>
       </div>
@@ -205,16 +206,16 @@ const styles = styler`
   closeButton
     color: rgba(55,67,79,0.7)
     border: 0
-    padding: 1px 4px
+    padding: 2px
     float: right
-    margin: 0
+    margin: 2px 3px 0 0
 
     :hover
       color: rgba(217,52,35,1)
 
   closeIcon
     line-height: 21px
-    font-size: 13px
+    font-size: 16px
 
   filterLabel
     float: left
@@ -224,7 +225,7 @@ const styles = styler`
   popover 
     user-select: none
     position: absolute
-    width: 260px
+    width: 300px
     top: 25px
     left: 15px
 
@@ -238,10 +239,10 @@ const styles = styler`
   sectionLabel
     font-style: italic
     float: left
-    padding: 6px 0
+    padding: 8px 0
     margin-right: 10px
     display: block
-    width: 40px
+    width: 50px
     color: rgba(55,67,79,0.65)
 
   sectionList
@@ -250,19 +251,19 @@ const styles = styler`
     &h
 
     &v
-      padding: 3px 0 6px
+      padding: 6px 0 9px
 
   sectionChoice
     cursor: pointer
     display: inline-block
     text-transform: uppercase
     font-weight: bold
-    font-size: 10px
+    font-size: 12px
     letter-spacing: 0.5px
-    margin-top: 3px
+    margin-top: 2px
 
     &h
-      padding: 4px 0 0
+      padding: 6px 0
       margin-right: 8px
       display: inline-block
 
@@ -273,6 +274,10 @@ const styles = styler`
   sectionChoiceVisibility
     &normal
       opacity: 1
+
+      :hover
+        opacity: 1
+
     &dim
       opacity: 0.3
 
@@ -281,18 +286,12 @@ const styles = styler`
 
   buttonContainer
     text-align: center
-    padding: 8px
+    padding: 10px
 
   selectButton
+    display: inline-block
     margin-right: 8px
-    padding: 3px 10px 4px
-    border-radius: 9999px
-    background: rgba(255,255,255,1)
-
-    :hover
-      color: rgba(217,52,35,1)
-      background: rgba(180,40,36,0.05)
-      border: 1px solid rgba(180,40,36,0.2)
+    padding: 4px 14px
 
   clearfix
     clear: both
