@@ -37,6 +37,19 @@ export const UNSELECT_ALL_FILTER = 'UNSELECT_ALL_FILTER';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 
+export const EDIT_ADD_ITEM = 'EDIT_ADD_ITEM';
+export const EDIT_DELETE_ITEM = 'EDIT_DELETE_ITEM';
+export const EDIT_MOVE_ITEM = 'EDIT_MOVE_ITEM';
+
+export const EDIT_ADD_GROUP = 'EDIT_ADD_GROUP';
+export const EDIT_DELETE_GROUP = 'EDIT_DELETE_GROUP';
+export const EDIT_MOVE_GROUP = 'EDIT_MOVE_GROUP';
+
+export const EDIT_GROUP_TITLE = 'EDIT_GROUP_TITLE';
+
+export const EDIT_ITEM_FIELD = 'EDIT_ITEM_FIELD';
+export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
+
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
 
@@ -164,6 +177,77 @@ export function closeModal(key) {
   return {
     type: CLOSE_MODAL,
     key,
+  };
+}
+
+export function editAddItem(groupIdx) {
+  return {
+    type: EDIT_ADD_ITEM,
+    groupIdx,
+  };
+}
+
+export function editDeleteItem(groupIdx, itemIdx) {
+  return {
+    type: EDIT_DELETE_ITEM,
+    groupIdx,
+    itemIdx,
+  };
+}
+
+export function editMoveItem(groupIdx, srcIdx, destIdx) {
+  return {
+    type: EDIT_MOVE_ITEM,
+    groupIdx,
+    srcIdx,
+    destIdx,
+  };
+}
+
+export function editAddGroup() {
+  return {
+    type: EDIT_ADD_GROUP,
+  };
+}
+
+export function editDeleteGroup(groupIdx) {
+  return {
+    type: EDIT_DELETE_GROUP,
+    groupIdx,
+  };
+}
+
+export function editMoveGroup(srcIdx, destIdx) {
+  return {
+    type: EDIT_MOVE_GROUP,
+    srcIdx,
+    destIdx,
+  };
+}
+
+export function editGroupTitle(groupIdx, title) {
+  return {
+    type: EDIT_GROUP_TITLE,
+    groupIdx,
+    title,
+  };
+}
+
+export function editItemField(tears, groupIdx, itemIdx, key, value) {
+  return {
+    type: EDIT_ITEM_FIELD,
+    tears,
+    groupIdx,
+    itemIdx,
+    key,
+    value,
+  };
+}
+
+export function searchItemEffects(searchTerm) {
+  return {
+    type: SEARCH_ITEM_EFFECTS,
+    searchTerm,
   };
 }
 

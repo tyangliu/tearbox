@@ -91,8 +91,7 @@ class FilterMenu extends React.Component {
     } = this.props;
 
     return (
-      <div style={[styles.filterMenu, style]}
-           onKeyPress={this.handleKeyPress}>
+      <div style={[styles.filterMenu, style]}>
         <button style={styles.filterButton[visible ? 'active' : 'normal']}
                 onClick={this.handleButtonClick}>
           <Icon name='filter_list' style={styles.icon}/>

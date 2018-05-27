@@ -76,7 +76,7 @@ export default class TearIcon extends React.Component {
     const path = pathToHash[itemToPath(item)];
     return (
       <div style={[styles.itemIcon, style, {
-        backgroundImage: `url("${path}")`,
+        backgroundImage: path ? `url("${path}")` : 'none',
       }]}/>
     );
   }

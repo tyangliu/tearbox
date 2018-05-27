@@ -2,9 +2,19 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import debounce from 'lodash.debounce';
+import {createFilter} from 'react-select';
 
 import TearIcon from './tearicon';
 import {Icon, SelectBox} from '../../common';
+
+import {
+  editAddItem,
+  editDeleteItem,
+  editMoveItem,
+  searchItemEffects,
+  editItemField,
+} from '../../../redux/actions';
 
 const white = 'rgba(255,255,255,1)';
 const grey = 'rgba(55,67,79,0.06)';
@@ -46,10 +56,53 @@ const rarityOpts = [
   {label: 'Unique', value: 1},
 ];
 
+const filterConfig = {
+  ignoreCase: false,
+  ignoreAccents: false,
+  trim: false,
+  matchFrom: 'any',
+};
+
 @Radium
 class EditableItemTable extends React.Component {
+  handleEffectsInputChange = (inputValue) => {
+    const {searchItemEffectsFn} = this.props;
+    searchItemEffectsFn(inputValue);
+  };
+
+  handleAddItemClick = () => {
+    const {groupIdx, editAddItemFn} = this.props;
+    editAddItemFn(groupIdx);
+    this.addItemEl.blur();
+  };
+
+
+  handleAddItemKeyPress = event => {
+    if (event.key != 'Enter') {
+      return;
+    }
+    this.handleAddItemClick();
+  };
+
   render() {
-    const {items, tears} = this.props;
+    const {
+      items,
+      tears,
+      groupIdx,
+      searchTerm,
+      effects,
+
+      editDeleteItemFn,
+
+      editItemFieldFn,
+      debouncedEditItemFieldFn,
+    } = this.props;
+
+    const effectOpts = effects.map(effect => ({
+      label: effect.name,
+      value: effect.id,
+    }));
+
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
@@ -87,47 +140,70 @@ class EditableItemTable extends React.Component {
                   <SelectBox
                     value={{label: item.color.name, value: item.color.id}}
                     options={colorOpts}
+                    onChange={({label, value}) =>
+                      editItemFieldFn(tears, groupIdx, i, 'color_id', value)
+                    }
                   />
                 </li>
                 <li style={[styles.itemCol3]}>
                   <SelectBox
                     value={{label: item.effect.name, value: item.effect.id}}
-                    options={[]}
+                    options={effectOpts}
+                    onChange={({label, value}) => 
+                      editItemFieldFn(tears, groupIdx, i, 'effect_id', value)
+                    }
+                    onInputChange={this.handleEffectsInputChange}
+                    filterOption={(opt, v) => true}
+                    noOptionsMessage={() => 'Search effects'}
                   />
                 </li>
                 <li style={[styles.itemCol4]}>
                   <SelectBox
                     value={{label: item.piece.name, value: item.piece.id}}
                     options={pieceOpts}
+                    onChange={({label, value}) =>
+                      editItemFieldFn(tears, groupIdx, i, 'piece_id', value)
+                    }
+                    filterOption={(opt, v) =>
+                      item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
+                    }
                   />
                 </li>
                 <li style={[styles.itemCol5]}>
-                  <SelectBox
-                    value={{label: item.type.name, value: item.type.id}}
-                    options={typeOpts}
-                  />
+                  <span style={styles.itemText}>
+                    {item.type.name || ''}
+                  </span>
                 </li>
                 <li style={[styles.itemCol6]}>
-                  <SelectBox
-                    value={{label: item.rarity.name, value: item.rarity.id}}
-                    options={rarityOpts}
-                  />
+                  <span style={styles.itemText}>
+                    {item.rarity.name || ''}
+                  </span>
                 </li>
                 <li style={[styles.itemCol7]}>
-                  <input type='text'
-                         style={styles.noteInput}
-                         maxLength={80}
-                         placeholder=''
-                         value={item.note}
-                         onChange={() => {}}/>
+                  <input
+                    type='text'
+                    style={styles.noteInput}
+                    maxLength={80}
+                    placeholder=''
+                    defaultValue={item.note}
+                    onChange={e =>
+                      debouncedEditItemFieldFn(tears, groupIdx, i, 'note', e.target.value)
+                    }/>
                 </li>
                 <li style={[styles.itemCol8]}>
-                 <Icon style={styles.closeIcon} name='close'/>
+                  <div onClick={() => editDeleteItemFn(groupIdx, i)}>
+                    <Icon style={styles.closeIcon} name='close'/>
+                  </div>
                 </li>
               </ul>
             </li>
           )}
-          <li style={styles.addItem} tabIndex={0}>
+          <li style={styles.addItem}
+              key={`addItemButton_${groupIdx}`}
+              tabIndex={0}
+              onClick={this.handleAddItemClick}
+              onKeyPress={this.handleAddItemKeyPress}
+              ref={e => {this.addItemEl = e}}>
             <Icon style={styles.addIcon} name='add'/>
             <span style={styles.addItemText}>Add Item</span>
           </li>
@@ -139,13 +215,31 @@ class EditableItemTable extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {tears} = state;
+  const {
+    effectsSearchTerm,
+    filteredEffects,
+  } = tears;
+
   return {
     tears,
+    effects: filteredEffects,
+    searchTerm: effectsSearchTerm,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    editAddItemFn: groupIdx => dispatch(editAddItem(groupIdx)),
+    editDeleteItemFn: (groupIdx, idx) => dispatch(editDeleteItem(groupIdx, idx)),
+    editMoveItemFn: (groupIdx, srcIdx, destIdx) =>
+      dispatch(editMoveItem(groupIdx, srcIdx, destIdx)),
+
+    searchItemEffectsFn: debounce((searchTerm) =>
+      dispatch(searchItemEffects(searchTerm)), 150),
+    editItemFieldFn: (tears, groupIdx, idx, key, value) =>
+      dispatch(editItemField(tears, groupIdx, idx, key, value)),
+    debouncedEditItemFieldFn: debounce((tears, groupIdx, idx, key, value) =>
+      dispatch(editItemField(tears, groupIdx, idx, key, value)), 500),
   };
 };
 
@@ -195,7 +289,7 @@ const styles = styler`
     margin-top: 1.5px
 
   noteInput
-    width: 176px
+    width: 130px
     background: none
     border-bottom: 1px solid rgba(55,67,79,0.2)
     padding: 4px 0
@@ -238,6 +332,10 @@ const styles = styler`
     text-align: center
     width: 24px
 
+  itemText
+    color: rgba(55,67,79,0.6)
+    line-height: 29.5px
+
   dragIcon
     color: rgba(55,67,79,0.3)
     line-height: 30px
@@ -276,9 +374,6 @@ const styles = styler`
       border: 2px dashed rgba(180,40,36,0.2)
       color: rgba(217,52,35,1)
       background: rgba(180,40,36,0.05)
-
-    :active
-      background: rgba(180,40,36,0.2)
 
   addIcon
     padding: 0 4px

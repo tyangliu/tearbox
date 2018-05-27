@@ -16,10 +16,25 @@ import {
   loadTears,
   fetchBox,
   toggleGroup,
+
+  editAddGroup,
 } from '../../redux/actions';
 
 @Radium
 class EditableTearbox extends React.Component {
+  handleAddGroupClick = () => {
+    const {editAddGroupFn} = this.props;
+    editAddGroupFn();
+    this.addGroupEl.blur();
+  };
+
+  handleAddGroupKeyPress = event => {
+    if (event.key != 'Enter') {
+      return;
+    }
+    this.handleAddGroupClick();
+  };
+
   componentDidMount() {
     const {boxStatus, fetchBoxFn} = this.props;
     if (boxStatus !== RECEIVED) {
@@ -29,42 +44,50 @@ class EditableTearbox extends React.Component {
 
   render() {
     const {
-      tears,
       box,
       groupVisibilities,
       toggleGroupFn,
     } = this.props;
+
     return (
-      <div style={styles.tearbox}>
-        <div style={styles.tearboxContainer}>
-          <EditableHeader/>
-          <div style={[styles.container, styles.main]}>
-
-            <div style={[styles.left, styles.mainLeft]}>
-              <div style={styles.mainLeftContent}>
-                <InfoBox/>
-              </div>
-              <Footer/>
+        <div style={styles.tearbox}>
+          <div style={styles.tearboxContainer}>
+            <div style={styles.headerContainer}>
+              <EditableHeader/>
             </div>
-
-            <div style={styles.right}>
-              {(box.groupDisplays || []).map((group, i) => 
-                <EditableSection title={group.label}
-                         key={i}
-                         visible={groupVisibilities[i]}
-                         onToggle={() => toggleGroupFn(i)}>
-                  <EditableItemTable items={group.items}/>
-                </EditableSection>
-              )}
-              <div style={styles.addSection} tabIndex={0}>
-                <Icon style={styles.addIcon} name='create_new_folder'/>
-                <span style={styles.addSectionText}>Add Section</span>
+            <div style={styles.container}>
+              <div style={styles.left}>
+                <div style={styles.mainLeftContent}>
+                  <div style={styles.leftTop}>
+                    <InfoBox/>
+                  </div>
+                  <Footer/>
+                </div>
               </div>
-            </div>
 
+              <div style={styles.right}>
+                {(box.groups || []).map((group, i) => 
+                  <EditableSection title={group.label}
+                           key={i}
+                           groupIdx={i}
+                           visible={groupVisibilities[i]}
+                           onToggle={() => toggleGroupFn(i)}>
+                    <EditableItemTable items={group.items} groupIdx={i}/>
+                  </EditableSection>
+                )}
+                <div style={styles.addSection}
+                     tabIndex={0}
+                     onClick={this.handleAddGroupClick}
+                     onKeyPress={this.handleAddGroupKeyPress}
+                     ref={e => {this.addGroupEl = e}}>
+                  <Icon style={styles.addIcon} name='create_new_folder'/>
+                  <span style={styles.addSectionText}>Add Section</span>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
-      </div>
     );
   }
 }
@@ -72,10 +95,8 @@ class EditableTearbox extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
   return {
-    tearsStatus: ui.tearsStatus,
-    tears,
     boxStatus: ui.boxStatus,
-    box: box.data,
+    box: box.stagingData,
     groupVisibilities: ui.groupVisibilities,
   };
 };
@@ -85,6 +106,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadTearsFn: () => dispatch(loadTears()),
     fetchBoxFn: () => dispatch(fetchBox()),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
+
+    editAddGroupFn: () => dispatch(editAddGroup()),
   };
 };
 
@@ -106,37 +129,44 @@ const styles = styler`
   tearboxContainer
     width: 100%
     max-width: 1600px
-    padding: 0 30px
-    display: flex
-    flex-direction: column
-    flex: 1
 
   container
+    padding: 0 30px
+    height: 100vh
     display: flex
     flex-direction: row
     flex-wrap: nowrap
     justify-content: flex-start
     align-items: stretch
 
-  main
-    flex: 1
+  headerContainer
+    position: fixed
+    max-width: 1600px
+    width: 100%
+    padding: 0 30px
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%)
+    z-index: 1
 
-  mainLeft
-    display: flex
-    flex-direction: column
+  left
+    min-height: 100%
+    min-width: 270px
+    margin: 0 30px 0 0
 
   mainLeftContent
     flex: 1
+    min-height: 100%
+    display: flex
+    flex-direction: column
+    padding: 113px 0 0 0
+    position: fixed
 
-  left
+  leftTop
     min-width: 270px
-    flex-basis: 270px
-    margin: 0 30px 0 0
-    order: 1
+    flex: 1
 
   right
-    margin-top: 5px
-    flex-grow: 1
+    padding: 118px 0 0 0
+    flex: 1
     order: 2
 
   button
@@ -162,7 +192,7 @@ const styles = styler`
     user-select: none
     display: flex
     flex-direction: row
-    margin: 2px 0
+    margin: 2px 0 30px 0
     padding: 1px 0
     border: 2px dashed rgba(55,67,79,0.15)
     border-radius: 3px
@@ -173,9 +203,6 @@ const styles = styler`
       border: 2px dashed rgba(180,40,36,0.2)
       color: rgba(217,52,35,1)
       background: rgba(180,40,36,0.05)
-
-    :active
-      background: rgba(180,40,36,0.2)
 
   addIcon
     padding: 0 4px

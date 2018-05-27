@@ -2,6 +2,9 @@ import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
 import Fuse from 'fuse.js';
 import cloneDeep from 'lodash.clonedeep';
+import update from 'immutability-helper';
+
+import {unpackItem} from './utils/box';
 
 import {
   UNAVAILABLE,
@@ -34,21 +37,53 @@ import {
 
   OPEN_MODAL,
   CLOSE_MODAL,
+
+  EDIT_ADD_ITEM,
+  EDIT_DELETE_ITEM,
+  EDIT_MOVE_ITEM,
+
+  EDIT_ADD_GROUP,
+  EDIT_DELETE_GROUP,
+  EDIT_MOVE_GROUP,
+
+  EDIT_GROUP_TITLE,
+
+  EDIT_ITEM_FIELD,
+  SEARCH_ITEM_EFFECTS,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
+import {mergeEffects, effectsSearchOpts} from './utils/tears';
 
 const tearsState = {
   colors: [],
   pieces: [],
   types: [],
   effects: [],
+  filteredEffects: [],
+  effectsIndex: null,
+  effectsSearchTerm: '',
 };
 
 function tears(state = tearsState, action) {
   switch (action.type) {
     case RECEIVE_TEARS:
-      return action.data;
+      return {
+        ...action.data,
+        filteredEffects: [],
+        effectsIndex: new Fuse(mergeEffects(action.data.effects), effectsSearchOpts),
+        effectsSearchTerm: '',
+      };
+    case SEARCH_ITEM_EFFECTS:
+      const {effectsIndex} = state;
+      const filteredEffects = effectsIndex && action.searchTerm.length
+        ? effectsIndex.search(action.searchTerm).slice(0, 30)
+        : [];
+      return {
+        ...state,
+        filteredEffects,
+        effectsSearchTerm: action.searchTerm,
+      };
     default:
       return state;
   }
@@ -79,6 +114,7 @@ const boxDisplayOptions = {
 
 const boxState = {
   data: {},
+  stagingData: {},
   options: boxDisplayOptions,
 };
 
@@ -99,6 +135,40 @@ function updateOptions(state, options) {
   };
 }
 
+const makeEmptyItem = () => ({
+  id: null,
+  color: {},
+  color_id: null,
+  effect_id: null,
+  effect: {},
+  piece_id: null,
+  piece: {},
+  type: {},
+  rarity: {},
+  note: '',
+  created: null,
+});
+
+const makeEmptyGroup = () => ({
+  id: null,
+  label: 'Title',
+  items: [],
+});
+
+function updateItemField(state, action) {
+  const {tears, groupIdx, itemIdx, key, value} = action; 
+  const {stagingData} = state;
+  const newItem = unpackItem(tears, {
+    ...stagingData.groups[groupIdx].items[itemIdx],
+    [key]: value,
+  });
+
+  return update(state, {stagingData: {
+    groups: {[groupIdx]: {
+      items: {[itemIdx]: {$set: newItem}},
+    }},
+  }});
+}
 
 function box(state = boxState, action) {
   const {options} = state;
@@ -120,6 +190,8 @@ function box(state = boxState, action) {
           groupDisplays: filterSortGroups(groups, groupIndices, options),
           groupIndices,
         },
+        // Raw copy for staging edits.
+        stagingData: cloneDeep(action.data),
       }; 
     case SEARCH:
       const optionsWithNewSearch = {
@@ -158,6 +230,55 @@ function box(state = boxState, action) {
       return updateOptions(state, {...options, filter: filterSelectAll});
     case UNSELECT_ALL_FILTER: 
       return updateOptions(state, {...options, filter: filterUnselectAll});
+
+    case EDIT_ADD_ITEM: 
+      return update(state, {stagingData: {
+        groups: {[action.groupIdx]: {
+          items: {$push:[makeEmptyItem()]},
+        }},
+      }});
+    case EDIT_DELETE_ITEM:
+      return update(state, {stagingData: {
+        groups: {[action.groupIdx]: {
+          items: {$splice: [[action.itemIdx,1]]},
+        }},
+      }});
+    case EDIT_MOVE_ITEM:
+      const itemMoveTarget = state
+        .stagingData
+        .groups[action.groupIdx]
+        .items[action.srcIdx];
+      return update(state, {stagingData: {
+        groups: {[action.groupIdx]: {
+          items: {$splice: [[action.srcIdx,1], [action.destIdx,0,itemMoveTarget]]},
+        }},
+      }});
+
+    case EDIT_ADD_GROUP:
+      return update(state, {stagingData: {
+        groups: {$push: [makeEmptyGroup()]},
+      }});
+    case EDIT_DELETE_GROUP:
+      return update(state, {stagingData: {
+        groups: {$splice: [[action.groupIdx,1]]},
+      }});
+    case EDIT_MOVE_GROUP:
+      const groupMoveTarget = state.stagingData.groups[action.srcIdx];
+      return update(state, {stagingData: {
+        groups: {$splice: [[action.srcIdx,1], [action.destIdx,0,groupMoveTarget]]},
+      }});
+
+    case EDIT_GROUP_TITLE:
+      return update(state, {stagingData: {
+        groups: {[action.groupIdx]: {
+          label: {$set: action.title},
+        }},
+      }});
+    case EDIT_ITEM_FIELD:
+      return updateItemField(
+        state,
+        action,
+      ); 
     default:
       return state;
   }

@@ -6,6 +6,7 @@ import styler from 'react-styling';
 import ContactList from './contactlist';
 import ClipboardBox from './clipboardbox';
 
+@Radium
 class InfoBox extends React.Component {
   render() {
     const {box, style} = this.props;

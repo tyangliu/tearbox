@@ -2,18 +2,34 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import debounce from 'lodash.debounce';
 
 import {Icon, Button} from '../common';
 
+import {
+  editDeleteGroup,
+  editMoveGroup,
+  editGroupTitle,
+} from '../../redux/actions';
+
 @Radium
-export default class EditableSection extends React.Component {
+class EditableSection extends React.Component {
   static defaultProps = {
     visible: true,
     onToggle: () => {},
   };
 
   render() {
-    const {onToggle, title, visible} = this.props;
+    const {
+      onToggle,
+      title,
+      visible,
+      groupIdx,
+
+      editDeleteGroupFn,
+      editGroupTitleFn,
+    } = this.props;
+
     return (
       <section style={styles.section}>
         <div style={styles.sectionHeadingContainer}>
@@ -23,9 +39,9 @@ export default class EditableSection extends React.Component {
                 key={`sectionHeading_${title}`}>
               <input type='text'
                      maxLength={24}
-                     value={title}
+                     defaultValue={title}
                      style={styles.sectionHeadingInput}
-                     onChange={() => {}}/>
+                     onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
               <span style={styles.dropdownIconContainer}
                     onClick={onToggle}>
                 <Icon name='arrow_drop_down'
@@ -35,7 +51,8 @@ export default class EditableSection extends React.Component {
             </h3>
           </div>
           <Button icon='delete'
-                  style={styles.deleteButton}>
+                  style={styles.deleteButton}
+                  onClick={() => editDeleteGroupFn(groupIdx)}>
             Delete Section
           </Button>
           <div style={styles.clearfix}/>
@@ -47,6 +64,25 @@ export default class EditableSection extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    editDeleteGroupFn: groupIdx => dispatch(editDeleteGroup(groupIdx)),
+    editMoveGroupFn: (srcIdx, destIdx) =>
+      dispatch(editMoveGroup(srcIdx, destIdx)),
+    editGroupTitleFn: debounce((groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)), 500),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EditableSection);
 
 const styles = styler`
   section

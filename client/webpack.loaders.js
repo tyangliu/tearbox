@@ -19,7 +19,7 @@ module.exports = [
     exclude: /(node_modules|bower_components)/,
     loaders: [
       'style-loader',
-      'css-loader?modules',
+      'css-loader',
     ],
   },
   {

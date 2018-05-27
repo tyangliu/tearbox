@@ -88,14 +88,20 @@ export function filterSortGroups(groups, indices, options) {
 }
 
 export function unpackItem(tears, item) {
-  const effectData = effect(tears, item.effect_id);
+  const effectData = (item.effect_id && effect(tears, item.effect_id)) || {};
   return {
     ...item,
-    color: color(tears, item.color_id),
+    color: ((item.color_id != null) && color(tears, item.color_id)) || {},
     effect: effectData,
-    piece: piece(tears, item.piece_id),
-    rarity: rarity(tears, effectData.rarity_id),
-    type: type(tears, effectData.type_id),
+    piece: ((effectData.x_piece_id != null || item.piece_id != null) && piece(
+      tears,
+      (effectData.x_piece_id != null)
+        ? effectData.x_piece_id
+        : item.piece_id,
+    )) || {},
+    piece_id: effectData.x_piece_id != null ? effectData.x_piece_id : item.piece_id,
+    rarity: ((effectData.rarity_id != null) && rarity(tears, effectData.rarity_id)) || {},
+    type: ((effectData.type_id != null) && type(tears, effectData.type_id)) || {},
   }
 }
 

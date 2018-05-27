@@ -43,29 +43,32 @@ class Tearbox extends React.Component {
     return (
       <div style={styles.tearbox}>
         <div style={styles.tearboxContainer}>
-          <Header/>
-          <div style={[styles.container, styles.main]}>
-
-            <div style={[styles.left, styles.mainLeft]}>
+          <div style={styles.headerContainer}>
+            <Header/>
+          </div>
+          <div style={styles.container}>
+            <div style={styles.left}>
               <div style={styles.mainLeftContent}>
-                <InfoBox/>
-                <Button icon='note_add'
-                        style={styles.button}
-                        key='newboxbutton'
-                        onClick={() => openModalFn(newBoxKey)}>
-                  Make your own Box
-                </Button>
-                <Button icon='edit'
-                        style={styles.button}
-                        key='editboxbutton'
-                        onClick={() => openModalFn(editBoxKey)}>
-                  Edit this Box
-                </Button>
-                <p style={styles.footnote}>
-                  (if you own this box)
-                </p>
+                <div style={styles.leftTop}>
+                  <InfoBox/>
+                  <Button icon='note_add'
+                          style={styles.button}
+                          key='newboxbutton'
+                          onClick={() => openModalFn(newBoxKey)}>
+                    Make your own Box
+                  </Button>
+                  <Button icon='edit'
+                          style={styles.button}
+                          key='editboxbutton'
+                          onClick={() => openModalFn(editBoxKey)}>
+                    Edit this Box
+                  </Button>
+                  <p style={styles.footnote}>
+                    (if you own this box)
+                  </p>
+                </div>
+                <Footer/>
               </div>
-              <Footer/>
             </div>
 
             <div style={styles.right}>
@@ -78,7 +81,6 @@ class Tearbox extends React.Component {
                 </Section>
               )}
             </div>
-
           </div>
         </div>
         <NewBoxModal/>
@@ -126,37 +128,44 @@ const styles = styler`
   tearboxContainer
     width: 100%
     max-width: 1600px
-    padding: 0 30px
-    display: flex
-    flex-direction: column
-    flex: 1
 
   container
+    padding: 0 30px
+    height: 100vh
     display: flex
     flex-direction: row
     flex-wrap: nowrap
     justify-content: flex-start
     align-items: stretch
 
-  main
-    flex: 1
+  headerContainer
+    position: fixed
+    max-width: 1600px
+    width: 100%
+    padding: 0 30px
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%)
+    z-index: 1
 
-  mainLeft
-    display: flex
-    flex-direction: column
+  left
+    min-height: 100%
+    min-width: 270px
+    margin: 0 30px 0 0
 
   mainLeftContent
     flex: 1
+    min-height: 100%
+    display: flex
+    flex-direction: column
+    padding: 113px 0 0 0
+    position: fixed
 
-  left
+  leftTop
     min-width: 270px
-    flex-basis: 270px
-    margin: 0 30px 0 0
-    order: 1
+    flex: 1
 
   right
-    margin-top: 5px
-    flex-grow: 1
+    padding: 118px 0 0 0
+    flex: 1
     order: 2
 
   button

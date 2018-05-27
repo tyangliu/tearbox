@@ -8,8 +8,9 @@ import {Logo, Icon, Button} from '../../common';
 @Radium
 class EditableHeader extends React.Component {
   render() {
+    const {style} = this.props;
     return (
-      <div style={[styles.container, styles.header]}>
+      <div style={[styles.container, styles.header, style]}>
         <div style={styles.left}>
           <Logo style={styles.logo}/>
         </div>
