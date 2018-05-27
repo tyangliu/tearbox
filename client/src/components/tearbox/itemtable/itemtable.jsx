@@ -133,6 +133,7 @@ const styles = styler`
         color: rgba(217,52,35,1)
 
   itemTableLabelText
+    font-weight: bold
     display: block
     float: left
 
@@ -165,7 +166,7 @@ const styles = styler`
     padding-right: 8px
 
   itemCol1
-    width: 64px
+    width: 70px
     padding-right: 8px
 
   itemCol2
@@ -173,7 +174,7 @@ const styles = styler`
     padding-right: 8px
 
   itemCol3
-    width: 64px
+    width: 70px
     padding-right: 8px
 
   itemCol4
@@ -181,11 +182,11 @@ const styles = styler`
     padding-right: 8px
 
   itemCol5
-    width: 64px
+    width: 70px
     padding-right: 8px
 
   itemCol6
-    width: 64px
+    width: 70px
     padding-right: 8px
 
   itemCol7
