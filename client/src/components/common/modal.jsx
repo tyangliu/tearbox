@@ -14,7 +14,7 @@ export default class Modal extends React.Component {
   };
 
   closeClearHover = () => {
-    this.setState({_radiumStyleState: {newboxmodalclose: {':hover': false }}});
+    this.setState({_radiumStyleState: {newboxmodalclose: {':hover': false}}});
     this.props.onClose();
   };
 
@@ -24,7 +24,7 @@ export default class Modal extends React.Component {
       <ModalBase open={visible}
              center
              styles={styles.modalStyles}
-             animationDuration={50}
+             animationDuration={500}
              onClose={onClose}
              showCloseIcon={false}>
         <button style={styles.closeButton}

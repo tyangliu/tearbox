@@ -72,10 +72,10 @@ const pathToHash = {
 @Radium
 export default class TearIcon extends React.Component {
   render() {
-    const {item} = this.props;
+    const {item, style} = this.props;
     const path = pathToHash[itemToPath(item)];
     return (
-      <div style={[styles.itemIcon, {
+      <div style={[styles.itemIcon, style, {
         backgroundImage: `url("${path}")`,
       }]}/>
     );

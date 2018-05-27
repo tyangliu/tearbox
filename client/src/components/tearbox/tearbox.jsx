@@ -51,11 +51,13 @@ class Tearbox extends React.Component {
                 <InfoBox/>
                 <Button icon='note_add'
                         style={styles.button}
+                        key='newboxbutton'
                         onClick={() => openModalFn(newBoxKey)}>
                   Make your own Box
                 </Button>
                 <Button icon='edit'
                         style={styles.button}
+                        key='editboxbutton'
                         onClick={() => openModalFn(editBoxKey)}>
                   Edit this Box
                 </Button>

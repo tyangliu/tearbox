@@ -38,7 +38,6 @@ export default class Section extends React.Component {
 const styles = styler`
   section
     margin-bottom: 30px
-    overflow: hidden
 
   sectionHeading
     cursor: pointer

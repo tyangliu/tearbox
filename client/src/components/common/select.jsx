@@ -35,6 +35,7 @@ export default class SelectBox extends React.Component {
 const styles = styler`
   selectContainer
     display: block
+    position: relative
 
   dropdownIcon
     font-size: 13px

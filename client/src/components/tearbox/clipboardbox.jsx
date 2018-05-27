@@ -73,6 +73,7 @@ const styles = styler`
     display: inline-block
 
   copyButton
+    cursor: pointer
     border: 1px solid rgba(55,67,79,0.3)
     text-transform: uppercase
     letter-spacing: 0.6px

@@ -5,7 +5,7 @@ import styler from 'react-styling';
 import XDate from 'xdate';
 
 import TearIcon from './tearicon';
-import Icon from '../../common/icon';
+import {Icon} from '../../common';
 
 const white = 'rgba(255,255,255,1)';
 const grey = 'rgba(55,67,79,0.06)';
@@ -13,14 +13,14 @@ const grey = 'rgba(55,67,79,0.06)';
 import {toggleSort} from '../../../redux/actions';
 
 const headers = [
-  {key: 'icon', text: ''},
-  {key: 'color', text: 'Color'},
-  {key: 'effect', text: 'Effect'},
-  {key: 'piece', text: 'Piece'},
-  {key: 'type', text: 'Type'},
-  {key: 'rarity', text: 'Rarity'},
-  {key: 'created', text: 'Added'},
-  {key: 'note', text: 'Note'},
+  {key: 'icon', text: '', isSortable: false},
+  {key: 'color', text: 'Color', isSortable: true},
+  {key: 'effect', text: 'Effect', isSortable: true},
+  {key: 'piece', text: 'Piece', isSortable: true},
+  {key: 'type', text: 'Type', isSortable: true},
+  {key: 'rarity', text: 'Rarity', isSortable: true},
+  {key: 'note', text: 'Note', isSortable: false},
+  {key: 'created', text: 'Added', isSortable: true},
 ];
 
 @Radium
@@ -30,21 +30,20 @@ class ItemTable extends React.Component {
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
-          {headers.map(({key, text}, i) => {
+          {headers.map(({key, text, isSortable}, i) => {
             const isActive = key == sort.key;
-            // Disable first and last columns (icons, notes)
-            const isDisabled = i == 0 || i == headers.length - 1;
+            // Disable icon and note columns
             return (
               <li style={[
                     styles.itemTableLabel[isActive ? 'active' : 'normal'],
                     styles['itemCol'+i]
                   ]}
                   key={i}>
-                <div style={styles.itemTableLabelContainer[isDisabled ? 'disabled' : 'normal']}
+                <div style={styles.itemTableLabelContainer[isSortable ? 'normal' : 'disabled']}
                      key={'itemTableLabelContainer'+i}
-                     onClick={isDisabled
-                      ? () => {}
-                      : () => toggleSortFn(key)
+                     onClick={isSortable
+                      ? () => toggleSortFn(key)
+                      : () => {}
                      }>
                   <span style={styles.itemTableLabelText}>
                     {text}
@@ -72,8 +71,8 @@ class ItemTable extends React.Component {
                 <li style={[styles.itemCol3]}>{item.piece.name}</li>
                 <li style={[styles.itemCol4]}>{item.type.name}</li>
                 <li style={[styles.itemCol5]}>{item.rarity.name}</li>
-                <li style={[styles.itemCol6]}>{new XDate(item.created).toString('MMM d')}</li>
-                <li style={[styles.itemCol7]}>{item.note}</li>
+                <li style={[styles.itemCol6]}>{item.note}</li>
+                <li style={[styles.itemCol7]}>{new XDate(item.created).toString('MMM d')}</li>
               </ul>
             </li>
           )}
@@ -139,7 +138,7 @@ const styles = styler`
 
   sortIcon
     font-size: 15px
-    margin-top: 3px
+    margin-top: 4px
     margin-left: 4px
     width: 14px
     float: left
@@ -178,19 +177,19 @@ const styles = styler`
     padding-right: 8px
 
   itemCol4
-    width: 106px
+    width: 120px
     padding-right: 8px
 
   itemCol5
-    width: 70px
+    width: 80px
     padding-right: 8px
 
   itemCol6
-    width: 70px
+    width: 130px
     padding-right: 8px
 
   itemCol7
-    width: 130px
+    width: 70px
 
   clearfix
     clear: both

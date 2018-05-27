@@ -14,7 +14,8 @@ export default class Button extends React.Component {
   render() {
     const {icon, onClick, style, isSubmit} = this.props;
     return (
-      <button style={[styles.button[isSubmit ? 'submit' : 'normal'], style]} onClick={onClick}>
+      <button style={[styles.button[isSubmit ? 'submit' : 'normal'], style]}
+              onClick={onClick}>
         {icon ? <Icon name={icon} style={styles.icon}/> : null}
         <span style={styles.buttonText}>
           {this.props.children}

@@ -5,7 +5,7 @@ import styler from 'react-styling';
 
 import {EditableHeader} from './header';
 import InfoBox from './infobox';
-import {ItemTable} from './itemtable';
+import {EditableItemTable} from './itemtable';
 import Section from './section';
 import Footer from './footer';
 
@@ -52,7 +52,7 @@ class EditableTearbox extends React.Component {
                          key={i}
                          visible={groupVisibilities[i]}
                          onToggle={() => toggleGroupFn(i)}>
-                  <ItemTable items={group.items}/>
+                  <EditableItemTable items={group.items}/>
                 </Section>
               )}
             </div>
