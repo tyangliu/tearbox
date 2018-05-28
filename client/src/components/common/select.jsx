@@ -36,6 +36,7 @@ const styles = styler`
   selectContainer
     display: block
     position: relative
+    line-height: 27.5px
 
   dropdownIcon
     font-size: 13px
@@ -46,7 +47,7 @@ const styles = styler`
     control
       display: flex
       border-bottom: 1px solid rgba(55,67,79,0.2)
-      padding: 4px 0
+      padding: 0
       cursor: text
 
       &normal
@@ -80,7 +81,7 @@ const styles = styler`
       padding: 0 0 2px
 
     option
-      padding: 4px
+      padding: 0 4px
 
       &normal
         background: rgba(255,255,255,1)

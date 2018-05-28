@@ -47,6 +47,7 @@ import {
   EDIT_MOVE_GROUP,
 
   EDIT_GROUP_TITLE,
+  EDIT_GROUP_TYPE,
 
   EDIT_ITEM_FIELD,
   SEARCH_ITEM_EFFECTS,
@@ -136,6 +137,11 @@ function updateOptions(state, options) {
     options,
   };
 }
+
+const groupTypes = [
+  {id: 0, label: 'Selling'},
+  {id: 1, label: 'Buying'},
+];
 
 const makeEmptyItem = () => ({
   id: null,
@@ -286,6 +292,12 @@ function box(state = boxState, action) {
       return update(state, {stagingData: {
         groups: {[action.groupIdx]: {
           label: {$set: action.title},
+        }},
+      }});
+    case EDIT_GROUP_TYPE:
+      return update(state, {stagingData: {
+        groups: {[action.groupIdx]: {
+          type: {$set: groupTypes[action.typeId]},
         }},
       }});
     case EDIT_ITEM_FIELD:

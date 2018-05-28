@@ -5,6 +5,7 @@ export const effectsSearchOpts = {
   distance: 100,
   maxPatternLength: 32,
   minMatchCharLength: 1,
+  tokenize: true,
   keys: [
     {name: 'name', weight: 0.3},
     {name: 'tags', weight: 0.3},

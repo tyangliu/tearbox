@@ -84,6 +84,7 @@ class EditableTearbox extends React.Component {
                           {(provided, snapshot) => (
                             <EditableSection
                               title={group.label}
+                              type={group.type}
                               groupIdx={i}
                               provided={provided}
                               visible={groupVisibilities[i]}

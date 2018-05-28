@@ -46,6 +46,7 @@ export const EDIT_DELETE_GROUP = 'EDIT_DELETE_GROUP';
 export const EDIT_MOVE_GROUP = 'EDIT_MOVE_GROUP';
 
 export const EDIT_GROUP_TITLE = 'EDIT_GROUP_TITLE';
+export const EDIT_GROUP_TYPE = 'EDIT_GROUP_TYPE';
 
 export const EDIT_ITEM_FIELD = 'EDIT_ITEM_FIELD';
 export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
@@ -235,6 +236,14 @@ export function editGroupTitle(groupIdx, title) {
   };
 }
 
+export function editGroupType(groupIdx, typeId) {
+  return {
+    type: EDIT_GROUP_TYPE,
+    groupIdx,
+    typeId,
+  };
+}
+
 export function editItemField(tears, groupIdx, itemIdx, key, value) {
   return {
     type: EDIT_ITEM_FIELD,
@@ -272,7 +281,8 @@ const mockBox = {
   groups: [
     {
       id: 123,
-      label: 'Selling',
+      type: {id: 0, label: 'Selling'},
+      label: 'Cool Tears',
       items: [
         {id: 123, color_id: 0, effect_id: 10005, piece_id: 0, note: '', created: new Date().toISOString()},
         {id: 123, color_id: 2, effect_id: 30054, piece_id: 3, note: '', created: new Date().toISOString()},
@@ -282,7 +292,19 @@ const mockBox = {
     },
     {
       id: 456,
-      label: 'Buying',
+      type: {id: 1, label: 'Buying'},
+      label: 'Am Poor',
+      items: [
+        {id: 123, color_id: 0, effect_id: 10028, piece_id: 2, note: '', created: new Date().toISOString()},
+        {id: 123, color_id: 2, effect_id: 20054, piece_id: 3, note: '', created: new Date().toISOString()},
+        {id: 123, color_id: 1, effect_id: 40023, piece_id: 2, note: '', created: new Date().toISOString()},
+        {id: 123, color_id: 1, effect_id: 30046, piece_id: 1, note: '', created: new Date().toISOString()},
+      ],
+    },
+    {
+      id: 678,
+      type: {id: 1, label: 'Selling'},
+      label: '',
       items: [
         {id: 123, color_id: 0, effect_id: 10028, piece_id: 2, note: '', created: new Date().toISOString()},
         {id: 123, color_id: 2, effect_id: 20054, piece_id: 3, note: '', created: new Date().toISOString()},

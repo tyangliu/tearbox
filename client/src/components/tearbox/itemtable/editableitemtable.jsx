@@ -147,6 +147,7 @@ class EditableItemTable extends React.Component {
                         </li>
                         <li style={[styles.itemCol2]}>
                           <SelectBox
+                            style={styles.itemSelect}
                             value={{label: item.color.name, value: item.color.id}}
                             options={colorOpts}
                             onChange={({label, value}) =>
@@ -156,6 +157,7 @@ class EditableItemTable extends React.Component {
                         </li>
                         <li style={[styles.itemCol3]}>
                           <SelectBox
+                            style={styles.itemSelect}
                             value={{label: item.effect.name, value: item.effect.id}}
                             options={effectOpts}
                             onChange={({label, value}) => 
@@ -168,6 +170,7 @@ class EditableItemTable extends React.Component {
                         </li>
                         <li style={[styles.itemCol4]}>
                           <SelectBox
+                            style={styles.itemSelect}
                             value={{label: item.piece.name, value: item.piece.id}}
                             options={pieceOpts}
                             onChange={({label, value}) =>
@@ -268,11 +271,11 @@ const styles = styler`
     font-size: 13px
     display: flex
     flex-direction: row
-    padding: 2px 0
+    line-height: 28px
+    padding: 3px 0
 
   itemTableLabels
     border-bottom: 1px solid rgba(55,67,79,0.15)
-    padding: 7px 0 7px
     user-select: none
 
   itemTableLabel
@@ -300,14 +303,18 @@ const styles = styler`
     display: block
     float: left
 
-  tearIcon
-    margin-top: 1.5px
+  itemText
+    color: rgba(55,67,79,0.6)
+    display: block
+
+  itemSelect
+    line-height: 28px
 
   noteInput
     width: 130px
     background: none
     border-bottom: 1px solid rgba(55,67,79,0.2)
-    padding: 4px 0
+    padding: 3px 0
     outline: none
 
   itemCol0
@@ -347,13 +354,9 @@ const styles = styler`
     text-align: center
     width: 24px
 
-  itemText
-    color: rgba(55,67,79,0.6)
-    line-height: 29.5px
-
   dragIcon
     color: rgba(55,67,79,0.3)
-    line-height: 30px
+    line-height: 28px
 
     :hover
       color: rgba(55,67,79,0.6)
@@ -363,7 +366,7 @@ const styles = styler`
 
   closeIcon
     color: rgba(55,67,79,0.3)
-    line-height: 30px
+    line-height: 28px
     cursor: pointer
 
     :hover
@@ -378,7 +381,7 @@ const styles = styler`
     display: flex
     flex-direction: row
     margin: 2px 0
-    padding: 1px 0
+    padding: 1px 0 0
     border: 2px dashed rgba(55,67,79,0.15)
     border-radius: 3px
     color: rgba(55,67,79,0.5)
@@ -391,7 +394,7 @@ const styles = styler`
 
   addIcon
     padding: 0 4px
-    line-height: 27px
+    line-height: 28px
     margin: 0 20px 0 23px
 
   addItemText

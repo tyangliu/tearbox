@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import capitalize from 'lodash.capitalize';
 
 import {Header} from './header';
 import {Button} from '../common';
@@ -73,10 +74,23 @@ class Tearbox extends React.Component {
 
             <div style={styles.right}>
               {(box.groupDisplays || []).map((group, i) => 
-                <Section title={group.label}
-                         key={i}
-                         visible={groupVisibilities[i]}
-                         onToggle={() => toggleGroupFn(i)}>
+                <Section
+                  title={
+                    <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
+                      <span style={styles.sectionTitleLabel}>
+                        {group.label !== '' ? group.label : group.type.label}
+                      </span>
+                      {group.label !== '' ?
+                        <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
+                          {capitalize(group.type.label)}
+                        </span> : null
+                      }
+                    </span>
+                  }
+                  key={i}
+                  visible={groupVisibilities[i]}
+                  onToggle={() => toggleGroupFn(i)}
+                >
                   <ItemTable items={group.items}/>
                 </Section>
               )}
@@ -186,6 +200,25 @@ const styles = styler`
     font-style: italic
     color: rgba(0,0,0,0.5)
     user-select: none
+
+  sectionTitle
+    display: flex
+    flex-direction: row
+    line-height: 19.5px
+
+  sectionTitleLabel
+    padding:  4px 10px 4px 0
+
+  sectionTitleTag
+    margin: 4px 0
+    padding: 0 10px
+    border-left: 2px solid rgba(55,67,79,0.25)
+    font-style: italic
+    font-weight: normal
+    text-transform: none
+    letter-spacing: 0
+    font-size: 16px
+    line-height: 20.5px
 
   clearfix
     clear: both

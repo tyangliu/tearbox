@@ -4,13 +4,19 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 import debounce from 'lodash.debounce';
 
-import {Icon, Button} from '../common';
+import {Icon, Button, SelectBox} from '../common';
 
 import {
   editDeleteGroup,
   editMoveGroup,
   editGroupTitle,
+  editGroupType,
 } from '../../redux/actions';
+
+const typeOpts = [
+  {label: 'Selling', value: 0},
+  {label: 'Buying', value: 1},
+];
 
 @Radium
 class EditableSection extends React.Component {
@@ -25,11 +31,13 @@ class EditableSection extends React.Component {
       provided,
       onToggle,
       title,
+      type,
       visible,
       groupIdx,
 
       editDeleteGroupFn,
       editGroupTitleFn,
+      editGroupTypeFn,
     } = this.props;
 
     return (
@@ -49,14 +57,22 @@ class EditableSection extends React.Component {
                 <input type='text'
                        maxLength={24}
                        defaultValue={title}
-                       placeholder='e.g. Selling, Buying, &hellip;'
+                       placeholder='Title'
                        style={styles.sectionHeadingInput}
                        onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
-                <span style={styles.dropdownIconContainer}
-                      onClick={onToggle}>
+                <SelectBox
+                  value={{value: type.id, label: type.label}}
+                  style={styles.dropdownTypeSelect}
+                  options={typeOpts}
+                  onChange={({label, value}) =>
+                    editGroupTypeFn(groupIdx, value)
+                  }
+                />
+                <div style={styles.dropdownIconContainer}
+                     onClick={onToggle}>
                   <Icon name='arrow_drop_down'
                         style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
-                </span>
+                </div>
                 <div style={styles.clearfix}/>
               </h3>
             </div>
@@ -87,6 +103,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     editMoveGroupFn: (srcIdx, destIdx) =>
       dispatch(editMoveGroup(srcIdx, destIdx)),
     editGroupTitleFn: debounce((groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)), 500),
+    editGroupTypeFn: (groupIdx, type) => dispatch(editGroupType(groupIdx, type)),
   };
 };
 
@@ -123,7 +140,7 @@ const styles = styler`
     display: block
 
   sectionHeadingInput
-    width: 360px
+    width: 300px
     text-transform: inherit
     letter-spacing: inherit
     font-weight: inherit
@@ -153,6 +170,16 @@ const styles = styler`
     cursor: pointer
     padding: 2px 9px
 
+  dropdownTypeSelect
+    font-size: 16px
+    font-style: italic
+    font-weight: normal
+    text-transform: none
+    letter-spacing: 0
+    line-height: 27.5px
+    width: 80px
+    margin-left: 18px
+
   dropdownIconContainer 
     :hover
       color: rgba(217,52,35,1)
@@ -160,7 +187,7 @@ const styles = styler`
   dropdownIcon
     font-size: 24px
     line-height: 28.5px
-    margin-left: 3px
+    margin-left: 10px
     transition: transform 0.15s ease-in-out
 
     &normal

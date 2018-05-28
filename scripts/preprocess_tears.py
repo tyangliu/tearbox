@@ -143,6 +143,26 @@ def parse_tags(tags):
   return [normalize(s) for s in tags.split('!')]
 
 
+def make_value_tags(desc, tags, v, is_pct):
+  v_strs = [
+    ('{}' if isinstance(v, str) else '{0:g}').format(v)
+  ]
+
+  if is_pct:
+    v_strs.append(
+      ('{}%' if isinstance(v, str) else '{0:g}%').format(v)
+    )
+
+  result = []
+  for v_str in v_strs:
+    result += (
+      [' '.join([desc, v_str])] +
+      [' '.join([tag, v_str]) for tag in tags]
+    )
+
+  return result
+
+
 def generate_effects(
   vt_path=VT_PATH,
   b_path=B_PATH,
@@ -174,6 +194,7 @@ def generate_effects(
     tags = parse_tags(b_data[i][B_TAG])
 
     for desc, value, rarity in descs_with_values:
+      extra_tags = make_value_tags(desc, tags, value, False)
       b.append({
         'id': get_next_id(),
         'v_id': i,
@@ -181,7 +202,7 @@ def generate_effects(
         'value': value,
         'rarity_id': rarity,
         'type_id': TYPE_B,
-        'tags': tags,
+        'tags': tags + extra_tags,
       })
 
   # Destruction    {id, v_id (variant), name, value, rarity_id, type_id, char, class, tier, advancement, tags}
@@ -232,7 +253,16 @@ def generate_effects(
     x_piece = None if not p_data[i][P_EX] else piece_key_to_id[p_data[i][P_EX]]
     tags = parse_tags(p_data[i][P_TAG])
 
+
     for desc, value, rarity in descs_with_values:
+      extra_tags = make_value_tags(desc, tags, value, True)
+
+      if value == plus_e_desc['2e']:
+        extra_tags += two_plus_e_tags
+
+        for two_plus_e_tag in two_plus_e_tags:
+          extra_tags += make_value_tags(desc, tags, two_plus_e_tag, True)
+        
       p.append({
         'id': get_next_id(),
         'v_id': i,
@@ -241,7 +271,7 @@ def generate_effects(
         'rarity_id': rarity,
         'type_id': TYPE_P,
         'x_piece_id': x_piece,
-        'tags': tags if value != plus_e_desc['2e'] else tags + two_plus_e_tags,
+        'tags': tags + extra_tags,
       })
 
   # Transformation {id, v_id (variant), name, value, rarity_id, type_id, alt_value, value_is_pct, tags}
@@ -289,7 +319,7 @@ def generate_effects(
         'type_id': TYPE_T,
         'alt_value': alt_value,
         'value_is_pct': bool(is_pct),
-        'tags': tags,
+        'tags': tags + make_value_tags(desc, [], value, is_pct),
       })
 
   return b, d, p, t
