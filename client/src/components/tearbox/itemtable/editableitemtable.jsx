@@ -71,6 +71,10 @@ class EditableItemTable extends React.Component {
     searchItemEffectsFn(inputValue);
   };
 
+  focusNewItem = () => {
+    this.lastItemFirstSelect && this.lastItemFirstSelect.focus();
+  };
+
   handleAddItemClick = () => {
     const {groupIdx, editAddItemFn, isLast} = this.props;
     editAddItemFn(groupIdx);
@@ -78,8 +82,9 @@ class EditableItemTable extends React.Component {
     if (isLast) {
       scroll.scrollToBottom();
     }
+    // Focus the newly created item once it's rendered.
+    setTimeout(this.focusNewItem, 200);
   };
-
 
   handleAddItemKeyPress = event => {
     if (event.key != 'Enter') {
@@ -156,6 +161,11 @@ class EditableItemTable extends React.Component {
                             options={colorOpts}
                             onChange={({label, value}) =>
                               editItemFieldFn(tears, groupIdx, i, 'color_id', value)
+                            }
+                            getRef={
+                              (i === items.length - 1)
+                                ? e => {this.lastItemFirstSelect = e;}
+                                : undefined
                             }
                           />
                         </li>

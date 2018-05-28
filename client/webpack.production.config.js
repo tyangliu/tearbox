@@ -5,6 +5,7 @@ const path = require('path');
 const loaders = require('./webpack.loaders');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: [
@@ -33,6 +34,9 @@ module.exports = {
       compress: {
         warnings: false,
         screw_ie8: true,
+        unsafe: true,
+        pure_getters: true,
+        unsafe_comps: true,
         drop_console: true,
         drop_debugger: true,
       },
@@ -44,6 +48,7 @@ module.exports = {
         js: ['bundle.js'],
       },
     }),
+    new BundleAnalyzerPlugin(),
   ],
 };
 

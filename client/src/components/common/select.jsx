@@ -14,7 +14,7 @@ export default class SelectBox extends React.Component {
   };
 
   render() {
-    const {style, useAsync, ...rest} = this.props;
+    const {style, useAsync, getRef, ...rest} = this.props;
     const SelectComponent = useAsync ? AsyncSelect : Select;
     return (
       <div style={[styles.selectContainer, style]}>
@@ -25,6 +25,7 @@ export default class SelectBox extends React.Component {
               <Icon name='arrow_drop_down' style={styles.dropdownIcon}/>
             ),
           }}
+          ref={getRef}
           {...rest}
         />
       </div>

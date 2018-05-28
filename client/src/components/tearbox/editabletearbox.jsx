@@ -26,11 +26,17 @@ import {
 
 @Radium
 class EditableTearbox extends React.Component {
+  focusNewGroup = () => {
+    this.lastItemFirstInput && this.lastItemFirstInput.focus();
+  };
+
   handleAddGroupClick = () => {
     const {editAddGroupFn} = this.props;
     editAddGroupFn();
     this.addGroupEl.blur();
     scroll.scrollToBottom();
+    // Focus the newly created group once it's rendered.
+    setTimeout(this.focusNewGroup, 200);
   };
 
   handleAddGroupKeyPress = event => {
@@ -89,6 +95,11 @@ class EditableTearbox extends React.Component {
                               type={group.type}
                               groupIdx={i}
                               provided={provided}
+                              getRef={
+                                (i === box.groups.length - 1)
+                                  ? e => {this.lastItemFirstInput = e;}
+                                  : undefined
+                              }
                               visible={groupVisibilities[i]}
                               onToggle={() => toggleGroupFn(i)}
                             >

@@ -34,6 +34,7 @@ class EditableSection extends React.Component {
       type,
       visible,
       groupIdx,
+      getRef,
 
       editDeleteGroupFn,
       editGroupTitleFn,
@@ -53,12 +54,15 @@ class EditableSection extends React.Component {
               </div>
               <h3 style={styles.sectionHeading}
                   key={`sectionHeading_${title}`}>
-                <input type='text'
-                       maxLength={24}
-                       defaultValue={title}
-                       placeholder={'Section Title'}
-                       style={styles.sectionHeadingInput}
-                       onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
+                <input
+                  type='text'
+                  maxLength={24}
+                  defaultValue={title}
+                  placeholder={'Section Title'}
+                  style={styles.sectionHeadingInput}
+                  onChange={e => editGroupTitleFn(groupIdx, e.target.value)}
+                  ref={getRef}
+                />
                 <SelectBox
                   value={{value: type.id, label: type.label}}
                   style={styles.dropdownTypeSelect}
@@ -67,17 +71,23 @@ class EditableSection extends React.Component {
                     editGroupTypeFn(groupIdx, value)
                   }
                 />
-                <div style={styles.dropdownIconContainer}
-                     onClick={onToggle}>
+                <div
+                  style={styles.dropdownIconContainer}
+                  tabIndex={-1}
+                  onClick={onToggle}
+                >
                   <Icon name='arrow_drop_down'
                         style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
                 </div>
                 <div style={styles.clearfix}/>
               </h3>
             </div>
-            <Button icon='delete'
-                    style={styles.deleteButton}
-                    onClick={() => editDeleteGroupFn(groupIdx)}>
+            <Button
+              icon='delete'
+              style={styles.deleteButton}
+              tabIndex={-1}
+              onClick={() => editDeleteGroupFn(groupIdx)}
+            >
               Delete Section
             </Button>
             <div style={styles.clearfix}/>

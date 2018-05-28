@@ -9,13 +9,17 @@ import Icon from './icon';
 export default class Button extends React.Component {
   static defaultProps = {
     isSubmit: false,
+    tabIndex: 0,
   };
 
   render() {
-    const {icon, onClick, style, isSubmit} = this.props;
+    const {icon, onClick, style, isSubmit, tabIndex} = this.props;
     return (
-      <button style={[styles.button[isSubmit ? 'submit' : 'normal'], style]}
-              onClick={onClick}>
+      <button
+        style={[styles.button[isSubmit ? 'submit' : 'normal'], style]}
+        onClick={onClick}
+        tabIndex={tabIndex}
+      >
         {icon ? <Icon name={icon} style={styles.icon}/> : null}
         <span style={styles.buttonText}>
           {this.props.children}
