@@ -164,10 +164,12 @@ const styles = styler`
     position: relative
     
     &show
+      pointer-events: auto
       height: auto
       opacity: 1
 
     &hide
+      pointer-events: none
       height: 0
       opacity: 0
 
