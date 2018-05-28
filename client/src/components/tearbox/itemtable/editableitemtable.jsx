@@ -3,7 +3,7 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 import debounce from 'lodash.debounce';
-import {createFilter} from 'react-select';
+import {Droppable, Draggable} from 'react-beautiful-dnd';
 
 import TearIcon from './tearicon';
 import {Icon, SelectBox} from '../../common';
@@ -17,7 +17,7 @@ import {
 } from '../../../redux/actions';
 
 const white = 'rgba(255,255,255,1)';
-const grey = 'rgba(55,67,79,0.06)';
+const grey = 'rgba(243,244,245,1)';
 
 const headers = [
   {key: 'drag', text: ''},
@@ -126,88 +126,103 @@ class EditableItemTable extends React.Component {
           })}
         </ul>
         <div style={styles.clearfix}/>
-        <ul style={[styles.itemEntries]}>
-          {items.map((item, i) => 
-            <li style={styles.itemEntry} key={i}>
-              <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
-                <li style={[styles.itemCol0]}>
-                 <Icon style={styles.dragIcon} name='drag_indicator'/>
-                </li>
-                <li style={[styles.itemCol1]}>
-                  <TearIcon item={item} style={styles.tearIcon}/>
-                </li>
-                <li style={[styles.itemCol2]}>
-                  <SelectBox
-                    value={{label: item.color.name, value: item.color.id}}
-                    options={colorOpts}
-                    onChange={({label, value}) =>
-                      editItemFieldFn(tears, groupIdx, i, 'color_id', value)
-                    }
-                  />
-                </li>
-                <li style={[styles.itemCol3]}>
-                  <SelectBox
-                    value={{label: item.effect.name, value: item.effect.id}}
-                    options={effectOpts}
-                    onChange={({label, value}) => 
-                      editItemFieldFn(tears, groupIdx, i, 'effect_id', value)
-                    }
-                    onInputChange={this.handleEffectsInputChange}
-                    filterOption={(opt, v) => true}
-                    noOptionsMessage={() => 'Search effects'}
-                  />
-                </li>
-                <li style={[styles.itemCol4]}>
-                  <SelectBox
-                    value={{label: item.piece.name, value: item.piece.id}}
-                    options={pieceOpts}
-                    onChange={({label, value}) =>
-                      editItemFieldFn(tears, groupIdx, i, 'piece_id', value)
-                    }
-                    filterOption={(opt, v) =>
-                      item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
-                    }
-                  />
-                </li>
-                <li style={[styles.itemCol5]}>
-                  <span style={styles.itemText}>
-                    {item.type.name || ''}
-                  </span>
-                </li>
-                <li style={[styles.itemCol6]}>
-                  <span style={styles.itemText}>
-                    {item.rarity.name || ''}
-                  </span>
-                </li>
-                <li style={[styles.itemCol7]}>
-                  <input
-                    type='text'
-                    style={styles.noteInput}
-                    maxLength={80}
-                    placeholder=''
-                    defaultValue={item.note}
-                    onChange={e =>
-                      debouncedEditItemFieldFn(tears, groupIdx, i, 'note', e.target.value)
-                    }/>
-                </li>
-                <li style={[styles.itemCol8]}>
-                  <div onClick={() => editDeleteItemFn(groupIdx, i)}>
-                    <Icon style={styles.closeIcon} name='close'/>
-                  </div>
-                </li>
-              </ul>
-            </li>
+        <Droppable
+          droppableId={`itemTableDroppable_${groupIdx}`}
+          type={`ITEM_${groupIdx}`}
+        >
+          {(provided, snapshot) => (
+            <ul style={[styles.itemEntries]} ref={provided.innerRef}>
+              {items.map((item, i) => 
+                <Draggable key={i} draggableId={`itemDraggable_${groupIdx}_${i}`} index={i}>
+                  {(provided, snapshot) => (
+                    <li style={styles.itemEntry} key={i} {...provided.draggableProps} ref={provided.innerRef}>
+                      <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
+                        <li style={[styles.itemCol0]} {...provided.dragHandleProps}>
+                         <Icon style={styles.dragIcon}
+                               name='drag_indicator'
+                               />
+                        </li>
+                        <li style={[styles.itemCol1]}>
+                          <TearIcon item={item} style={styles.tearIcon}/>
+                        </li>
+                        <li style={[styles.itemCol2]}>
+                          <SelectBox
+                            value={{label: item.color.name, value: item.color.id}}
+                            options={colorOpts}
+                            onChange={({label, value}) =>
+                              editItemFieldFn(tears, groupIdx, i, 'color_id', value)
+                            }
+                          />
+                        </li>
+                        <li style={[styles.itemCol3]}>
+                          <SelectBox
+                            value={{label: item.effect.name, value: item.effect.id}}
+                            options={effectOpts}
+                            onChange={({label, value}) => 
+                              editItemFieldFn(tears, groupIdx, i, 'effect_id', value)
+                            }
+                            onInputChange={this.handleEffectsInputChange}
+                            filterOption={(opt, v) => true}
+                            noOptionsMessage={() => 'Search effects'}
+                          />
+                        </li>
+                        <li style={[styles.itemCol4]}>
+                          <SelectBox
+                            value={{label: item.piece.name, value: item.piece.id}}
+                            options={pieceOpts}
+                            onChange={({label, value}) =>
+                              editItemFieldFn(tears, groupIdx, i, 'piece_id', value)
+                            }
+                            filterOption={(opt, v) =>
+                              item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
+                            }
+                          />
+                        </li>
+                        <li style={[styles.itemCol5]}>
+                          <span style={styles.itemText}>
+                            {item.type.name || ''}
+                          </span>
+                        </li>
+                        <li style={[styles.itemCol6]}>
+                          <span style={styles.itemText}>
+                            {item.rarity.name || ''}
+                          </span>
+                        </li>
+                        <li style={[styles.itemCol7]}>
+                          <input
+                            type='text'
+                            style={styles.noteInput}
+                            maxLength={80}
+                            placeholder=''
+                            defaultValue={item.note}
+                            onChange={e =>
+                              debouncedEditItemFieldFn(tears, groupIdx, i, 'note', e.target.value)
+                            }/>
+                        </li>
+                        <li style={[styles.itemCol8]}>
+                          <div onClick={() => editDeleteItemFn(groupIdx, i)}>
+                            <Icon style={styles.closeIcon} name='close'/>
+                          </div>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
+                </Draggable>
+              )}
+            </ul>
           )}
-          <li style={styles.addItem}
-              key={`addItemButton_${groupIdx}`}
-              tabIndex={0}
-              onClick={this.handleAddItemClick}
-              onKeyPress={this.handleAddItemKeyPress}
-              ref={e => {this.addItemEl = e}}>
-            <Icon style={styles.addIcon} name='add'/>
-            <span style={styles.addItemText}>Add Item</span>
-          </li>
-        </ul>
+        </Droppable>
+              <div
+                style={styles.addItem}
+                key={`addItemButton_${groupIdx}`}
+                tabIndex={0}
+                onClick={this.handleAddItemClick}
+                onKeyPress={this.handleAddItemKeyPress}
+                ref={e => {this.addItemEl = e}}
+              >
+                <Icon style={styles.addIcon} name='add'/>
+                <span style={styles.addItemText}>Add Item</span>
+              </div>
       </div>
     );
   }
@@ -339,7 +354,6 @@ const styles = styler`
   dragIcon
     color: rgba(55,67,79,0.3)
     line-height: 30px
-    cursor: move
 
     :hover
       color: rgba(55,67,79,0.6)

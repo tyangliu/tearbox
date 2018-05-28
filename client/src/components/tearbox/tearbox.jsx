@@ -165,7 +165,7 @@ const styles = styler`
     flex: 1
 
   right
-    padding: 118px 0 0 0
+    padding: 103px 0 15px 0
     flex: 1
     order: 2
 

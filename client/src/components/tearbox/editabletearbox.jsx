@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import {EditableHeader} from './header';
 import {Icon} from '../common';
@@ -18,6 +19,8 @@ import {
   toggleGroup,
 
   editAddGroup,
+
+  endDrag,
 } from '../../redux/actions';
 
 @Radium
@@ -47,9 +50,13 @@ class EditableTearbox extends React.Component {
       box,
       groupVisibilities,
       toggleGroupFn,
+      endDragFn,
     } = this.props;
 
     return (
+      <DragDropContext
+        onDragEnd={endDragFn}
+      >
         <div style={styles.tearbox}>
           <div style={styles.tearboxContainer}>
             <div style={styles.headerContainer}>
@@ -66,16 +73,32 @@ class EditableTearbox extends React.Component {
               </div>
 
               <div style={styles.right}>
-                {(box.groups || []).map((group, i) => 
-                  <EditableSection title={group.label}
-                           key={i}
-                           groupIdx={i}
-                           visible={groupVisibilities[i]}
-                           onToggle={() => toggleGroupFn(i)}>
-                    <EditableItemTable items={group.items} groupIdx={i}/>
-                  </EditableSection>
-                )}
+                <Droppable
+                  droppableId='itemGroupDroppable'
+                  type='GROUP'
+                >
+                  {(provided, snapshot) => (
+                    <div style={styles.rightInner} ref={provided.innerRef}>
+                      {(box.groups || []).map((group, i) => 
+                        <Draggable key={i} draggableId={`groupDraggable_${i}`} index={i}>
+                          {(provided, snapshot) => (
+                            <EditableSection
+                              title={group.label}
+                              groupIdx={i}
+                              provided={provided}
+                              visible={groupVisibilities[i]}
+                              onToggle={() => toggleGroupFn(i)}
+                            >
+                              <EditableItemTable items={group.items} groupIdx={i}/>
+                            </EditableSection>
+                          )}
+                        </Draggable>
+                      )}
+                    </div>
+                  )}
+                </Droppable>
                 <div style={styles.addSection}
+                     key='addGroupButton'
                      tabIndex={0}
                      onClick={this.handleAddGroupClick}
                      onKeyPress={this.handleAddGroupKeyPress}
@@ -84,10 +107,10 @@ class EditableTearbox extends React.Component {
                   <span style={styles.addSectionText}>Add Section</span>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
+      </DragDropContext>
     );
   }
 }
@@ -108,6 +131,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
 
     editAddGroupFn: () => dispatch(editAddGroup()),
+    endDragFn: result => dispatch(endDrag(result)),
   };
 };
 
@@ -166,7 +190,7 @@ const styles = styler`
     flex: 1
 
   right
-    padding: 118px 0 0 0
+    padding: 103px 0 15px 0
     flex: 1
     order: 2
 

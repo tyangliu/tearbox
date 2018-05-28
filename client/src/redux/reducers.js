@@ -50,6 +50,8 @@ import {
 
   EDIT_ITEM_FIELD,
   SEARCH_ITEM_EFFECTS,
+
+  END_DRAG,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -291,6 +293,38 @@ function box(state = boxState, action) {
         state,
         action,
       ); 
+
+    case END_DRAG:
+      if (!action.result.destination) {
+        return state;
+      };
+
+      const [draggableType, groupIdx] = action.result.type.split('_');
+      const dragSrcIdx = action.result.source.index;
+      const dragDestIdx = action.result.destination.index;
+
+      switch (draggableType) {
+        case 'ITEM': 
+          const itemMoveTarget = state
+            .stagingData
+            .groups[groupIdx]
+            .items[dragSrcIdx];
+          return update(state, {stagingData: {
+            groups: {[groupIdx]: {
+              items: {$splice: [[dragSrcIdx,1], [dragDestIdx,0,itemMoveTarget]]},
+            }},
+          }});
+        case 'GROUP':
+          const groupMoveTarget = state
+            .stagingData
+            .groups[dragSrcIdx];
+          const updateState = update(state, {stagingData: {
+            groups: {$splice: [[dragSrcIdx,1], [dragDestIdx,0,groupMoveTarget]]},
+          }});
+          return updateState;
+        default:
+          return state;
+      }
     default:
       return state;
   }
@@ -336,14 +370,29 @@ function ui(state = uiState, action) {
         return state;
       }
 
-      return {
-        ...state,
-        groupVisibilities: [
-          ...groupVisibilities.slice(0, idx),
-          !groupVisibilities[idx],
-          ...groupVisibilities.slice(idx+1),
-        ],
+      return update(state, {
+        groupVisibilities: {[idx]: {$set: !groupVisibilities[idx]}}
+      });
+    case END_DRAG:
+      if (!action.result.destination) {
+        return state;
       };
+
+      const [draggableType, groupIdx] = action.result.type.split('_');
+      const dragSrcIdx = action.result.source.index;
+      const dragDestIdx = action.result.destination.index;
+
+      switch (draggableType) {
+        case 'GROUP':
+          return update(state, {
+            groupVisibilities: {
+              [dragSrcIdx]: {$set: state.groupVisibilities[dragDestIdx]},
+              [dragDestIdx]: {$set: state.groupVisibilities[dragSrcIdx]},
+            },
+          });
+        default:
+          return state;
+      }
     case SET_COPIED:
       return {
         ...state,

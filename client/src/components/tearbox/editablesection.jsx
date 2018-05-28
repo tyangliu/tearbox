@@ -15,12 +15,14 @@ import {
 @Radium
 class EditableSection extends React.Component {
   static defaultProps = {
+    provided: {},
     visible: true,
     onToggle: () => {},
   };
 
   render() {
     const {
+      provided,
       onToggle,
       title,
       visible,
@@ -31,35 +33,43 @@ class EditableSection extends React.Component {
     } = this.props;
 
     return (
-      <section style={styles.section}>
-        <div style={styles.sectionHeadingContainer}>
-          <div style={styles.sectionHeadingLeft}>
-            <Icon style={styles.dragIcon} name='drag_indicator'/>
-            <h3 style={styles.sectionHeading}
-                key={`sectionHeading_${title}`}>
-              <input type='text'
-                     maxLength={24}
-                     defaultValue={title}
-                     placeholder='e.g. Selling, Buying, &hellip;'
-                     style={styles.sectionHeadingInput}
-                     onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
-              <span style={styles.dropdownIconContainer}
-                    onClick={onToggle}>
-                <Icon name='arrow_drop_down'
-                      style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
-              </span>
-              <div style={styles.clearfix}/>
-            </h3>
+      <section
+        key={`section_${groupIdx}`}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+      >
+        <div style={styles.sectionContainer}>
+          <div style={styles.sectionHeadingContainer}>
+            <div style={styles.sectionHeadingLeft}>
+              <div {...(provided.dragHandleProps || {})}>
+                <Icon style={styles.dragIcon} name='drag_indicator'/>
+              </div>
+              <h3 style={styles.sectionHeading}
+                  key={`sectionHeading_${title}`}>
+                <input type='text'
+                       maxLength={24}
+                       defaultValue={title}
+                       placeholder='e.g. Selling, Buying, &hellip;'
+                       style={styles.sectionHeadingInput}
+                       onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
+                <span style={styles.dropdownIconContainer}
+                      onClick={onToggle}>
+                  <Icon name='arrow_drop_down'
+                        style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
+                </span>
+                <div style={styles.clearfix}/>
+              </h3>
+            </div>
+            <Button icon='delete'
+                    style={styles.deleteButton}
+                    onClick={() => editDeleteGroupFn(groupIdx)}>
+              Delete Section
+            </Button>
+            <div style={styles.clearfix}/>
           </div>
-          <Button icon='delete'
-                  style={styles.deleteButton}
-                  onClick={() => editDeleteGroupFn(groupIdx)}>
-            Delete Section
-          </Button>
-          <div style={styles.clearfix}/>
-        </div>
-        <div style={styles.collapsableContainer[visible ? 'show' : 'hide']}>
-          {this.props.children}
+          <div style={styles.collapsableContainer[visible ? 'show' : 'hide']}>
+            {this.props.children}
+          </div>
         </div>
       </section>
     );
@@ -86,8 +96,9 @@ export default connect(
 )(EditableSection);
 
 const styles = styler`
-  section
-    margin-bottom: 30px
+  sectionContainer
+    background: rgba(255,255,255,1)
+    padding: 15px 0
 
   sectionHeadingLeft
     float: left
@@ -127,7 +138,6 @@ const styles = styler`
   dragIcon
     line-height: 28.5px
     color: rgba(55,67,79,0.3)
-    cursor: move
     margin-right: 6px
 
     :hover
@@ -146,7 +156,6 @@ const styles = styler`
   dropdownIconContainer 
     :hover
       color: rgba(217,52,35,1)
-
 
   dropdownIcon
     font-size: 24px

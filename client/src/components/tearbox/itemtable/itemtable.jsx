@@ -8,7 +8,7 @@ import TearIcon from './tearicon';
 import {Icon} from '../../common';
 
 const white = 'rgba(255,255,255,1)';
-const grey = 'rgba(55,67,79,0.06)';
+const grey = 'rgba(243,244,245,1)';
 
 import {toggleSort} from '../../../redux/actions';
 

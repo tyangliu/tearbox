@@ -50,6 +50,8 @@ export const EDIT_GROUP_TITLE = 'EDIT_GROUP_TITLE';
 export const EDIT_ITEM_FIELD = 'EDIT_ITEM_FIELD';
 export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
 
+export const END_DRAG = 'END_DRAG';
+
 const url = 'http://127.0.0.1:8000';
 const dataPath = '';
 
@@ -250,6 +252,13 @@ export function searchItemEffects(searchTerm) {
     searchTerm,
   };
 }
+
+export function endDrag(result) {
+  return {
+    type: END_DRAG,
+    result,
+  };
+};
 
 const mockBox = {
   id: 'abc',

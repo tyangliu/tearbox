@@ -42,7 +42,7 @@ export default class Section extends React.Component {
 
 const styles = styler`
   section
-    margin-bottom: 30px
+    padding: 15px 0
 
   sectionHeadingLeft
     float: left
