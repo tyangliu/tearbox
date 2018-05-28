@@ -139,7 +139,7 @@ class EditableItemTable extends React.Component {
                   {(provided, snapshot) => (
                     <li style={styles.itemEntry} key={i} {...provided.draggableProps} ref={provided.innerRef}>
                       <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
-                        <li style={[styles.itemCol0]} {...provided.dragHandleProps}>
+                        <li style={[styles.itemCol0]} {...provided.dragHandleProps} tabIndex={-1}>
                          <Icon style={styles.dragIcon}
                                name='drag_indicator'
                                />

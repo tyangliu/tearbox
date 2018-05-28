@@ -48,7 +48,7 @@ class EditableSection extends React.Component {
         <div style={styles.sectionContainer}>
           <div style={styles.sectionHeadingContainer}>
             <div style={styles.sectionHeadingLeft}>
-              <div {...(provided.dragHandleProps || {})}>
+              <div {...(provided.dragHandleProps || {})} tabIndex={-1}>
                 <Icon style={styles.dragIcon} name='drag_indicator'/>
               </div>
               <h3 style={styles.sectionHeading}
@@ -56,7 +56,7 @@ class EditableSection extends React.Component {
                 <input type='text'
                        maxLength={24}
                        defaultValue={title}
-                       placeholder='Title'
+                       placeholder={'Section Title'}
                        style={styles.sectionHeadingInput}
                        onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
                 <SelectBox
@@ -155,13 +155,13 @@ const styles = styler`
     line-height: 28.5px
     color: rgba(55,67,79,0.3)
     margin-right: 6px
+    outline: none 
 
     :hover
       color: rgba(55,67,79,0.6)
 
     :active
       color: rgba(55,67,79,1)
-      
 
   deleteButton
     float: right
