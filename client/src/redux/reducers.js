@@ -160,6 +160,7 @@ const makeEmptyItem = () => ({
 const makeEmptyGroup = () => ({
   id: null,
   label: '',
+  type: groupTypes[0],
   items: [],
 });
 
@@ -398,8 +399,7 @@ function ui(state = uiState, action) {
         case 'GROUP':
           return update(state, {
             groupVisibilities: {
-              [dragSrcIdx]: {$set: state.groupVisibilities[dragDestIdx]},
-              [dragDestIdx]: {$set: state.groupVisibilities[dragSrcIdx]},
+              $splice: [[dragSrcIdx,1], [dragDestIdx,0,state.groupVisibilities[dragSrcIdx]]]
             },
           });
         default:

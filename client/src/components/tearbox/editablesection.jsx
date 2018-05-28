@@ -39,7 +39,6 @@ class EditableSection extends React.Component {
       editGroupTitleFn,
       editGroupTypeFn,
     } = this.props;
-
     return (
       <section
         key={`section_${groupIdx}`}
