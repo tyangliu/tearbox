@@ -65,69 +65,70 @@ class EditableTearbox extends React.Component {
       <DragDropContext
         onDragEnd={endDragFn}
       >
-        <div style={styles.tearbox}>
-          <div style={styles.tearboxContainer}>
-            <div style={styles.headerContainer}>
-              <EditableHeader/>
-            </div>
-            <div style={styles.container}>
-              <div style={styles.left}>
-                <div style={styles.mainLeftContent}>
-                  <div style={styles.leftTop}>
-                    <InfoBox/>
+          <div style={styles.tearbox}>
+            <div style={styles.tearboxContainer}>
+              <div style={styles.headerContainer}>
+                <EditableHeader/>
+              </div>
+              <div style={styles.container}>
+                <div style={styles.left}>
+                  <div style={styles.mainLeftContent}>
+                    <div style={styles.leftTop}>
+                      <InfoBox/>
+                    </div>
                   </div>
                   <Footer/>
                 </div>
-              </div>
 
-              <div style={styles.right}>
-                <Droppable
-                  droppableId='itemGroupDroppable'
-                  type='GROUP'
-                >
-                  {(provided, snapshot) => (
-                    <div style={styles.rightInner} ref={provided.innerRef}>
-                      {(box.groups || []).map((group, i) => 
-                        <Draggable key={i} draggableId={`groupDraggable_${i}`} index={i}>
-                          {(provided, snapshot) => (
-                            <EditableSection
-                              title={group.label}
-                              type={group.type}
-                              groupIdx={i}
-                              provided={provided}
-                              getRef={
-                                (i === box.groups.length - 1)
-                                  ? e => {this.lastItemFirstInput = e;}
-                                  : undefined
-                              }
-                              visible={groupVisibilities[i]}
-                              onToggle={() => toggleGroupFn(i)}
-                            >
-                              <EditableItemTable
-                                items={group.items}
+                <div style={styles.right}>
+                  <Droppable
+                    droppableId='itemGroupDroppable'
+                    type='GROUP'
+                  >
+                    {(provided, snapshot) => (
+                      <div style={styles.rightInner} ref={provided.innerRef}>
+                        {(box.groups || []).map((group, i) =>
+                          <Draggable key={i} draggableId={`groupDraggable_${i}`} index={i}>
+                            {(provided, snapshot) => (
+                              <EditableSection
+                                title={group.label}
+                                type={group.type}
                                 groupIdx={i}
-                                isLast={i == box.groups.length -1}
-                              />
-                            </EditableSection>
-                          )}
-                        </Draggable>
-                      )}
-                    </div>
-                  )}
-                </Droppable>
-                <div style={styles.addSection}
-                     key='addGroupButton'
-                     tabIndex={0}
-                     onClick={this.handleAddGroupClick}
-                     onKeyPress={this.handleAddGroupKeyPress}
-                     ref={e => {this.addGroupEl = e}}>
-                  <Icon style={styles.addIcon} name='create_new_folder'/>
-                  <span style={styles.addSectionText}>Add Section</span>
+                                provided={provided}
+                                getRef={
+                                  (i === box.groups.length - 1)
+                                    ? e => {this.lastItemFirstInput = e;}
+                                    : undefined
+                                }
+                                visible={groupVisibilities[i]}
+                                onToggle={() => toggleGroupFn(i)}
+                              >
+                                <EditableItemTable
+                                  items={group.items}
+                                  groupIdx={i}
+                                  isLast={i == box.groups.length -1}
+                                />
+                              </EditableSection>
+                            )}
+                          </Draggable>
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                  <div style={styles.addSection}
+                       key='addGroupButton'
+                       tabIndex={0}
+                       onClick={this.handleAddGroupClick}
+                       onKeyPress={this.handleAddGroupKeyPress}
+                       ref={e => {this.addGroupEl = e}}>
+                    <Icon style={styles.addIcon} name='create_new_folder'/>
+                    <span style={styles.addSectionText}>Add Section</span>
+                  </div>
                 </div>
+                <div style={styles.clearfix}/>
               </div>
             </div>
           </div>
-        </div>
       </DragDropContext>
     );
   }
@@ -171,46 +172,40 @@ const styles = styler`
   tearboxContainer
     width: 100%
     max-width: 1600px
+    display: flex
+    flex-direction: column
+    flex: 1
+
+  headerContainer
+    position: sticky
+    top: 0
+    z-index: 2
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.9) 80%,rgba(255,255,255,0) 100%)
 
   container
     padding: 0 30px
-    height: 100vh
-    display: flex
-    flex-direction: row
-    flex-wrap: nowrap
-    justify-content: flex-start
-    align-items: stretch
-
-  headerContainer
-    position: fixed
-    max-width: 1600px
-    min-width: 1020px
-    width: 100%
-    padding: 0 30px
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%)
-    z-index: 1
 
   left
-    min-height: 100%
-    min-width: 270px
+    background: rgba(255,255,255,1)
+    float: left
+    flex-direction: column
+    width: 270px
     margin: 0 30px 0 0
+    position: sticky
+    top: 103px
+    z-index: 1
 
   mainLeftContent
     flex: 1
-    min-height: 100%
-    display: flex
-    flex-direction: column
-    padding: 113px 0 0 0
-    position: fixed
 
   leftTop
+    padding: 10px 0
     min-width: 270px
     flex: 1
 
   right
-    padding: 103px 0 15px 0
-    flex: 1
-    order: 2
+    background: rgba(255,255,255,1)
+    overflow: hidden
 
   button
     width: 100%

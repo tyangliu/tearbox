@@ -6,8 +6,9 @@ import styler from 'react-styling';
 @Radium
 export default class Footer extends React.Component {
   render() {
+    const {style} = this.props;
     return (
-        <div style={styles.footer}>
+        <div style={[styles.footer, style]}>
           <p style={styles.siteDescription}>
             <span style={styles.em}>tearbox</span> helps you create & share El Tear lists.
           </p>

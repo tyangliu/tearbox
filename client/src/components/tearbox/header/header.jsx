@@ -51,7 +51,7 @@ const styles = styler`
     flex-wrap: wrap
     justify-content: flex-start
     align-items: stretch
-    padding: 10px 0
+    padding: 10px 30px 0
 
   left
     min-width: 270px

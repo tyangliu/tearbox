@@ -95,6 +95,7 @@ class Tearbox extends React.Component {
                 </Section>
               )}
             </div>
+            <div style={styles.clearfix}/>
           </div>
         </div>
         <NewBoxModal/>
@@ -142,46 +143,40 @@ const styles = styler`
   tearboxContainer
     width: 100%
     max-width: 1600px
+    display: flex
+    flex-direction: column
+    flex: 1
+
+  headerContainer
+    position: sticky
+    top: 0
+    z-index: 2
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.9) 80%,rgba(255,255,255,0) 100%)
 
   container
     padding: 0 30px
-    height: 100vh
-    display: flex
-    flex-direction: row
-    flex-wrap: nowrap
-    justify-content: flex-start
-    align-items: stretch
-
-  headerContainer
-    position: fixed
-    max-width: 1600px
-    min-width: 1020px
-    width: 100%
-    padding: 0 30px
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%)
-    z-index: 1
 
   left
-    min-height: 100%
-    min-width: 270px
+    background: rgba(255,255,255,1)
+    float: left
+    flex-direction: column
+    width: 270px
     margin: 0 30px 0 0
+    position: sticky
+    top: 103px
+    z-index: 1
 
   mainLeftContent
     flex: 1
-    min-height: 100%
-    display: flex
-    flex-direction: column
-    padding: 113px 0 0 0
-    position: fixed
 
   leftTop
+    padding: 10px 0
     min-width: 270px
     flex: 1
 
   right
-    padding: 103px 0 15px 0
-    flex: 1
-    order: 2
+    background: rgba(255,255,255,1)
+    overflow: hidden
 
   button
     width: 100%
