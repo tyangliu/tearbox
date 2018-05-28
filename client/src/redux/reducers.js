@@ -232,9 +232,21 @@ function box(state = boxState, action) {
       return updateOptions(state, {...options, filter: filterUnselectAll});
 
     case EDIT_ADD_ITEM: 
+      const emptyItem = makeEmptyItem();
+      const len = (state.stagingData.groups && state.stagingData.groups[action.groupIdx].items)
+        ? state.stagingData.groups[action.groupIdx].items.length
+        : 0;
+      if (len) {
+        // Copy previous color for convenience
+        const lastItem = state.stagingData.groups[action.groupIdx].items[len-1];
+        emptyItem.color_id = lastItem.color_id;
+        emptyItem.color = {
+          ...lastItem.color,
+        };
+      }
       return update(state, {stagingData: {
         groups: {[action.groupIdx]: {
-          items: {$push:[makeEmptyItem()]},
+          items: {$push:[emptyItem]},
         }},
       }});
     case EDIT_DELETE_ITEM:
