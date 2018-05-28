@@ -42,6 +42,10 @@ plus_e_desc = {
   '2e': '[2 +Enhancement Stats]',
 }
 
+two_plus_e_tags = [
+  '2+enhance', '2+e', '+enhance', '2e', 'enh+2', 'enhance+2'
+]
+
 COLOR_R = 0
 COLOR_B = 1
 COLOR_P = 2
@@ -58,8 +62,6 @@ TYPE_T = 3
 
 RARITY_E = 0
 RARITY_U = 1
-
-plus_e_tags = ['enhance', '+e', 'enh', '+enh']
 
 piece_key_to_id = {
   't': 0,
@@ -239,7 +241,7 @@ def generate_effects(
         'rarity_id': rarity,
         'type_id': TYPE_P,
         'x_piece_id': x_piece,
-        'tags': tags,
+        'tags': tags if value != plus_e_desc['2e'] else tags + two_plus_e_tags,
       })
 
   # Transformation {id, v_id (variant), name, value, rarity_id, type_id, alt_value, value_is_pct, tags}
