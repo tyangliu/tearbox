@@ -386,6 +386,12 @@ function ui(state = uiState, action) {
       return update(state, {
         groupVisibilities: {[idx]: {$set: !groupVisibilities[idx]}}
       });
+    case EDIT_DELETE_GROUP:
+      return update(state, {
+        groupVisibilities: {
+          $splice: [[action.groupIdx,1]],
+        },
+      });
     case END_DRAG:
       if (!action.result.destination) {
         return state;

@@ -190,6 +190,7 @@ const styles = styler`
     margin-left: 18px
 
   dropdownIconContainer 
+    outline: none
     :hover
       color: rgba(217,52,35,1)
 
