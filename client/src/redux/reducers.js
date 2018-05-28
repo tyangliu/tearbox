@@ -151,7 +151,7 @@ const makeEmptyItem = () => ({
 
 const makeEmptyGroup = () => ({
   id: null,
-  label: 'Title',
+  label: '',
   items: [],
 });
 

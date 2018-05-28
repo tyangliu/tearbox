@@ -142,6 +142,7 @@ const styles = styler`
   headerContainer
     position: fixed
     max-width: 1600px
+    min-width: 1020px
     width: 100%
     padding: 0 30px
     background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%)

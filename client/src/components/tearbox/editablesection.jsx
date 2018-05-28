@@ -40,6 +40,7 @@ class EditableSection extends React.Component {
               <input type='text'
                      maxLength={24}
                      defaultValue={title}
+                     placeholder='e.g. Selling, Buying, &hellip;'
                      style={styles.sectionHeadingInput}
                      onChange={e => editGroupTitleFn(groupIdx, e.target.value)}/>
               <span style={styles.dropdownIconContainer}
