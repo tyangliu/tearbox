@@ -72,10 +72,12 @@ class EditableItemTable extends React.Component {
   };
 
   handleAddItemClick = () => {
-    const {groupIdx, editAddItemFn} = this.props;
+    const {groupIdx, editAddItemFn, isLast} = this.props;
     editAddItemFn(groupIdx);
     this.addItemEl.blur();
-    scroll.scrollToBottom();
+    if (isLast) {
+      scroll.scrollToBottom();
+    }
   };
 
 
@@ -217,17 +219,18 @@ class EditableItemTable extends React.Component {
             </ul>
           )}
         </Droppable>
-              <div
-                style={styles.addItem}
-                key={`addItemButton_${groupIdx}`}
-                tabIndex={0}
-                onClick={this.handleAddItemClick}
-                onKeyPress={this.handleAddItemKeyPress}
-                ref={e => {this.addItemEl = e}}
-              >
-                <Icon style={styles.addIcon} name='add'/>
-                <span style={styles.addItemText}>Add Item</span>
-              </div>
+        <div
+          name={`addItemButton_${groupIdx}`}
+          style={styles.addItem}
+          key={`addItemButton_${groupIdx}`}
+          tabIndex={0}
+          onClick={this.handleAddItemClick}
+          onKeyPress={this.handleAddItemKeyPress}
+          ref={e => {this.addItemEl = e}}
+        >
+          <Icon style={styles.addIcon} name='add'/>
+          <span style={styles.addItemText}>Add Item</span>
+        </div>
       </div>
     );
   }

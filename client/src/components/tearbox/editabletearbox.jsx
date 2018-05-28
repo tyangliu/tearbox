@@ -92,7 +92,11 @@ class EditableTearbox extends React.Component {
                               visible={groupVisibilities[i]}
                               onToggle={() => toggleGroupFn(i)}
                             >
-                              <EditableItemTable items={group.items} groupIdx={i}/>
+                              <EditableItemTable
+                                items={group.items}
+                                groupIdx={i}
+                                isLast={i == box.groups.length -1}
+                              />
                             </EditableSection>
                           )}
                         </Draggable>
