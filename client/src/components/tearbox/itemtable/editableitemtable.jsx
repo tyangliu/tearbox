@@ -311,6 +311,7 @@ const styles = styler`
 
   itemSelect
     line-height: 28px
+    margin-bottom: -1px
 
   noteInput
     width: 130px
