@@ -188,13 +188,14 @@ def generate_effects(
   b = []
   for i in range(0, len(b_data)):
     desc = b_data[i][B_D].replace('{}', '{0:g}')
+    desc_pre = b_data[i][B_D].replace('{}', '').strip()
     values = vt[b_data[i][B_VT]]
     descs_with_values = enumerate_values(desc, values)
 
     tags = parse_tags(b_data[i][B_TAG])
 
     for desc, value, rarity in descs_with_values:
-      extra_tags = make_value_tags(desc, tags, value, False)
+      extra_tags = make_value_tags(desc_pre, tags, value, False)
       b.append({
         'id': get_next_id(),
         'v_id': i,
@@ -243,6 +244,7 @@ def generate_effects(
   p = []
   for i in range(0, len(p_data)):
     desc = p_data[i][P_D]
+    desc_pre = p_data[i][P_D].replace('{}', '').strip()
     values = vt[p_data[i][P_VT]]
     descs_with_values = enumerate_values(
       desc,
@@ -255,13 +257,13 @@ def generate_effects(
 
 
     for desc, value, rarity in descs_with_values:
-      extra_tags = make_value_tags(desc, tags, value, True)
+      extra_tags = make_value_tags(desc_pre, tags, value, True)
 
       if value == plus_e_desc['2e']:
         extra_tags += two_plus_e_tags
 
         for two_plus_e_tag in two_plus_e_tags:
-          extra_tags += make_value_tags(desc, tags, two_plus_e_tag, True)
+          extra_tags += make_value_tags(desc_pre, tags, two_plus_e_tag, True)
         
       p.append({
         'id': get_next_id(),
@@ -287,6 +289,7 @@ def generate_effects(
   t = []
   for i in range(0, len(t_data)):
     desc = t_data[i][T_D]
+    desc_pre = t_data[i][T_D].replace('{}', '').strip()
     values = vt[t_data[i][T_VT]]
     one_pct = t_data[i][T_PCT]
     is_pct = t_data[i][T_IP]
@@ -319,7 +322,7 @@ def generate_effects(
         'type_id': TYPE_T,
         'alt_value': alt_value,
         'value_is_pct': bool(is_pct),
-        'tags': tags + make_value_tags(desc, [], value, is_pct),
+        'tags': tags + make_value_tags(desc_pre, [], value, is_pct),
       })
 
   return b, d, p, t
