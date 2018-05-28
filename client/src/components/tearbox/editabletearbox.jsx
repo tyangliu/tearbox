@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import {animateScroll as scroll} from 'react-scroll';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 import {EditableHeader} from './header';
@@ -29,6 +30,7 @@ class EditableTearbox extends React.Component {
     const {editAddGroupFn} = this.props;
     editAddGroupFn();
     this.addGroupEl.blur();
+    scroll.scrollToBottom();
   };
 
   handleAddGroupKeyPress = event => {

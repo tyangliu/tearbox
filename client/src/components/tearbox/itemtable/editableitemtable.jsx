@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 import debounce from 'lodash.debounce';
 import {Droppable, Draggable} from 'react-beautiful-dnd';
+import {animateScroll as scroll} from 'react-scroll';
 
 import TearIcon from './tearicon';
 import {Icon, SelectBox} from '../../common';
@@ -74,6 +75,7 @@ class EditableItemTable extends React.Component {
     const {groupIdx, editAddItemFn} = this.props;
     editAddItemFn(groupIdx);
     this.addItemEl.blur();
+    scroll.scrollToBottom();
   };
 
 

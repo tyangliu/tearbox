@@ -30,6 +30,7 @@
     "react-responsive-modal": "^3.0.2",
     "react-router": "^4.2.0",
     "react-router-redux": "^5.0.0-alpha.6",
+    "react-scroll": "^1.7.9",
     "react-select": "^2.0.0-beta.6",
     "react-styling": "^1.6.2",
     "react-transition-group": "^2.2.1",
