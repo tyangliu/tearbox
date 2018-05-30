@@ -19,7 +19,7 @@ import {
   RECEIVED,
 
   loadTears,
-  fetchBox,
+  requestGetBox,
   toggleGroup,
   openModal,
 } from '../../redux/actions';
@@ -27,9 +27,9 @@ import {
 @Radium
 class Tearbox extends React.Component {
   componentDidMount() {
-    const {boxStatus, fetchBoxFn} = this.props;
+    const {boxStatus, requestGetBoxFn} = this.props;
     if (boxStatus !== RECEIVED) {
-      fetchBoxFn();
+      requestGetBoxFn();
     }
   }
 
@@ -119,7 +119,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loadTearsFn: () => dispatch(loadTears()),
-    fetchBoxFn: () => dispatch(fetchBox()),
+    requestGetBoxFn: () => dispatch(requestGetBox()),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
     openModalFn: key => dispatch(openModal(key)),
   };

@@ -115,3 +115,15 @@ export function unpackBox(tears, box) {
     groups: unpackedGroups,
   };
 }
+
+export function processNewBox(data) {
+  const {name, server, igns, discord, forum, other, passscode, email} = data;
+  return {
+    name,
+    passcode,
+    email,
+    fields: {
+      server, igns, discord, forum, other,
+    },
+  };
+}

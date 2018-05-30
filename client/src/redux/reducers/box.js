@@ -1,42 +1,21 @@
-import {combineReducers} from 'redux';
-import {routerReducer} from 'react-router-redux';
 import Fuse from 'fuse.js';
 import cloneDeep from 'lodash.clonedeep';
 import update from 'immutability-helper';
 
-import {unpackItem} from './utils/box';
-
 import {
-  UNAVAILABLE,
-  REQUESTED,
-  RECEIVED,
-  NOT_FOUND,
-
   ASCENDING,
   DESCENDING,
 
-  REQUEST_TEARS,
-  RECEIVE_TEARS,
+  GET_BOX,
+  GET_BOX_SUCCESS,
+  GET_BOX_FAILURE,
 
-  REQUEST_BOX,
-  RECEIVE_BOX,
-  RECEIVE_BOX_NOT_FOUND,
-
-  TOGGLE_GROUP,
   SEARCH,
+  TOGGLE_GROUP,
   TOGGLE_SORT,
-
-  SET_COPIED,
-  UNSET_COPIED,
-
-  TOGGLE_FILTER_MENU,
-  CLOSE_FILTER_MENU,
   TOGGLE_FILTER,
   SELECT_ALL_FILTER,
   UNSELECT_ALL_FILTER,
-
-  OPEN_MODAL,
-  CLOSE_MODAL,
 
   EDIT_ADD_ITEM,
   EDIT_DELETE_ITEM,
@@ -51,48 +30,9 @@ import {
 
   EDIT_ITEM_FIELD,
   SEARCH_ITEM_EFFECTS,
-
   END_DRAG,
-
-  EDIT_FORM_FIELD,
-} from './actions';
-
-import {filterSortGroups, searchOpts} from './utils/box';
-import {mergeEffects, effectsSearchOpts} from './utils/tears';
-
-const tearsState = {
-  colors: [],
-  pieces: [],
-  types: [],
-  effects: [],
-  filteredEffects: [],
-  effectsIndex: null,
-  effectsSearchTerm: '',
-};
-
-function tears(state = tearsState, action) {
-  switch (action.type) {
-    case RECEIVE_TEARS:
-      return {
-        ...action.data,
-        filteredEffects: [],
-        effectsIndex: new Fuse(mergeEffects(action.data.effects), effectsSearchOpts),
-        effectsSearchTerm: '',
-      };
-    case SEARCH_ITEM_EFFECTS:
-      const {effectsIndex} = state;
-      const filteredEffects = effectsIndex && action.searchTerm.length
-        ? effectsIndex.search(action.searchTerm).slice(0, 30)
-        : [];
-      return {
-        ...state,
-        filteredEffects,
-        effectsSearchTerm: action.searchTerm,
-      };
-    default:
-      return state;
-  }
-}
+} from '../actions';
+import {unpackItem, filterSortGroups, searchOpts} from '../utils/box';
 
 const filterSelectAll = {
   color:  [true, true, true],
@@ -123,22 +63,6 @@ const boxState = {
   options: boxDisplayOptions,
 };
 
-function updateOptions(state, options) { 
-  const newData = state.data.groups ? {
-    ...state.data,
-    groupDisplays: filterSortGroups(
-      state.data.groups,
-      state.data.groupIndices,
-      options,
-    ),
-  } : {};
-
-  return {
-    ...state,
-    data: newData,
-    options,
-  };
-}
 
 const groupTypes = [
   {id: 0, label: 'Selling'},
@@ -166,6 +90,23 @@ const makeEmptyGroup = () => ({
   items: [],
 });
 
+const updateOptions = (state, options) => { 
+  const newData = state.data.groups ? {
+    ...state.data,
+    groupDisplays: filterSortGroups(
+      state.data.groups,
+      state.data.groupIndices,
+      options,
+    ),
+  } : {};
+
+  return {
+    ...state,
+    data: newData,
+    options,
+  };
+};
+
 function updateItemField(state, action) {
   const {tears, groupIdx, itemIdx, key, value} = action; 
   const {stagingData} = state;
@@ -181,15 +122,15 @@ function updateItemField(state, action) {
   }});
 }
 
-function box(state = boxState, action) {
+export default function box(state = boxState, action) {
   const {options} = state;
   switch (action.type) {
-    case REQUEST_BOX:
+    case GET_BOX:
       return {
         ...state,
         data: {},
       };
-    case RECEIVE_BOX:
+    case GET_BOX_SUCCESS:
       const {groups} = action.data;
       const groupIndices = (groups || []).map(group => new Fuse(
         group.items,
@@ -344,150 +285,3 @@ function box(state = boxState, action) {
       return state;
   }
 }
-
-
-const uiState = {
-  tearsStatus: UNAVAILABLE,
-  boxStatus: UNAVAILABLE,
-  groupVisibilities: null,
-  copied: false,
-  filterVisibility: false,
-  modalVisibilities: {
-    newBox: false,
-    editBox: false,
-  },
-};
-
-function ui(state = uiState, action) {
-  switch (action.type) {
-    case REQUEST_TEARS:
-      return {...state, tearsStatus: REQUESTED};
-    case RECEIVE_TEARS:
-      return {...state, tearsStatus: RECEIVED};
-    case REQUEST_BOX:
-      return {
-        ...state,
-        boxStatus: REQUESTED,
-        groupVisibilities: null,
-      };
-    case RECEIVE_BOX:
-      return {
-        ...state,
-        boxStatus: RECEIVED,
-        groupVisibilities: action.data.groups.map(() => true),
-      };
-    case RECEIVE_BOX_NOT_FOUND:
-      return {...state, boxStatus: NOT_FOUND};
-    case TOGGLE_GROUP:
-      const {idx} = action;
-      const {groupVisibilities} = state;
-      if (!groupVisibilities || idx > groupVisibilities.length) {
-        return state;
-      }
-
-      return update(state, {
-        groupVisibilities: {[idx]: {$set: !groupVisibilities[idx]}}
-      });
-    case EDIT_DELETE_GROUP:
-      return update(state, {
-        groupVisibilities: {
-          $splice: [[action.groupIdx,1]],
-        },
-      });
-    case END_DRAG:
-      if (!action.result.destination) {
-        return state;
-      };
-
-      const [draggableType, groupIdx] = action.result.type.split('_');
-      const dragSrcIdx = action.result.source.index;
-      const dragDestIdx = action.result.destination.index;
-
-      switch (draggableType) {
-        case 'GROUP':
-          return update(state, {
-            groupVisibilities: {
-              $splice: [[dragSrcIdx,1], [dragDestIdx,0,state.groupVisibilities[dragSrcIdx]]]
-            },
-          });
-        default:
-          return state;
-      }
-    case SET_COPIED:
-      return {
-        ...state,
-        copied: true,
-      };
-    case UNSET_COPIED:
-      return {
-        ...state,
-        copied: false,
-      };
-    case TOGGLE_FILTER_MENU:
-      return {
-        ...state,
-        filterVisibility: !state.filterVisibility,
-      };
-    case CLOSE_FILTER_MENU:
-      return {
-        ...state,
-        filterVisibility: false,
-      };
-    case OPEN_MODAL:
-      return {
-        ...state,
-        modalVisibilities: {
-          ...state.modalVisibilities,
-          [action.key]: true,
-        },
-      };
-    case CLOSE_MODAL:
-      return {
-        ...state,
-        modalVisibilities: {
-          ...state.modalVisibilities,
-          [action.key]: false,
-        },
-      };
-    default:
-      return state;
-  }
-}
-
-const makeEmptyNewBoxForm = () => ({
-  name: '',
-  server: 'Solace',
-  igns: '',
-  discord: '',
-  forum: '',
-  other: '',
-  passcode: '',
-  passcodeReenter: '',
-  email: '',
-});
-
-const formsState = {
-  newBox: makeEmptyNewBoxForm(),
-};
-
-function forms(state = formsState, action) {
-  switch (action.type) {
-    case EDIT_FORM_FIELD:
-      return update(state, {
-        [action.form]: {[action.field]: {$set: action.value}},
-      });
-    default:
-      return state;
-  }
-}
-
-const rootReducer = combineReducers({
-  tears,
-  box,
-  ui,
-  forms,
-  routing: routerReducer,
-});
-
-export default rootReducer;
-
