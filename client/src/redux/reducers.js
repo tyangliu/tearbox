@@ -53,6 +53,8 @@ import {
   SEARCH_ITEM_EFFECTS,
 
   END_DRAG,
+
+  EDIT_FORM_FIELD,
 } from './actions';
 
 import {filterSortGroups, searchOpts} from './utils/box';
@@ -452,10 +454,38 @@ function ui(state = uiState, action) {
   }
 }
 
+const makeEmptyNewBoxForm = () => ({
+  name: '',
+  server: 'Solace',
+  igns: '',
+  discord: '',
+  forum: '',
+  other: '',
+  passcode: '',
+  passcodeReenter: '',
+  email: '',
+});
+
+const formsState = {
+  newBox: makeEmptyNewBoxForm(),
+};
+
+function forms(state = formsState, action) {
+  switch (action.type) {
+    case EDIT_FORM_FIELD:
+      return update(state, {
+        [action.form]: {[action.field]: {$set: action.value}},
+      });
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
   tears,
   box,
   ui,
+  forms,
   routing: routerReducer,
 });
 

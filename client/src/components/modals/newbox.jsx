@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import debounce from 'lodash.debounce';
 
 import {
   SelectBox,
@@ -9,7 +10,7 @@ import {
   Modal,
 } from '../common';
 
-import {closeModal} from '../../redux/actions';
+import {closeModal, editFormField, postBox} from '../../redux/actions';
 
 const serverChoices = [
   {label: 'Solace', value: 'Solace'},
@@ -28,7 +29,7 @@ export const modalKey = 'newBox';
 @Radium
 class NewBoxModal extends React.Component {
   render() {
-    const {visible, closeModalFn} = this.props;
+    const {visible, form, closeModalFn, editFormFieldFn, postBoxFn} = this.props;
     return (
       <Modal visible={visible} onClose={closeModalFn}>
         <div style={styles.container}>
@@ -43,11 +44,14 @@ class NewBoxModal extends React.Component {
             <div style={styles.left}>
               <div style={styles.form}>
                 <div style={styles.name}>
-                  <input type='text'
-                         style={styles.nameInput}
-                         maxLength={20}
-                         placeholder='Your name'
-                         onChange={() => {}}/>
+                  <input
+                    type='text'
+                    style={styles.nameInput}
+                    maxLength={20}
+                    placeholder='Your name'
+                    defaultValue={form.name}
+                    onChange={e => editFormFieldFn('name', e.target.value)}
+                  />
                   <span style={styles.nameText}>
                     &#8217;s Box
                   </span>
@@ -61,26 +65,34 @@ class NewBoxModal extends React.Component {
                     </span>
                     <SelectBox
                       style={styles.contactFieldSelect}
-                      value={serverChoices[0]}
+                      value={{label: form.server, value: form.server}}
                       options={serverChoices}
+                      onChange={({label, value}) =>
+                        editFormFieldFn('server', value)
+                      }
                     />
                     <div style={styles.clearfix}/>
                   </li>
                   {/* Contact Textfields */}
-                  {contactFields.map(field =>
-                    <li style={styles.contactField}
-                        key={'contactField_' + field.key}>
+                  {contactFields.map(({label, key, required}) =>
+                    <li
+                      style={styles.contactField}
+                      key={'contactField_' + key}
+                    >
                       <span style={styles.contactFieldLabel}>
-                        {field.label}
-                        {field.required
+                        {label}
+                        {required
                           ? <span style={styles.required}>*</span>
                           : null}
                       </span>
-                      <input type='text'
-                             style={styles.contactFieldInput}
-                             maxLength={80}
-                             placeholder=''
-                             onChange={() => {}}/>
+                      <input
+                        type='text'
+                        style={styles.contactFieldInput}
+                        maxLength={80}
+                        placeholder=''
+                        defaultValue={form[key]}
+                        onChange={e => editFormFieldFn(key, e.target.value)}
+                      />
                       <div style={styles.clearfix}/>
                     </li>
                   )}
@@ -97,16 +109,22 @@ class NewBoxModal extends React.Component {
                 <p style={styles.sectionCaption}>
                   You'll need this to edit your box later.
                 </p>
-                <input type='password'
-                       style={styles.sectionInput}
-                       maxLength={32}
-                       placeholder='Create a passcode (6 or longer)'
-                       onChange={() => {}}/>
-                <input type='password'
-                       style={styles.sectionInput}
-                       maxLength={32}
-                       placeholder='Re-enter passcode'
-                       onChange={() => {}}/>
+                <input
+                  type='password'
+                  style={styles.sectionInput}
+                  maxLength={32}
+                  placeholder='Create a passcode (6 or longer)'
+                  defaultValue={form.passcode}
+                  onChange={e => editFormFieldFn('passcode', e.target.value)}
+                />
+                <input
+                  type='password'
+                  style={styles.sectionInput}
+                  maxLength={32}
+                  placeholder='Re-enter passcode'
+                  defaultValue={form.passcodeReenter}
+                  onChange={e => editFormFieldFn('passcodeReenter', e.target.value)}
+                />
               </div>
               {/* Email */}
               <div style={styles.section}>
@@ -116,15 +134,22 @@ class NewBoxModal extends React.Component {
                 <p style={styles.sectionCaption}>
                   Optional&mdash;In case you forget your passcode.
                 </p>
-                <input type='email'
-                       style={styles.sectionInput}
-                       maxLength={32}
-                       placeholder='Email Address'
-                       onChange={() => {}}/>
+                <input
+                  type='email'
+                  style={styles.sectionInput}
+                  maxLength={32}
+                  placeholder='Email Address'
+                  defaultValue={form.email}
+                  onChange={e => editFormFieldFn('email', e.target.value)}
+                />
               </div>
             </div>
           </div>
-          <Button style={styles.submitButton} isSubmit={true}>
+          <Button
+            style={styles.submitButton}
+            isSubmit={true}
+            onClick={postBoxFn}
+          >
             Create
           </Button>
           <p style={styles.footnote}>
@@ -140,14 +165,19 @@ class NewBoxModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {modalVisibilities} = state.ui;
+  const {newBox} = state.forms;
   return {
     visible: modalVisibilities[modalKey],
+    form: newBox,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     closeModalFn: () => dispatch(closeModal(modalKey)),    
+    editFormFieldFn: debounce((field, value) =>
+      dispatch(editFormField('newBox', field, value)), 200),
+    postBoxFn: () => dispatch(postBox()),
   };
 };
 

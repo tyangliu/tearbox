@@ -53,8 +53,10 @@ export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
 
 export const END_DRAG = 'END_DRAG';
 
-const url = 'http://127.0.0.1:8000';
-const dataPath = '';
+export const EDIT_FORM_FIELD = 'EDIT_FORM_FIELD';
+
+const url = 'http://127.0.0.1:3000/';
+const boxesPath = 'boxes/';
 
 export function sendData(data) {
   return {
@@ -269,6 +271,15 @@ export function endDrag(result) {
   };
 };
 
+export function editFormField(form, field, value) {
+  return {
+    type: EDIT_FORM_FIELD,
+    form,
+    field,
+    value,
+  };
+}
+
 const mockBox = {
   id: 'abc',
   name: 'Line',
@@ -337,9 +348,9 @@ export function fetchBox() {
   };
 }
 
-export function postData(data) {
+export function postBox(data) {
   const fullUrl = `${url}/${dataPath}`;
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(sendData(data));
     const response = await fetch(fullUrl, {
       method: 'POST',
