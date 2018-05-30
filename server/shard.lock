@@ -2,7 +2,7 @@ version: 1.0
 shards:
   arangocr:
     github: tyangliu/arangocr
-    commit: 53e0511fdee5ff80f0dc6c303cb449fac1b93196
+    commit: 06f7c8e33724b4f0a93612f11440a6aa332c9280
 
   auto_constructor:
     github: kostya/auto_constructor

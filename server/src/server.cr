@@ -4,6 +4,7 @@ require "kemal"
 require "./server/types"
 
 include Tearbox::Types
+include Tearbox::PatchTypes
 include Tearbox::ArangoTypes
 
 APPLICATION_JSON = "application/json"
@@ -25,56 +26,84 @@ end
 
 get "/boxes/:id" do |env|
   env.response.content_type = APPLICATION_JSON
-  begin
-    unless key = decode_id env.params.url["id"]
-      raise "ID not found"
-    end
 
-    data = BoxData.from_json(boxes.document.get(key).to_json)
-    data.to_json_public
-  rescue ex
-    puts ex.message
+  unless key = decode_id env.params.url["id"]
+    raise "ID not found"
   end
+
+  db_resp = boxes.document.get key
+
+  unless db_resp.success?
+    raise "Temp"
+  end
+
+  data = BoxData.from_json db_resp.body
+  data.to_json_public
 end
 
 post "/boxes" do |env|
   env.response.content_type = APPLICATION_JSON
-  begin
-    unless body = env.request.body
-      raise "Invalid body"
-    end
 
-    data = BoxData.from_json(body)
-    result = CreateSuccess.from_json(boxes.document.create(data).to_json)
-    data.key = result.key
-    data.to_json_public
-  rescue ex
-    puts ex.message
+  unless req_body = env.request.body
+    raise "Invalid body"
   end
+  
+  data = BoxData.from_json req_body  
+
+  db_resp = boxes.document.create data
+  unless db_resp.success?
+    raise "Temp"
+  end
+
+  key = (Success.from_json db_resp.body).key
+
+  db_resp = boxes.document.get key
+  unless db_resp.success?
+    raise "Temp"
+  end
+
+  data = BoxData.from_json db_resp.body
+  data.to_json_public 
 end
 
 patch "/boxes/:id" do |env|
   env.response.content_type = APPLICATION_JSON
-  begin
-    unless key = decode_id env.params.url["id"]
-      raise "ID not found"
-    end
 
-    unless body = env.request.body
-      raise "Invalid body"
-    end
-
-    patch_data = BoxData.from_json(body)
-    result = UpdateSuccess.from_json(boxes.document.update(key, patch_data).to_json)
-
-    data = BoxData.from_json(boxes.document.get(key).to_json)
-    data.to_json_public
-  rescue ex
-    puts ex.message
+  unless key = decode_id env.params.url["id"]
+    raise "ID not found"
   end
+
+  unless req_body = env.request.body
+    raise "Invalid body"
+  end
+
+  patch_data = BoxDataPatch.from_json req_body
+
+  db_resp = boxes.document.update(key, patch_data)
+  unless db_resp.success?
+    raise "Temp"
+  end
+
+  db_resp = boxes.document.get key
+  unless db_resp.success?
+    raise "Temp"
+  end
+
+  data = BoxData.from_json db_resp.body
+  data.to_json_public 
 end
 
 delete "/boxes/:id" do |env|
+  env.response.content_type = APPLICATION_JSON
+
+  unless key = decode_id env.params.url["id"]
+    raise "ID not found"
+  end
+
+  db_resp = boxes.document.delete key
+  unless db_resp.success?
+    raise "Temp"
+  end
 end
 
 

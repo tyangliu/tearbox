@@ -2,7 +2,7 @@ require "auto_json"
 require "hashids"
 require "ulid"
 
-macro hide_fields(fields, from obj, run)
+private macro hide_fields(fields, from obj, run)
   {% for field, index in fields %}
     %field{index}, {{obj}}.{{field}} = {{obj}}.{{field}}, nil    
   {% end %}
@@ -13,7 +13,10 @@ macro hide_fields(fields, from obj, run)
   %result
 end
 
-macro base
+##############################################################################
+# Data Types
+##############################################################################
+private macro base
   include AutoJson
 
   field :id, String?
@@ -85,7 +88,6 @@ module Tearbox::Types
 
     field :name, String, default: ""
     field :type, GroupType
-    field :description, String, default: ""
     field :items, Array(Item), default: [] of Item
     field :created, Time?
     field :modified, Time?
@@ -102,6 +104,7 @@ module Tearbox::Types
     base
 
     field :name, String
+    field :description, String, default: ""
     field :passcode, String?
     field :passhash, String?
     field :email, String?
@@ -116,8 +119,35 @@ module Tearbox::Types
   end
 end
 
+
+##############################################################################
+# Patch Types
+##############################################################################
+private macro patch_base
+  include AutoJson
+
+  field :key, String?, json_key: "_key"
+end
+
+
+module Tearbox::PatchTypes
+  class BoxDataPatch
+    patch_base
+
+    field :name, String?
+    field :description, String?
+    field :passcode, String?
+    field :email, String?
+    field :fields, Array(Tearbox::Types::BoxField)?
+    field :groups, Array(Tearbox::Types::Group)?
+  end
+end
+
+##############################################################################
+# Arango Types (Response Messages)
+##############################################################################
 module Tearbox::ArangoTypes
-  class CreateSuccess
+  class Success
     include AutoJson
 
     field :id, String, json_key: "_id"
@@ -132,5 +162,14 @@ module Tearbox::ArangoTypes
     field :key, String, json_key: "_key"
     field :rev, String, json_key: "_rev"
     field :old_rev, String, json_key: "_oldRev"
+  end
+
+  class Failure
+    include AutoJson
+
+    field :error, Bool
+    field :message, String, json_key: "errorMessage"
+    field :code, UInt16
+    field :error_num, UInt64, json_key: "errorNum"
   end
 end
