@@ -173,3 +173,24 @@ module Tearbox::ArangoTypes
     field :error_num, UInt64, json_key: "errorNum"
   end
 end
+
+##############################################################################
+# Config Types
+##############################################################################
+module Tearbox::ConfigTypes
+  class DatabaseConfig
+    include AutoJson
+
+    field :host, String
+    field :user, String
+    field :pass, String
+    field :name, String
+  end
+
+  class ServerConfig
+    include AutoJson
+
+    field :port, Int32
+    field :db, DatabaseConfig
+  end
+end
