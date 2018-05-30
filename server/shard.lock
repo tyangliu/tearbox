@@ -1,0 +1,34 @@
+version: 1.0
+shards:
+  arangocr:
+    github: tyangliu/arangocr
+    commit: 53e0511fdee5ff80f0dc6c303cb449fac1b93196
+
+  auto_constructor:
+    github: kostya/auto_constructor
+    version: 0.4
+
+  auto_json:
+    github: kostya/auto_json
+    commit: e45393fba18a33fd3e9997ed74ab38fab5125ac9
+
+  hashids:
+    github: splattael/hashids.cr
+    commit: 8e204c550c0b1b8d4ec61a4e85feb39e02a21660
+
+  kemal:
+    github: kemalcr/kemal
+    version: 0.22.0
+
+  kilt:
+    github: jeromegn/kilt
+    version: 0.4.0
+
+  radix:
+    github: luislavena/radix
+    version: 0.3.8
+
+  ulid:
+    github: SuperPaintman/ulid
+    version: 0.1.0
+

@@ -1,0 +1,29 @@
+name: tearbox-server
+version: 0.1.0
+
+authors:
+  - tyangliu <tyangliu@gmail.com>
+
+targets:
+  server:
+    main: src/server.cr
+
+crystal: 0.24.2
+
+license: MIT
+
+dependencies:
+  arangocr:
+    github: tyangliu/arangocr
+    branch: master
+  auto_json:
+    github: kostya/auto_json
+    branch: master
+  hashids:
+    github: splattael/hashids.cr
+    version: 0.2.2
+    branch: master
+  kemal:
+    github: kemalcr/kemal
+  ulid:
+    github: SuperPaintman/ulid
