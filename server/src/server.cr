@@ -4,6 +4,9 @@ require "kemal"
 require "./server/types"
 
 include Tearbox::Types
+include Tearbox::ArangoTypes
+
+APPLICATION_JSON = "application/json"
 
 DB_HOST = "http://127.0.0.1:8529"
 DB_USER = "root"
@@ -14,24 +17,61 @@ database = client.database("tearbox")
 
 boxes = database.collection("boxes")
 
-box = BoxData.new(name: "Potato", passcode: "abc")
-puts box.to_json_public
+def render_404
+end
 
 def render_500(context, backtrace, verbosity)
 end
 
 get "/boxes/:id" do |env|
-  env.response.content_type = "application/json"
-  {id: "abc", items: [] of String}.to_json
+  env.response.content_type = APPLICATION_JSON
+  begin
+    unless key = decode_id env.params.url["id"]
+      raise "ID not found"
+    end
+
+    data = BoxData.from_json(boxes.document.get(key).to_json)
+    data.to_json_public
+  rescue ex
+    puts ex.message
+  end
 end
 
 post "/boxes" do |env|
-  data = BoxData.from_json env.request.body.not_nil!
-  puts data.to_json
-  puts data.to_json_public
+  env.response.content_type = APPLICATION_JSON
+  begin
+    unless body = env.request.body
+      raise "Invalid body"
+    end
+
+    data = BoxData.from_json(body)
+    result = CreateSuccess.from_json(boxes.document.create(data).to_json)
+    data.key = result.key
+    data.to_json_public
+  rescue ex
+    puts ex.message
+  end
 end
 
-put "/boxes/:id" do |env|
+patch "/boxes/:id" do |env|
+  env.response.content_type = APPLICATION_JSON
+  begin
+    unless key = decode_id env.params.url["id"]
+      raise "ID not found"
+    end
+
+    unless body = env.request.body
+      raise "Invalid body"
+    end
+
+    patch_data = BoxData.from_json(body)
+    result = UpdateSuccess.from_json(boxes.document.update(key, patch_data).to_json)
+
+    data = BoxData.from_json(boxes.document.get(key).to_json)
+    data.to_json_public
+  rescue ex
+    puts ex.message
+  end
 end
 
 delete "/boxes/:id" do |env|

@@ -25,14 +25,13 @@ macro base
     def initialize(%pull : ::JSON::PullParser)
       previous_def
       if !@key && (id = @id)
-        results = Hasher.decode id
-        @key = results[0].to_s if results.size > 0
+        @key = decode_id id
       end
     end
 
     def to_json(json : JSON::Builder)
-      if key = @key
-        @id = Hasher.encode [UInt64.new(key)]
+      if !@id && (key = @key)
+        @id = encode_key key
       end
       previous_def
     end
@@ -40,8 +39,17 @@ macro base
 end
 
 module Tearbox::Types
-  private HashSalt = "w0w"
-  private Hasher = Hashids.new(salt: HashSalt, min_length: 8)
+  private HASH_SALT = "w0w"
+  private HASHER = Hashids.new(salt: HASH_SALT, min_length: 8)
+
+  def decode_id(id : String)
+    results = HASHER.decode id
+    results[0].to_s if results.size > 0
+  end
+
+  def encode_key(key : String)
+    HASHER.encode [UInt64.new key]
+  end
 
   enum ItemColor
     Red
@@ -105,5 +113,24 @@ module Tearbox::Types
     def to_json_public
       hide_fields [passcode, passhash, email], from: self, run: to_json
     end
+  end
+end
+
+module Tearbox::ArangoTypes
+  class CreateSuccess
+    include AutoJson
+
+    field :id, String, json_key: "_id"
+    field :key, String, json_key: "_key"
+    field :rev, String, json_key: "_rev"
+  end
+
+  class UpdateSuccess
+    include AutoJson
+    
+    field :id, String, json_key: "_id"
+    field :key, String, json_key: "_key"
+    field :rev, String, json_key: "_rev"
+    field :old_rev, String, json_key: "_oldRev"
   end
 end
