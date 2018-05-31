@@ -17,9 +17,11 @@ class Home extends React.Component {
         <div style={styles.homeContainer}>
           <header style={styles.header}>
             <div style={styles.headerContainer}>
-              <Button icon='note_add'
-                      style={styles.button}
-                      onClick={() => openModalFn(newBoxKey)}>
+              <Button
+                icon='note_add'
+                style={styles.button}
+                onClick={() => openModalFn(newBoxKey)}
+              >
                 Make your own Box
               </Button>
               <Logo style={styles.logo}/>

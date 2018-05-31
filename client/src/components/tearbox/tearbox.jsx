@@ -9,8 +9,8 @@ import {Button} from '../common';
 import InfoBox from './infobox';
 import {ItemTable} from './itemtable';
 import Section from './section';
-import NewBoxModal, {modalKey as newBoxKey} from '../modals/newbox';
-import EditBoxModal, {modalKey as editBoxKey} from '../modals/editbox';
+import NewBoxModal from '../modals/newbox';
+import EditBoxModal from '../modals/editbox';
 import Footer from './footer';
 
 import {
@@ -56,21 +56,6 @@ class Tearbox extends React.Component {
               <div style={styles.mainLeftContent}>
                 <div style={styles.leftTop}>
                   <InfoBox/>
-                  <Button icon='note_add'
-                          style={styles.button}
-                          key='newboxbutton'
-                          onClick={() => openModalFn(newBoxKey)}>
-                    Make your own Box
-                  </Button>
-                  <Button icon='edit'
-                          style={styles.button}
-                          key='editboxbutton'
-                          onClick={() => openModalFn(editBoxKey)}>
-                    Edit this Box
-                  </Button>
-                  <p style={styles.footnote}>
-                    (if you own this box)
-                  </p>
                 </div>
                 <Footer/>
               </div>
@@ -191,12 +176,6 @@ const styles = styler`
     line-height: 24px
     display: block
     float: left
-    user-select: none
-
-  footnote
-    text-align: right
-    font-style: italic
-    color: rgba(0,0,0,0.5)
     user-select: none
 
   sectionTitle

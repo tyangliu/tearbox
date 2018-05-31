@@ -109,7 +109,7 @@ class NewBoxModal extends React.Component {
               {/* Passcode */}
               <div style={styles.section}>
                 <h3 style={styles.sectionHeading}>
-                  Passcode
+                  Box Passcode
                   <span style={styles.required}>*</span>
                 </h3>
                 <p style={styles.sectionCaption}>
