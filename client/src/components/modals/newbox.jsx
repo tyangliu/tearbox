@@ -234,7 +234,7 @@ const styles = styler`
     width: 46px
     height: 46px
     margin-right: 6px
-    background-image: url("${require('../../images/tearbox_hero.svg')}")
+    background-image: url("${require('../../images/tearbox_new.svg')}")
     background-repeat: no-repeat
     background-size: contain
     margin-top: -10px

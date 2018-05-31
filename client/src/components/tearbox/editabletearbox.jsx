@@ -11,6 +11,7 @@ import InfoBox from './infobox';
 import {EditableItemTable} from './itemtable';
 import EditableSection from './editablesection';
 import Footer from './footer';
+import NotFound from '../errors/NotFound';
 
 import {
   loadTears,
@@ -24,6 +25,7 @@ import {
   UNAVAILABLE,
   REQUESTED,
   RECEIVED,
+  NOT_FOUND,
 } from '../../redux/constants';
 
 @Radium
@@ -48,20 +50,38 @@ class EditableTearbox extends React.Component {
     this.handleAddGroupClick();
   };
 
-  componentDidMount() {
+  refreshBox = () => {
     const {boxStatus, requestGetBoxFn, match} = this.props;
-    if (boxStatus !== RECEIVED) {
-      requestGetBoxFn(match.params.id);
+    requestGetBoxFn(match.params.id);
+  };
+
+  constructor(props) {
+    super(props);
+    this.refreshBox();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.refreshBox();
     }
   }
 
   render() {
     const {
       box,
+      boxStatus,
       groupVisibilities,
       toggleGroupFn,
       endDragFn,
     } = this.props;
+
+    if (boxStatus === NOT_FOUND) {
+      return <NotFound/>;
+    }
+    // TODO: loading component 
+    if (!box.id) {
+      return <div/>;
+    }
 
     return (
       <DragDropContext

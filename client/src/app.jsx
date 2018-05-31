@@ -1,9 +1,9 @@
 import React from 'react';
 import Radium, {Style} from 'radium';
-import {Route, Redirect, Switch} from 'react-router';
+import {Route, Switch} from 'react-router';
 import styler from 'react-styling';
 
-import {Home, Tearbox, EditableTearbox} from './components';
+import {Home, Tearbox, EditableTearbox, NotFound} from './components';
 
 export default class App extends React.Component {
   render() {
@@ -12,9 +12,9 @@ export default class App extends React.Component {
         <Style rules={styles.appRules}/>
         <Switch>
           <Route exact path='/' component={Home}/>
-          <Redirect exact from='/box' to='/'/>
           <Route exact path='/box/:id' component={Tearbox}/>
           <Route path='/box/:id/edit' component={EditableTearbox}/>
+          <Route component={NotFound}/>
         </Switch>
         {this.props.children}
       </div>

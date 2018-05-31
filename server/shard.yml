@@ -23,7 +23,12 @@ dependencies:
     github: splattael/hashids.cr
     version: 0.2.2
     branch: master
+  jwt:
+    github: crystal-community/jwt
+    branch: master
   kemal:
     github: kemalcr/kemal
+    branch: master
   ulid:
     github: SuperPaintman/ulid
+    branch: master

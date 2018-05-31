@@ -16,9 +16,13 @@ shards:
     github: splattael/hashids.cr
     commit: 8e204c550c0b1b8d4ec61a4e85feb39e02a21660
 
+  jwt:
+    github: crystal-community/jwt
+    commit: 4771f29e9ea270a0ec4d0387169e15971a9152df
+
   kemal:
     github: kemalcr/kemal
-    version: 0.22.0
+    commit: c2236acf3a630e844928edd607699e8738992a5c
 
   kilt:
     github: jeromegn/kilt
@@ -30,5 +34,5 @@ shards:
 
   ulid:
     github: SuperPaintman/ulid
-    version: 0.1.0
+    commit: ab39ce26d557126cae63e315d8e16c361c239f46
 

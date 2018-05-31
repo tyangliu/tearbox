@@ -12,6 +12,7 @@ import Section from './section';
 import NewBoxModal from '../modals/newbox';
 import EditBoxModal from '../modals/editbox';
 import Footer from './footer';
+import NotFound from '../errors/NotFound';
 
 import {
   loadTears,
@@ -25,6 +26,7 @@ import {
   UNAVAILABLE,
   REQUESTED,
   RECEIVED,
+  NOT_FOUND,
 
   PREV_BOX_ID_KEY,
 
@@ -33,12 +35,15 @@ import {
 
 @Radium
 class Tearbox extends React.Component {
+  refreshBox = () => {
+    const {boxStatus, requestGetBoxFn, match} = this.props;
+    requestGetBoxFn(match.params.id);
+  };
+
   constructor(props) {
     super(props);
-    const {boxStatus, requestGetBoxFn, setOwnBoxIdFn, match} = this.props;
-    if (boxStatus !== RECEIVED) {
-      requestGetBoxFn(match.params.id);
-    }
+    const {setOwnBoxIdFn} = this.props;
+    this.refreshBox();
 
     if (!localStorage) {
       return;
@@ -51,15 +56,31 @@ class Tearbox extends React.Component {
     setOwnBoxIdFn(existingBoxId);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.refreshBox();
+    }
+  }
+
   render() {
     const {
       tears,
       box,
+      boxStatus,
       groupVisibilities,
       ownBoxId,
       toggleGroupFn,
       openModalFn,
     } = this.props;
+
+    if (boxStatus === NOT_FOUND) {
+      return <NotFound/>;
+    }
+    // TODO: loading component 
+    if (!box.id) {
+      return <div/>;
+    }
+
     return (
       <div style={styles.tearbox}>
         <div style={styles.tearboxContainer}>

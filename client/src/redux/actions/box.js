@@ -100,9 +100,9 @@ export const deleteBoxFailure = error => ({
 });
 
 export const requestGetBox = id => async (dispatch, getState) => {
-  // TODO: Redirect to 404.
   if (id === '') {
-    dispatch(replace('/'));
+    dispatch(getBoxFailure('Not found'));
+    return;
   }
   const tearsPromise = new Promise(async (resolve, reject) => { 
     if (getState().ui.tearStatus !== RECEIVED) {
@@ -118,9 +118,9 @@ export const requestGetBox = id => async (dispatch, getState) => {
     method: 'GET',
   });
 
-  // TODO: Redirect to 404.
   if (response.status !== 200) {
-    dispatch(replace('/'));
+    dispatch(getBoxFailure('Not found'));
+    return;
   }
 
   // Wait for tears before releasing result

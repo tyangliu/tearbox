@@ -1,11 +1,6 @@
 import update from 'immutability-helper';
 
 import {
-  UNAVAILABLE,
-  REQUESTED,
-  RECEIVED,
-  NOT_FOUND,
-
   REQUEST_TEARS,
   RECEIVE_TEARS,
 
@@ -31,6 +26,13 @@ import {
 
   SET_OWN_BOX_ID,
 } from '../actions';
+
+import {
+  UNAVAILABLE,
+  REQUESTED,
+  RECEIVED,
+  NOT_FOUND,
+} from '../constants';
 
 const uiState = {
   tearsStatus: UNAVAILABLE,
