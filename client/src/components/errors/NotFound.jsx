@@ -58,7 +58,7 @@ class NotFound extends React.Component {
             <div style={styles.notfound}>
               <div style={styles.notfoundImage}/>
               <h2 style={styles.notfoundTitle}>
-                Ow! This page doesn't exist.
+                <span style={styles.em}>Ow!</span> This page doesn't exist.
               </h2>
             </div>
           </section>
@@ -156,8 +156,10 @@ const styles = styler`
     background-repeat: no-repeat
     background-size: contain
     margin-bottom: 30px
+    opacity: 0.5
 
   notfoundTitle
+    font-weight: normal
     font-size: 24px
     font-style: normal
     text-align: center
