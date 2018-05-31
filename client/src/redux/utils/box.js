@@ -142,7 +142,7 @@ export function packBox(box) {
   return omit({
     ...box,
     groups: packedGroups,
-  }, ['nextGroupIdx']);
+  }, ['nextGroupIdx', 'isDirty']);
 }
 
 export function processNewBox(data) {

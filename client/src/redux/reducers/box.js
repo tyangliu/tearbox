@@ -120,10 +120,23 @@ function updateItemField(state, action) {
   });
 
   return update(state, {stagingData: {
+    isDirty: {$set: true},
     groups: {[groupIdx]: {
       items: {[itemIdx]: {$set: newItem}},
     }},
   }});
+}
+
+function copyToStaging(state) {
+  const newStagingData = {
+    isDirty: false,
+    ...cloneDeep(
+      omit(state.data, ['groupDisplays', 'groupIndices'])
+    ),
+  };
+  return update(state, {
+    stagingData: {$set: newStagingData},
+  });
 }
 
 function updateBox(state, action) {
@@ -140,15 +153,6 @@ function updateBox(state, action) {
   return copyToStaging(update(state, {
     data: {$set: newData},
   }));
-}
-
-function copyToStaging(state) {
-  const newStagingData = cloneDeep(
-    omit(state.data, ['groupDisplays', 'groupIndices'])
-  );
-  return update(state, {
-    stagingData: {$set: newStagingData},
-  });
 }
 
 export default function box(state = boxState, action) {
@@ -219,6 +223,7 @@ export default function box(state = boxState, action) {
         };
       }
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {[action.groupIdx]: {
           items: {$push:[emptyItem]},
           nextItemIdx: {$set: nextItemIdx + 1},
@@ -226,6 +231,7 @@ export default function box(state = boxState, action) {
       }});
     case EDIT_DELETE_ITEM:
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {[action.groupIdx]: {
           items: {$splice: [[action.itemIdx,1]]},
         }},
@@ -236,6 +242,7 @@ export default function box(state = boxState, action) {
         .groups[action.groupIdx]
         .items[action.srcIdx];
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {[action.groupIdx]: {
           items: {$splice: [[action.srcIdx,1], [action.destIdx,0,itemMoveTarget]]},
         }},
@@ -244,27 +251,32 @@ export default function box(state = boxState, action) {
     case EDIT_ADD_GROUP:
       const {nextGroupIdx} = state.stagingData;
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {$push: [makeEmptyGroup(nextGroupIdx)]},
         nextGroupIdx: {$set: nextGroupIdx + 1},
       }});
     case EDIT_DELETE_GROUP:
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {$splice: [[action.groupIdx,1]]},
       }});
     case EDIT_MOVE_GROUP:
       const groupMoveTarget = state.stagingData.groups[action.srcIdx];
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {$splice: [[action.srcIdx,1], [action.destIdx,0,groupMoveTarget]]},
       }});
 
     case EDIT_GROUP_TITLE:
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {[action.groupIdx]: {
           name: {$set: action.title},
         }},
       }});
     case EDIT_GROUP_TYPE:
       return update(state, {stagingData: {
+        isDirty: {$set: true},
         groups: {[action.groupIdx]: {
           type: {$set: action.typeId},
         }},
@@ -291,6 +303,7 @@ export default function box(state = boxState, action) {
             .groups[groupIdx]
             .items[dragSrcIdx];
           return update(state, {stagingData: {
+            isDirty: {$set: true},
             groups: {[groupIdx]: {
               items: {$splice: [[dragSrcIdx,1], [dragDestIdx,0,itemMoveTarget]]},
             }},
@@ -300,6 +313,7 @@ export default function box(state = boxState, action) {
             .stagingData
             .groups[dragSrcIdx];
           const updateState = update(state, {stagingData: {
+            isDirty: {$set: true},
             groups: {$splice: [[dragSrcIdx,1], [dragDestIdx,0,groupMoveTarget]]},
           }});
           return updateState;

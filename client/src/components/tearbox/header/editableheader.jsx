@@ -6,8 +6,31 @@ import styler from 'react-styling';
 import {Logo, Icon, Button} from '../../common';
 import {cancelEdit, requestPatchBox} from '../../../redux/actions';
 
+const leaveMessage = 'Leave with unsaved changes?';
+
 @Radium
 class EditableHeader extends React.Component {
+  componentDidUpdate() {
+    const {isDirty} = this.props;
+    window.onbeforeunload = isDirty && (() => leaveMessage);
+  }
+
+  componentWillUnmount() {
+    window.onbeforeunload = null;
+  }
+
+  onCancel = () => {
+    const {id, cancelEditFn} = this.props;
+    cancelEditFn(id);
+    window.onbeforeunload = null;
+  };
+
+  onSave = () => {
+    const {requestPatchBoxFn} = this.props;
+    requestPatchBoxFn();
+    window.onbeforeunload = null;
+  };
+
   render() {
     const {id, style, cancelEditFn, requestPatchBoxFn} = this.props;
     return (
@@ -19,7 +42,7 @@ class EditableHeader extends React.Component {
           <div style={styles.buttonGroup}>
             <Button
               style={styles.button}
-              onClick={() => cancelEditFn(id)}
+              onClick={this.onCancel}
             >
               Cancel
             </Button>
@@ -27,7 +50,7 @@ class EditableHeader extends React.Component {
               style={styles.button}
               isSubmit={true}
               key='tearboxSaveButton'
-              onClick={requestPatchBoxFn}
+              onClick={this.onSave}
             >
               Save
             </Button>
@@ -42,6 +65,7 @@ class EditableHeader extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     id: state.box.data.id,
+    isDirty: state.box.stagingData.isDirty,
   };
 };
 
