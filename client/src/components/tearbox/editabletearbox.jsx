@@ -90,12 +90,17 @@ class EditableTearbox extends React.Component {
                     {(provided, snapshot) => (
                       <div style={styles.rightInner} ref={provided.innerRef}>
                         {(box.groups || []).map((group, i) =>
-                          <Draggable key={i} draggableId={`groupDraggable_${i}`} index={i}>
+                          <Draggable
+                            key={group.idx}
+                            draggableId={`groupDraggable_${i}`}
+                            index={i}
+                          >
                             {(provided, snapshot) => (
                               <EditableSection
                                 title={group.name}
                                 type={group.type}
                                 groupIdx={i}
+                                groupStableIdx={group.idx}
                                 provided={provided}
                                 getRef={
                                   (i === box.groups.length - 1)
@@ -108,6 +113,7 @@ class EditableTearbox extends React.Component {
                                 <EditableItemTable
                                   items={group.items}
                                   groupIdx={i}
+                                  groupStableIdx={group.idx}
                                   isLast={i == box.groups.length -1}
                                 />
                               </EditableSection>

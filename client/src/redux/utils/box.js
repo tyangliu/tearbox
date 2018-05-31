@@ -107,29 +107,42 @@ export function unpackItem(tears, item) {
 }
 
 export function unpackBox(tears, box) {
-  const unpackedGroups = box.groups.map(group => ({
+  const unpackedGroups = box.groups.map((group, i) => ({
+    idx: i,
+    nextItemIdx: group.items.length,
     ...group,
-    items: group.items.map((item, i) => ({idx: i, ...unpackItem(tears, item)})),
+    items: group.items.map((item, j) => ({
+      idx: j, ...unpackItem(tears, item)
+    })),
   }));
   return {
     ...box,
+    nextGroupIdx: unpackedGroups.length,
     groups: unpackedGroups,
   };
 }
 
 export function packItem(item) {
-  return omit(item, ['color', 'effect', 'piece', 'rarity', 'type', 'modified']);
+  return omit(item, [
+    'color',
+    'effect',
+    'piece',
+    'rarity',
+    'type',
+    'modified',
+    'idx',
+  ]);
 }
 
 export function packBox(box) {
-  const packedGroups = box.groups.map(group => ({
+  const packedGroups = box.groups.map(group => omit({
     ...group,
     items: group.items.map(item => packItem(item)),
-  }));
-  return {
+  }), ['idx', 'nextItemIdx']);
+  return omit({
     ...box,
     groups: packedGroups,
-  };
+  }, ['nextGroupIdx']);
 }
 
 export function processNewBox(data) {

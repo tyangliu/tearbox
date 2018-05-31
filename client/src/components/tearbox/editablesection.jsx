@@ -32,6 +32,7 @@ class EditableSection extends React.Component {
       type,
       visible,
       groupIdx,
+      groupStableIdx,
       getRef,
 
       editDeleteGroupFn,
@@ -40,7 +41,7 @@ class EditableSection extends React.Component {
     } = this.props;
     return (
       <section
-        key={`section_${groupIdx}`}
+        key={`section_${groupStableIdx}`}
         ref={provided.innerRef}
         {...provided.draggableProps}
       >

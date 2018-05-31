@@ -102,6 +102,7 @@ class EditableItemTable extends React.Component {
       items,
       tears,
       groupIdx,
+      groupStableIdx,
       searchTerm,
       effects,
 
@@ -146,9 +147,18 @@ class EditableItemTable extends React.Component {
           {(provided, snapshot) => (
             <ul style={[styles.itemEntries]} ref={provided.innerRef}>
               {items.map((item, i) => 
-                <Draggable key={i} draggableId={`itemDraggable_${groupIdx}_${i}`} index={i}>
+                <Draggable
+                  key={item.idx}
+                  draggableId={`itemDraggable_${groupIdx}_${i}`}
+                  index={i}
+                >
                   {(provided, snapshot) => (
-                    <li style={styles.itemEntry} key={i} {...provided.draggableProps} ref={provided.innerRef}>
+                    <li
+                      style={styles.itemEntry}
+                      key={item.idx}
+                      {...provided.draggableProps}
+                      ref={provided.innerRef}
+                    >
                       <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
                         <li style={[styles.itemCol0]} {...provided.dragHandleProps} tabIndex={-1}>
                          <Icon style={styles.dragIcon}

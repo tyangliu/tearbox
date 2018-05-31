@@ -70,7 +70,8 @@ const boxState = {
 };
 
 
-const makeEmptyItem = () => ({
+const makeEmptyItem = idx => ({
+  idx,
   id: null,
   color: {},
   color_id: null,
@@ -84,7 +85,9 @@ const makeEmptyItem = () => ({
   created: null,
 });
 
-const makeEmptyGroup = () => ({
+const makeEmptyGroup = idx => ({
+  idx,
+  nextItemIdx: 0,
   id: null,
   name: '',
   type: 0,
@@ -134,10 +137,9 @@ function updateBox(state, action) {
     groupDisplays: {$set: filterSortGroups(groups, groupIndices, options)},
     groupIndices: {$set: groupIndices},
   });
-  return update(state, {
+  return copyToStaging(update(state, {
     data: {$set: newData},
-    stagingData: {$set: cloneDeep(action.data)},
-  });
+  }));
 }
 
 function copyToStaging(state) {
@@ -145,7 +147,7 @@ function copyToStaging(state) {
     omit(state.data, ['groupDisplays', 'groupIndices'])
   );
   return update(state, {
-    stagingData: {$set: cloneDeep(newStagingData)},
+    stagingData: {$set: newStagingData},
   });
 }
 
@@ -201,7 +203,10 @@ export default function box(state = boxState, action) {
       return updateOptions(state, {...state.options, filter: filterUnselectAll});
 
     case EDIT_ADD_ITEM: 
-      const emptyItem = makeEmptyItem();
+      const nextItemIdx = state.stagingData.groups
+        ? state.stagingData.groups[action.groupIdx].nextItemIdx
+        : 0;
+      const emptyItem = makeEmptyItem(nextItemIdx);
       const len = (state.stagingData.groups && state.stagingData.groups[action.groupIdx].items)
         ? state.stagingData.groups[action.groupIdx].items.length
         : 0;
@@ -216,6 +221,7 @@ export default function box(state = boxState, action) {
       return update(state, {stagingData: {
         groups: {[action.groupIdx]: {
           items: {$push:[emptyItem]},
+          nextItemIdx: {$set: nextItemIdx + 1},
         }},
       }});
     case EDIT_DELETE_ITEM:
@@ -236,8 +242,10 @@ export default function box(state = boxState, action) {
       }});
 
     case EDIT_ADD_GROUP:
+      const {nextGroupIdx} = state.stagingData;
       return update(state, {stagingData: {
-        groups: {$push: [makeEmptyGroup()]},
+        groups: {$push: [makeEmptyGroup(nextGroupIdx)]},
+        nextGroupIdx: {$set: nextGroupIdx + 1},
       }});
     case EDIT_DELETE_GROUP:
       return update(state, {stagingData: {
