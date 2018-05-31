@@ -22,6 +22,8 @@ private macro base
   field :id, String?
   field :uid, String, default: ULID.generate
   field :key, String?, json_key: "_key"
+  field :created, Time?, default: Time.now, json_converter: Time::Format::ISO_8601_DATE_TIME
+  field :modified, Time?, default: Time.now, json_converter: Time::Format::ISO_8601_DATE_TIME
 
   # Encode and decode _key from/to public facing id.
   macro finished
@@ -79,8 +81,6 @@ module Tearbox::Types
     field :effect_id, UInt32
     field :piece_id, ItemPiece
     field :note, String, default: ""
-    field :created, Time?
-    field :modified, Time?
   end
 
   class Group
@@ -89,8 +89,6 @@ module Tearbox::Types
     field :name, String, default: ""
     field :type, GroupType
     field :items, Array(Item), default: [] of Item
-    field :created, Time?
-    field :modified, Time?
   end
 
   class BoxField
@@ -110,8 +108,6 @@ module Tearbox::Types
     field :email, String?
     field :fields, Array(BoxField), default: [] of BoxField
     field :groups, Array(Group), default: [] of Group
-    field :created, Time?
-    field :modified, Time?
 
     def to_json_public
       hide_fields [passcode, passhash, email], from: self, run: to_json

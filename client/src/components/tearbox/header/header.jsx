@@ -54,8 +54,8 @@ const styles = styler`
     padding: 10px 30px 0
 
   left
-    min-width: 270px
-    flex-basis: 270px
+    min-width: 300px
+    flex-basis: 300px
     margin: 0 30px 0 0
     order: 1
 

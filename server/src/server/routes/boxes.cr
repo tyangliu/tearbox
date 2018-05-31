@@ -24,6 +24,9 @@ module Tearbox::Routes
       data.to_json_public
     end
 
+    options "/boxes" do |env|
+    end
+
     post "/boxes" do |env|
       unless req_body = env.request.body
         raise "Invalid body"
@@ -45,6 +48,9 @@ module Tearbox::Routes
 
       data = BoxData.from_json db_resp.body
       data.to_json_public 
+    end
+
+    options "/boxes/:id" do |env|
     end
 
     patch "/boxes/:id" do |env|

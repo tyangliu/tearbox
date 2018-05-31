@@ -93,6 +93,10 @@ class EditableItemTable extends React.Component {
     this.handleAddItemClick();
   };
 
+  filterOptions = (opts, item) => opts.filter(opt =>
+    item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
+  );
+
   render() {
     const {
       items,
@@ -186,12 +190,9 @@ class EditableItemTable extends React.Component {
                           <SelectBox
                             style={styles.itemSelect}
                             value={{label: item.piece.name, value: item.piece.id}}
-                            options={pieceOpts}
+                            options={this.filterOptions(pieceOpts, item)}
                             onChange={({label, value}) =>
                               editItemFieldFn(tears, groupIdx, i, 'piece_id', value)
-                            }
-                            filterOption={(opt, v) =>
-                              item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
                             }
                           />
                         </li>
@@ -272,7 +273,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     editItemFieldFn: (tears, groupIdx, idx, key, value) =>
       dispatch(editItemField(tears, groupIdx, idx, key, value)),
     debouncedEditItemFieldFn: debounce((tears, groupIdx, idx, key, value) =>
-      dispatch(editItemField(tears, groupIdx, idx, key, value)), 500),
+      dispatch(editItemField(tears, groupIdx, idx, key, value)), 100),
   };
 };
 

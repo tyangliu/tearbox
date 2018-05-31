@@ -3,14 +3,12 @@ import React from 'react';
 import {Route} from 'react-router';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
-import createHistory from 'history/createBrowserHistory';
 import thunkMiddleware from 'redux-thunk';
 import {ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-router-redux';
 
 import App from './app.jsx';
 import rootReducer from './redux/reducers';
-
-const history = createHistory();
+import history from './history';
 
 const store = createStore(
   rootReducer,

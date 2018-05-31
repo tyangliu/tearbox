@@ -72,7 +72,11 @@ class ItemTable extends React.Component {
                 <li style={[styles.itemCol4]}>{item.type.name}</li>
                 <li style={[styles.itemCol5]}>{item.rarity.name}</li>
                 <li style={[styles.itemCol6]}>{item.note}</li>
-                <li style={[styles.itemCol7]}>{new XDate(item.created).toString('MMM d')}</li>
+                <li style={[styles.itemCol7]}>
+                  {(item.created && item.created != '')
+                    ? new XDate(item.created).toString('MMM d')
+                    : ''}
+                </li>
               </ul>
             </li>
           )}

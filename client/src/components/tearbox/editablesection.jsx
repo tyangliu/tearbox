@@ -12,11 +12,9 @@ import {
   editGroupTitle,
   editGroupType,
 } from '../../redux/actions';
+import {groupTypeLabels} from '../../redux/constants';
 
-const typeOpts = [
-  {label: 'Selling', value: 0},
-  {label: 'Buying', value: 1},
-];
+const typeOpts = groupTypeLabels.map((label, i) => ({label, value: i}));
 
 @Radium
 class EditableSection extends React.Component {
@@ -48,12 +46,12 @@ class EditableSection extends React.Component {
       >
         <div style={styles.sectionContainer}>
           <div style={styles.sectionHeadingContainer}>
-            <div style={styles.sectionHeadingLeft}>
+            <div
+              style={styles.sectionHeadingLeft}>
               <div {...(provided.dragHandleProps || {})} tabIndex={-1}>
                 <Icon style={styles.dragIcon} name='drag_indicator'/>
               </div>
-              <h3 style={styles.sectionHeading}
-                  key={`sectionHeading_${title}`}>
+              <h3 style={styles.sectionHeading}>
                 <input
                   type='text'
                   maxLength={24}
@@ -64,7 +62,7 @@ class EditableSection extends React.Component {
                   ref={getRef}
                 />
                 <SelectBox
-                  value={{value: type.id, label: type.label}}
+                  value={typeOpts[type]}
                   style={styles.dropdownTypeSelect}
                   options={typeOpts}
                   onChange={({label, value}) =>
@@ -111,7 +109,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     editDeleteGroupFn: groupIdx => dispatch(editDeleteGroup(groupIdx)),
     editMoveGroupFn: (srcIdx, destIdx) =>
       dispatch(editMoveGroup(srcIdx, destIdx)),
-    editGroupTitleFn: debounce((groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)), 500),
+    editGroupTitleFn: debounce((groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)), 100),
     editGroupTypeFn: (groupIdx, type) => dispatch(editGroupType(groupIdx, type)),
   };
 };

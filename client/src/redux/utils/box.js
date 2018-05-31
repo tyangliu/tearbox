@@ -1,6 +1,7 @@
 import {color, effect, piece, rarity, type} from '../selectors';
 
 import orderBy from 'lodash.orderby';
+import omit from 'lodash.omit';
 
 export const searchOpts = {
   shouldSort: true,
@@ -116,14 +117,33 @@ export function unpackBox(tears, box) {
   };
 }
 
+export function packItem(item) {
+  return omit(item, ['color', 'effect', 'piece', 'rarity', 'type', 'modified']);
+}
+
+export function packBox(box) {
+  const packedGroups = box.groups.map(group => ({
+    ...group,
+    items: group.items.map(item => packItem(item)),
+  }));
+  return {
+    ...box,
+    groups: packedGroups,
+  };
+}
+
 export function processNewBox(data) {
-  const {name, server, igns, discord, forum, other, passscode, email} = data;
+  const {name, server, igns, discord, forum, other, passcode, email} = data;
   return {
     name,
     passcode,
     email,
-    fields: {
-      server, igns, discord, forum, other,
-    },
+    fields: [
+      {label: 'server', value: server},
+      {label: 'igns', value: igns},
+      {label: 'discord', value: discord},
+      {label: 'forum', value: forum},
+      {label: 'other', value: other},
+    ],
   };
 }

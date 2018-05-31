@@ -4,11 +4,12 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 
 import {Logo, Icon, Button} from '../../common';
+import {cancelEdit, requestPatchBox} from '../../../redux/actions';
 
 @Radium
 class EditableHeader extends React.Component {
   render() {
-    const {style} = this.props;
+    const {id, style, cancelEditFn, requestPatchBoxFn} = this.props;
     return (
       <div style={[styles.container, styles.header, style]}>
         <div style={styles.left}>
@@ -16,12 +17,18 @@ class EditableHeader extends React.Component {
         </div>
         <div style={[styles.right, styles.headerRight]}>
           <div style={styles.buttonGroup}>
-            <Button style={styles.button}>
+            <Button
+              style={styles.button}
+              onClick={() => cancelEditFn(id)}
+            >
               Cancel
             </Button>
-            <Button style={styles.button}
-                    isSubmit={true}
-                    key='tearboxSaveButton'>
+            <Button
+              style={styles.button}
+              isSubmit={true}
+              key='tearboxSaveButton'
+              onClick={requestPatchBoxFn}
+            >
               Save
             </Button>
           </div>
@@ -34,11 +41,14 @@ class EditableHeader extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    id: state.box.data.id,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    cancelEditFn: id => dispatch(cancelEdit(id)),
+    requestPatchBoxFn: () => dispatch(requestPatchBox()),
   };
 };
 
@@ -57,8 +67,8 @@ const styles = styler`
     padding: 10px 30px 0
 
   left
-    min-width: 270px
-    flex-basis: 270px
+    min-width: 300px
+    flex-basis: 300px
     margin: 0 30px 0 0
     order: 1
 

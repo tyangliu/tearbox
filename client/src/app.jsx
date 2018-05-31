@@ -1,6 +1,6 @@
 import React from 'react';
 import Radium, {Style} from 'radium';
-import {Route, Switch} from 'react-router';
+import {Route, Redirect, Switch} from 'react-router';
 import styler from 'react-styling';
 
 import {Home, Tearbox, EditableTearbox} from './components';
@@ -12,8 +12,9 @@ export default class App extends React.Component {
         <Style rules={styles.appRules}/>
         <Switch>
           <Route exact path='/' component={Home}/>
-          <Route exact path='/box' component={Tearbox}/>
-          <Route path='/box/edit' component={EditableTearbox}/>
+          <Redirect exact from='/box' to='/'/>
+          <Route exact path='/box/:id' component={Tearbox}/>
+          <Route path='/box/:id/edit' component={EditableTearbox}/>
         </Switch>
         {this.props.children}
       </div>

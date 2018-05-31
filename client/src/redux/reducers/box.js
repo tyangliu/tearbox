@@ -1,14 +1,20 @@
 import Fuse from 'fuse.js';
 import cloneDeep from 'lodash.clonedeep';
 import update from 'immutability-helper';
+import omit from 'lodash.omit';
 
 import {
   ASCENDING,
   DESCENDING,
 
+  RESET_STAGING,
+
   GET_BOX,
   GET_BOX_SUCCESS,
   GET_BOX_FAILURE,
+
+  POST_BOX_SUCCESS,
+  PATCH_BOX_SUCCESS,
 
   SEARCH,
   TOGGLE_GROUP,
@@ -64,11 +70,6 @@ const boxState = {
 };
 
 
-const groupTypes = [
-  {id: 0, label: 'Selling'},
-  {id: 1, label: 'Buying'},
-];
-
 const makeEmptyItem = () => ({
   id: null,
   color: {},
@@ -85,8 +86,8 @@ const makeEmptyItem = () => ({
 
 const makeEmptyGroup = () => ({
   id: null,
-  label: '',
-  type: groupTypes[0],
+  name: '',
+  type: 0,
   items: [],
 });
 
@@ -122,29 +123,45 @@ function updateItemField(state, action) {
   }});
 }
 
-export default function box(state = boxState, action) {
+function updateBox(state, action) {
+  const {groups} = action.data;
   const {options} = state;
+  const groupIndices = (groups || []).map(group => new Fuse(
+    group.items,
+    searchOpts,
+  ));
+  const newData = update(action.data, {
+    groupDisplays: {$set: filterSortGroups(groups, groupIndices, options)},
+    groupIndices: {$set: groupIndices},
+  });
+  return update(state, {
+    data: {$set: newData},
+    stagingData: {$set: cloneDeep(action.data)},
+  });
+}
+
+function copyToStaging(state) {
+  const newStagingData = cloneDeep(
+    omit(state.data, ['groupDisplays', 'groupIndices'])
+  );
+  return update(state, {
+    stagingData: {$set: cloneDeep(newStagingData)},
+  });
+}
+
+export default function box(state = boxState, action) {
   switch (action.type) {
+    case RESET_STAGING:
+      return copyToStaging(state);
     case GET_BOX:
       return {
         ...state,
         data: {},
       };
     case GET_BOX_SUCCESS:
-      const {groups} = action.data;
-      const groupIndices = (groups || []).map(group => new Fuse(
-        group.items,
-        searchOpts,
-      ));
-      return {
-        ...state,
-        data: {...action.data,
-          groupDisplays: filterSortGroups(groups, groupIndices, options),
-          groupIndices,
-        },
-        // Raw copy for staging edits.
-        stagingData: cloneDeep(action.data),
-      }; 
+    case POST_BOX_SUCCESS:
+    case PATCH_BOX_SUCCESS:
+      return updateBox(state, action);
     case SEARCH:
       const optionsWithNewSearch = {
         ...state.options,
@@ -169,7 +186,7 @@ export default function box(state = boxState, action) {
         newSort.order = action.key == 'created' ? DESCENDING : ASCENDING;
       }
       const optionsWithNewSort = {
-        ...options,
+        ...state.options,
         sort: newSort,
       };
       return updateOptions(state, optionsWithNewSort);
@@ -177,11 +194,11 @@ export default function box(state = boxState, action) {
       const {filter} = state.options;
       const newFilter = cloneDeep(filter);
       newFilter[action.key][action.choice] = !filter[action.key][action.choice];
-      return updateOptions(state, {...options, filter: newFilter});
+      return updateOptions(state, {...state.options, filter: newFilter});
     case SELECT_ALL_FILTER:
-      return updateOptions(state, {...options, filter: filterSelectAll});
+      return updateOptions(state, {...state.options, filter: filterSelectAll});
     case UNSELECT_ALL_FILTER: 
-      return updateOptions(state, {...options, filter: filterUnselectAll});
+      return updateOptions(state, {...state.options, filter: filterUnselectAll});
 
     case EDIT_ADD_ITEM: 
       const emptyItem = makeEmptyItem();
@@ -235,13 +252,13 @@ export default function box(state = boxState, action) {
     case EDIT_GROUP_TITLE:
       return update(state, {stagingData: {
         groups: {[action.groupIdx]: {
-          label: {$set: action.title},
+          name: {$set: action.title},
         }},
       }});
     case EDIT_GROUP_TYPE:
       return update(state, {stagingData: {
         groups: {[action.groupIdx]: {
-          type: {$set: groupTypes[action.typeId]},
+          type: {$set: action.typeId},
         }},
       }});
     case EDIT_ITEM_FIELD:

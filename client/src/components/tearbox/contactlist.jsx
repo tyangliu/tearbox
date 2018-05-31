@@ -2,22 +2,26 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import capitalize from 'lodash.capitalize';
 
 export default class ContactList extends React.Component {
   render() {
     const {fields} = this.props;
     return (
       <ul style={styles.contactList}>
-        {fields.map(field => 
-          <li style={styles.contactItem} key={field.label}>
-            <span style={styles.contactItemLabel}>
-              {field.label}
-            </span>
-            <span style={styles.contactItemValue}>
-              {field.value}
-            </span>
-          </li>
-        )} 
+        {fields
+          .filter(field => field.value !== '')
+          .map(field => 
+            <li style={styles.contactItem} key={field.label}>
+              <span style={styles.contactItemLabel}>
+                {capitalize(field.label)}
+              </span>
+              <span style={styles.contactItemValue}>
+                {field.value}
+              </span>
+            </li>
+          )
+      } 
       </ul>
     );
   }

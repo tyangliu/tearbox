@@ -184,8 +184,8 @@ const styles = styler`
     user-select: none
     border: 0
     margin-left: 20px
-    padding: 4px
-    line-height: 22px
+    padding: 6px
+    line-height: 19.5px
     float: left
     position: relative
     z-index: 2

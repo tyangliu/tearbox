@@ -13,6 +13,8 @@ import {
   GET_BOX_SUCCESS,
   GET_BOX_FAILURE,
 
+  POST_BOX_SUCCESS,
+
   SET_COPIED,
   UNSET_COPIED,
 
@@ -40,6 +42,14 @@ const uiState = {
   },
 };
 
+function updateBoxProps(state, action) {
+  return update(state, {
+    boxStatus: {$set: RECEIVED},
+    groupVisibilities: {$set: action.data.groups.map(() => true)},
+    modalVisibilities: {newBox: {$set: false}},
+  });
+}
+
 export default function ui(state = uiState, action) {
   switch (action.type) {
     case REQUEST_TEARS:
@@ -53,11 +63,8 @@ export default function ui(state = uiState, action) {
         groupVisibilities: null,
       };
     case GET_BOX_SUCCESS:
-      return {
-        ...state,
-        boxStatus: RECEIVED,
-        groupVisibilities: action.data.groups.map(() => true),
-      };
+    case POST_BOX_SUCCESS:
+      return updateBoxProps(state, action);
     case GET_BOX_FAILURE:
       return {...state, boxStatus: NOT_FOUND};
     case TOGGLE_GROUP:
@@ -116,21 +123,13 @@ export default function ui(state = uiState, action) {
         filterVisibility: false,
       };
     case OPEN_MODAL:
-      return {
-        ...state,
-        modalVisibilities: {
-          ...state.modalVisibilities,
-          [action.key]: true,
-        },
-      };
+      return update(state, {
+        modalVisibilities: {[action.key]: {$set: true}},
+      });
     case CLOSE_MODAL:
-      return {
-        ...state,
-        modalVisibilities: {
-          ...state.modalVisibilities,
-          [action.key]: false,
-        },
-      };
+      return update(state, {
+        modalVisibilities: {[action.key]: {$set: false}},
+      });
     default:
       return state;
   }

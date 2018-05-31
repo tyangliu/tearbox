@@ -13,15 +13,18 @@ import EditableSection from './editablesection';
 import Footer from './footer';
 
 import {
-  RECEIVED,
-
   loadTears,
   requestGetBox,
   toggleGroup,
-
   editAddGroup,
   endDrag,
 } from '../../redux/actions';
+
+import {
+  UNAVAILABLE,
+  REQUESTED,
+  RECEIVED,
+} from '../../redux/constants';
 
 @Radium
 class EditableTearbox extends React.Component {
@@ -46,9 +49,9 @@ class EditableTearbox extends React.Component {
   };
 
   componentDidMount() {
-    const {boxStatus, requestGetBoxFn} = this.props;
+    const {boxStatus, requestGetBoxFn, match} = this.props;
     if (boxStatus !== RECEIVED) {
-      requestGetBoxFn();
+      requestGetBoxFn(match.params.id);
     }
   }
 
@@ -90,7 +93,7 @@ class EditableTearbox extends React.Component {
                           <Draggable key={i} draggableId={`groupDraggable_${i}`} index={i}>
                             {(provided, snapshot) => (
                               <EditableSection
-                                title={group.label}
+                                title={group.name}
                                 type={group.type}
                                 groupIdx={i}
                                 provided={provided}
@@ -145,7 +148,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loadTearsFn: () => dispatch(loadTears()),
-    requestGetBoxFn: () => dispatch(requestGetBox()),
+    requestGetBoxFn: id => dispatch(requestGetBox(id)),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
 
     editAddGroupFn: () => dispatch(editAddGroup()),
@@ -188,7 +191,7 @@ const styles = styler`
     background: rgba(255,255,255,1)
     float: left
     flex-direction: column
-    width: 270px
+    width: 300px
     margin: 0 30px 0 0
     position: sticky
     top: 103px
@@ -199,7 +202,6 @@ const styles = styler`
 
   leftTop
     padding: 10px 0
-    min-width: 270px
     flex: 1
 
   right

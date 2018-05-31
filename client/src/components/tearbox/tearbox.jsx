@@ -14,22 +14,26 @@ import EditBoxModal, {modalKey as editBoxKey} from '../modals/editbox';
 import Footer from './footer';
 
 import {
-  UNAVAILABLE,
-  REQUESTED,
-  RECEIVED,
-
   loadTears,
   requestGetBox,
   toggleGroup,
   openModal,
 } from '../../redux/actions';
 
+import {
+  UNAVAILABLE,
+  REQUESTED,
+  RECEIVED,
+
+  groupTypeLabels,
+} from '../../redux/constants';
+
 @Radium
 class Tearbox extends React.Component {
   componentDidMount() {
-    const {boxStatus, requestGetBoxFn} = this.props;
+    const {boxStatus, requestGetBoxFn, match} = this.props;
     if (boxStatus !== RECEIVED) {
-      requestGetBoxFn();
+      requestGetBoxFn(match.params.id);
     }
   }
 
@@ -78,11 +82,11 @@ class Tearbox extends React.Component {
                   title={
                     <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
                       <span style={styles.sectionTitleLabel}>
-                        {group.label !== '' ? group.label : group.type.label}
+                        {group.name !== '' ? group.name : groupTypeLabels[group.type]}
                       </span>
-                      {group.label !== '' ?
+                      {group.name !== '' ?
                         <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
-                          {capitalize(group.type.label)}
+                          {capitalize(groupTypeLabels[group.type])}
                         </span> : null
                       }
                     </span>
@@ -119,7 +123,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loadTearsFn: () => dispatch(loadTears()),
-    requestGetBoxFn: () => dispatch(requestGetBox()),
+    requestGetBoxFn: id => dispatch(requestGetBox(id)),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
     openModalFn: key => dispatch(openModal(key)),
   };
@@ -160,7 +164,7 @@ const styles = styler`
     background: rgba(255,255,255,1)
     float: left
     flex-direction: column
-    width: 270px
+    width: 300px
     margin: 0 30px 0 0
     position: sticky
     top: 103px
@@ -171,7 +175,6 @@ const styles = styler`
 
   leftTop
     padding: 10px 0
-    min-width: 270px
     flex: 1
 
   right

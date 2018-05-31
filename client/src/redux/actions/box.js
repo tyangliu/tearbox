@@ -1,9 +1,12 @@
 import queryString from 'query-string';
 import fetch from 'isomorphic-fetch';
+import {push, replace} from 'react-router-redux';
 
-import {RECEIVED} from './constants';
+import {RECEIVED} from '../constants';
 import {loadTears} from './tears';
-import {unpackBox, processNewBox} from '../utils/box';
+import {unpackBox, packBox, processNewBox} from '../utils/box';
+
+export const RESET_STAGING = 'RESET_STAGING';
 
 export const GET_BOX = 'GET_BOX';
 export const GET_BOX_SUCCESS = 'GET_BOX_SUCCESS';
@@ -21,53 +24,21 @@ export const DELETE_BOX = 'DELETE_BOX';
 export const DELETE_BOX_SUCCESS = 'DELETE_BOX_SUCCESS';
 export const DELETE_BOX_FAILURE = 'DELETE_BOX_FAILURE';
 
-const url = 'http://127.0.0.1:3000/';
-const boxesPath = 'boxes/';
+const url = 'http://127.0.0.1:3000';
+const boxesPath = 'boxes';
 
-const mockBox = {
-  id: 'abc',
-  name: 'Line',
-  fields: [
-    {label: 'Server', value: 'Solace'},
-    {label: 'IGNs', value: 'Line, Pore, Pin'},
-    {label: 'Discord', value: 'tom#1885'},
-  ],
-  note: 'The quick brown fox',
-  groups: [
-    {
-      id: 123,
-      type: {id: 0, label: 'Selling'},
-      label: 'Cool Tears',
-      items: [
-        {id: 123, color_id: 0, effect_id: 10005, piece_id: 0, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 2, effect_id: 30054, piece_id: 3, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 40023, piece_id: 2, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 20046, piece_id: 1, note: '', created: new Date().toISOString()},
-      ],
-    },
-    {
-      id: 456,
-      type: {id: 1, label: 'Buying'},
-      label: 'Am Poor',
-      items: [
-        {id: 123, color_id: 0, effect_id: 10028, piece_id: 2, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 2, effect_id: 20054, piece_id: 3, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 40023, piece_id: 2, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 30046, piece_id: 1, note: '', created: new Date().toISOString()},
-      ],
-    },
-    {
-      id: 678,
-      type: {id: 1, label: 'Selling'},
-      label: '',
-      items: [
-        {id: 123, color_id: 0, effect_id: 10028, piece_id: 2, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 2, effect_id: 20054, piece_id: 3, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 40023, piece_id: 2, note: '', created: new Date().toISOString()},
-        {id: 123, color_id: 1, effect_id: 30046, piece_id: 1, note: '', created: new Date().toISOString()},
-      ],
-    },
-  ],
+export const resetStaging = () => ({
+  type: RESET_STAGING,
+});
+
+export const openEdit = id => (dispatch, getState) => {
+  dispatch(resetStaging());
+  dispatch(replace(`/box/${id}/edit`));
+};
+
+export const cancelEdit = id => (dispatch, getState) => {
+  dispatch(resetStaging());
+  dispatch(replace(`/box/${id}`));
 };
 
 export const getBox = id => ({
@@ -100,12 +71,14 @@ export const postBoxFailure = error => ({
   error,
 });
 
-export const patchBox = () => ({
+export const patchBox = data => ({
   type: PATCH_BOX,
+  data,
 });
 
 export const patchBoxSuccess = data => ({
   type: PATCH_BOX_SUCCESS,
+  data,
 });
 
 export const patchBoxFailure = error => ({
@@ -126,42 +99,85 @@ export const deleteBoxFailure = error => ({
   error,
 });
 
-export const requestGetBox = () => async (dispatch, getState) => {
+export const requestGetBox = id => async (dispatch, getState) => {
+  // TODO: Redirect to 404.
+  if (id === '') {
+    dispatch(replace('/'));
+  }
   const tearsPromise = new Promise(async (resolve, reject) => { 
     if (getState().ui.tearStatus !== RECEIVED) {
       await dispatch(loadTears());
     }
     resolve();
   });
-
-  dispatch(getBox());
+  dispatch(getBox(id));
 
   // Fetch box
+  const fullUrl = `${url}/${boxesPath}/${id}`;
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+  });
+
+  // TODO: Redirect to 404.
+  if (response.status !== 200) {
+    dispatch(replace('/'));
+  }
 
   // Wait for tears before releasing result
   await tearsPromise; 
-
+  const result = await response.json();
   const {tears} = getState();
-  const box = unpackBox(tears, mockBox);
+  const box = unpackBox(tears, result);
   dispatch(getBoxSuccess(box));
 };
 
 
 export const requestPostBox = () => async (dispatch, getState) => {
-  const fullUrl = `${url}/${boxesPath}`;
-
   const form = getState().forms.newBox;
   const newBox = processNewBox(form);
-
   dispatch(postBox(newBox));
   
+  const fullUrl = `${url}/${boxesPath}`;
   const response = await fetch(fullUrl, {
     method: 'POST',
     body: JSON.stringify(newBox),
   });
 
-  if (response.status === 200) {
-    const result = await response.json();
-    dispatch(postBoxSuccess(result));    
+  // TODO: show error in UI
+  if (response.status !== 200) {
+    return;
   }
+
+  const result = await response.json();
+  const {tears} = getState();
+  const box = unpackBox(tears, result);
+  dispatch(postBoxSuccess(box));
+  dispatch(push(`/box/${box.id}/edit`));
+};
+
+export const requestPatchBox = () => async (dispatch, getState) => {
+  const {box} = getState();
+  const id = box.data.id;
+  if (id === '') {
+    return;
+  }
+
+  const data = packBox(box.stagingData);
+  dispatch(patchBox(data));
+
+  const fullUrl = `${url}/${boxesPath}/${id}`;
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+  // TODO: show error in UI
+  if (response.status != 200) {
+    return;
+  }
+
+  const result = await response.json();
+  const {tears} = getState();
+  const newBox = unpackBox(tears, result);
+  dispatch(patchBoxSuccess(newBox));
+  dispatch(replace(`/box/${id}`));
 };

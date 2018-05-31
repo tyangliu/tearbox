@@ -10,7 +10,7 @@ import {
   Modal,
 } from '../common';
 
-import {closeModal, editFormField, postBox} from '../../redux/actions';
+import {closeModal, editFormField, requestPostBox} from '../../redux/actions';
 
 const serverChoices = [
   {label: 'Solace', value: 'Solace'},
@@ -29,7 +29,13 @@ export const modalKey = 'newBox';
 @Radium
 class NewBoxModal extends React.Component {
   render() {
-    const {visible, form, closeModalFn, editFormFieldFn, postBoxFn} = this.props;
+    const {
+      visible,
+      form,
+      closeModalFn,
+      editFormFieldFn,
+      requestPostBoxFn,
+    } = this.props;
     return (
       <Modal visible={visible} onClose={closeModalFn}>
         <div style={styles.container}>
@@ -148,7 +154,7 @@ class NewBoxModal extends React.Component {
           <Button
             style={styles.submitButton}
             isSubmit={true}
-            onClick={postBoxFn}
+            onClick={requestPostBoxFn}
           >
             Create
           </Button>
@@ -177,7 +183,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeModalFn: () => dispatch(closeModal(modalKey)),    
     editFormFieldFn: debounce((field, value) =>
       dispatch(editFormField('newBox', field, value)), 200),
-    postBoxFn: () => dispatch(postBox()),
+    requestPostBoxFn: () => dispatch(requestPostBox()),
   };
 };
 
