@@ -17,6 +17,8 @@ export const UNSELECT_ALL_FILTER = 'UNSELECT_ALL_FILTER';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 
+export const SET_OWN_BOX_ID = 'SET_OWN_BOX_ID';
+
 export const toggleGroup = idx => ({
   type: TOGGLE_GROUP,
   idx,
@@ -72,3 +74,7 @@ export const closeModal = key => ({
   key,
 });
 
+export const setOwnBoxId = id => ({
+  type: SET_OWN_BOX_ID,
+  id,
+});

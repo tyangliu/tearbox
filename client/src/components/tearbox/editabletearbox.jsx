@@ -170,7 +170,7 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 1020px
+    min-width: 1120px
     display: flex
     flex-direction: column
     align-items: center

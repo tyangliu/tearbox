@@ -28,6 +28,8 @@ import {
 
   EDIT_DELETE_GROUP,
   END_DRAG,
+
+  SET_OWN_BOX_ID,
 } from '../actions';
 
 const uiState = {
@@ -40,6 +42,7 @@ const uiState = {
     newBox: false,
     editBox: false,
   },
+  ownBoxId: null,
 };
 
 function updateBoxProps(state, action) {
@@ -129,6 +132,10 @@ export default function ui(state = uiState, action) {
     case CLOSE_MODAL:
       return update(state, {
         modalVisibilities: {[action.key]: {$set: false}},
+      });
+    case SET_OWN_BOX_ID:
+      return update(state, {
+        ownBoxId: {$set: action.id},
       });
     default:
       return state;

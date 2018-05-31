@@ -18,6 +18,7 @@ import {
   requestGetBox,
   toggleGroup,
   openModal,
+  setOwnBoxId,
 } from '../../redux/actions';
 
 import {
@@ -25,16 +26,29 @@ import {
   REQUESTED,
   RECEIVED,
 
+  PREV_BOX_ID_KEY,
+
   groupTypeLabels,
 } from '../../redux/constants';
 
 @Radium
 class Tearbox extends React.Component {
-  componentDidMount() {
-    const {boxStatus, requestGetBoxFn, match} = this.props;
+  constructor(props) {
+    super(props);
+    const {boxStatus, requestGetBoxFn, setOwnBoxIdFn, match} = this.props;
     if (boxStatus !== RECEIVED) {
       requestGetBoxFn(match.params.id);
     }
+
+    if (!localStorage) {
+      return;
+    }
+
+    const existingBoxId = localStorage.getItem(PREV_BOX_ID_KEY);
+    if (!existingBoxId) {
+      return;
+    }
+    setOwnBoxIdFn(existingBoxId);
   }
 
   render() {
@@ -42,6 +56,7 @@ class Tearbox extends React.Component {
       tears,
       box,
       groupVisibilities,
+      ownBoxId,
       toggleGroupFn,
       openModalFn,
     } = this.props;
@@ -49,7 +64,9 @@ class Tearbox extends React.Component {
       <div style={styles.tearbox}>
         <div style={styles.tearboxContainer}>
           <div style={styles.headerContainer}>
-            <Header/>
+            <Header
+              ownBoxId={ownBoxId}
+            />
           </div>
           <div style={styles.container}>
             <div style={styles.left}>
@@ -102,6 +119,7 @@ const mapStateToProps = (state, ownProps) => {
     boxStatus: ui.boxStatus,
     box: box.data,
     groupVisibilities: ui.groupVisibilities,
+    ownBoxId: ui.ownBoxId,
   };
 };
 
@@ -111,6 +129,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     requestGetBoxFn: id => dispatch(requestGetBox(id)),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
     openModalFn: key => dispatch(openModal(key)),
+    setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
   };
 };
 
@@ -122,7 +141,7 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 1020px
+    min-width: 1120px
     display: flex
     flex-direction: column
     align-items: center

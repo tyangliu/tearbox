@@ -15,7 +15,7 @@ import {openModal} from '../../../redux/actions';
 @Radium
 class Header extends React.Component {
   render() {
-    const {openModalFn} = this.props;
+    const {ownBoxId, openModalFn} = this.props;
     return (
       <div style={[styles.container, styles.header]}>
         <div style={styles.left}>
@@ -38,7 +38,7 @@ class Header extends React.Component {
               style={styles.button}
               onClick={() => openModalFn(newBoxKey)}
             >
-              Make your own Box
+              {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
             </Button>
           </div>
           <div style={styles.clearfix}/>

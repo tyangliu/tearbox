@@ -1,29 +1,56 @@
 import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import styler from 'react-styling';
 
 import {Logo, Button} from '../common';
 import NewBoxModal, {modalKey as newBoxKey} from '../modals/newbox';
 
-import {openModal} from '../../redux/actions';
+import {openModal, setOwnBoxId} from '../../redux/actions';
+import {PREV_BOX_ID_KEY} from '../../redux/constants';
 
 @Radium
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    const {setOwnBoxIdFn} = this.props;
+
+    if (!localStorage) {
+      return;
+    }
+    const existingBoxId = localStorage.getItem(PREV_BOX_ID_KEY);
+    if (!existingBoxId) {
+      return;
+    }
+    setOwnBoxIdFn(existingBoxId);
+  }
+
   render() {
-    const {openModalFn} = this.props;
+    const {ownBoxId, openModalFn, goToFn} = this.props;
     return (
       <div style={styles.home}>
         <div style={styles.homeContainer}>
           <header style={styles.header}>
             <div style={styles.headerContainer}>
-              <Button
-                icon='note_add'
-                style={styles.button}
-                onClick={() => openModalFn(newBoxKey)}
-              >
-                Make your own Box
-              </Button>
+              <div style={styles.buttonGroup}>
+                {ownBoxId &&
+                  <Button
+                    icon='navigate_next'
+                    style={styles.button}
+                    onClick={() => goToFn(`/box/${ownBoxId}`)}
+                  >
+                    Open my Box
+                  </Button>
+                }
+                <Button
+                  icon='note_add'
+                  style={styles.button}
+                  onClick={() => openModalFn(newBoxKey)}
+                >
+                  {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
+                </Button>
+              </div>
               <Logo style={styles.logo}/>
             </div>
           </header>
@@ -57,13 +84,17 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const {ownBoxId} = state.ui;
   return {
+    ownBoxId,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     openModalFn: key => dispatch(openModal(key)),
+    setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
+    goToFn: url => dispatch(push(url)),
   };
 };
 
@@ -104,10 +135,14 @@ const styles = styler`
     height: 73px
     margin-left: -12px
 
-  button
-    padding: 7px 20px 7px 11px
+  buttonGroup
+    margin-top: 32px
     float: right
-    margin-top: 30px
+
+  button
+    margin-left: 6px
+    display: inline-block
+    padding: 6px 20px 6px 11px
 
   hero
     flex: 1

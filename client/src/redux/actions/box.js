@@ -2,7 +2,7 @@ import queryString from 'query-string';
 import fetch from 'isomorphic-fetch';
 import {push, replace} from 'react-router-redux';
 
-import {RECEIVED} from '../constants';
+import {RECEIVED, PREV_BOX_ID_KEY} from '../constants';
 import {loadTears} from './tears';
 import {unpackBox, packBox, processNewBox} from '../utils/box';
 
@@ -153,6 +153,7 @@ export const requestPostBox = () => async (dispatch, getState) => {
   const box = unpackBox(tears, result);
   dispatch(postBoxSuccess(box));
   dispatch(push(`/box/${box.id}/edit`));
+  localStorage && localStorage.setItem(PREV_BOX_ID_KEY, box.id);
 };
 
 export const requestPatchBox = () => async (dispatch, getState) => {
