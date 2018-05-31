@@ -28,6 +28,13 @@ export const modalKey = 'newBox';
 
 @Radium
 class NewBoxModal extends React.Component {
+  componentDidUpdate(prevProps) {
+    const {visible} = this.props;
+    if (!prevProps.visible && visible) {
+      this.firstInput && this.firstInput.focus();
+    }
+  }
+
   render() {
     const {
       visible,
@@ -57,6 +64,7 @@ class NewBoxModal extends React.Component {
                     placeholder='Your name'
                     defaultValue={form.name}
                     onChange={e => editFormFieldFn('name', e.target.value)}
+                    ref={el => {this.firstInput = el;}}
                   />
                   <span style={styles.nameText}>
                     &#8217;s Box
@@ -138,7 +146,7 @@ class NewBoxModal extends React.Component {
                   Email
                 </h3>
                 <p style={styles.sectionCaption}>
-                  Optional&mdash;In case you forget your passcode.
+                  Optional&mdash;In case you forget your passcode or box link.
                 </p>
                 <input
                   type='email'

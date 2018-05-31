@@ -10,6 +10,13 @@ import {closeModal} from '../../redux/actions';
 export const modalKey = 'editBox';
 
 class EditBoxModal extends React.Component {
+  componentDidUpdate(prevProps) {
+    const {visible} = this.props;
+    if (!prevProps.visible && visible) {
+      this.firstInput && this.firstInput.focus();
+    }
+  }
+
   render() {
     const {visible, closeModalFn} = this.props;
     return (
@@ -27,11 +34,14 @@ class EditBoxModal extends React.Component {
               <h3 style={styles.sectionHeading}>
                 Enter Your Box Passcode
               </h3>
-              <input type='password'
-                     style={styles.sectionInput}
-                     maxLength={32}
-                     placeholder='Passcode'
-                     onChange={() => {}}/>
+              <input
+                type='password'
+                style={styles.sectionInput}
+                maxLength={32}
+                placeholder='Passcode'
+                onChange={() => {}}
+                ref={el => {this.firstInput = el;}}
+              />
             </div>
           </div>
           <Button style={styles.submitButton} isSubmit={true}>
