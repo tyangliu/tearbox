@@ -1,7 +1,9 @@
-import {color, effect, piece, rarity, type} from '../selectors';
-
 import orderBy from 'lodash.orderby';
 import omit from 'lodash.omit';
+import forOwn from 'lodash.forown';
+import emailValidator from 'email-validator';
+
+import {color, effect, piece, rarity, type} from '../selectors';
 
 export const searchOpts = {
   shouldSort: true,
@@ -146,20 +148,57 @@ export function packBox(box) {
 }
 
 export function processNewBox(data) {
-  const {name, server, igns, discord, forum, other, passcode, email} = data;
+  const {
+    name, server, igns, discord, forum, other,
+    passcode, email,
+  } = data;
   const newBox = {
-    name,
+    name: name.trim(),
     passcode,
     fields: [
-      {label: 'server', value: server},
-      {label: 'igns', value: igns},
-      {label: 'discord', value: discord},
-      {label: 'forum', value: forum},
-      {label: 'other', value: other},
+      {label: 'server', value: server.trim()},
+      {label: 'igns', value: igns.trim()},
+      {label: 'discord', value: discord.trim()},
+      {label: 'forum', value: forum.trim()},
+      {label: 'other', value: other.trim()},
     ],
   };
-  if (email.length) {
-    newBox.email = email;
+  const trimmedEmail = email.trim();
+  if (trimmedEmail.length) {
+    newBox.email = trimmedEmail;
   }
   return newBox;
+}
+
+const newBoxValidator = {
+  name: {
+    req: v => v.length > 0 && v.length < 24,
+    message: 'Name is required.',
+  },
+  passcode: {
+    req: v => /^\S{6,}$/.test(v),
+    message: 'Passcode must be 6 or more characters, no spaces.',
+  },
+  passcodeReenter: {
+    req: (v, obj) => v === obj.passcode,
+    message: 'Passcodes must match.',
+  },
+  email: {
+    req: v => !v || emailValidator.validate(v),
+    message: 'Email must be valid.',
+  },
+  igns: {
+    req: (v, obj) => obj.fields.igns && obj.fields.igns.length > 0,
+    message: 'IGNs are required.',
+  },
+};
+
+export function validateNewBox(form) { 
+  const result = {};
+  forOwn(newBoxValidator, ({req, message}, key) => {
+    if (!req(form[key], form)) {
+      result[key] = message;
+    }
+  });
+  return result;
 }

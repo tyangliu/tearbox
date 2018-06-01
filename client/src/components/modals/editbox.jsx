@@ -21,6 +21,8 @@ class EditBoxModal extends React.Component {
     const {
       visible,
       form,
+      formErrors,
+      errorMessage,
       closeModalFn,
       editFormFieldFn,
       requestPostBoxAuthFn,
@@ -43,15 +45,30 @@ class EditBoxModal extends React.Component {
               </h3>
               <input
                 type='password'
-                style={styles.sectionInput}
+                style={[
+                  styles.input[formErrors.passcode ? 'error' : 'normal'],
+                  styles.sectionInput,
+                ]}
                 maxLength={32}
                 placeholder='Passcode'
                 defaultValue={form.passcode}
                 onChange={e => editFormFieldFn('passcode', e.target.value)}
                 ref={el => {this.firstInput = el;}}
               />
+                {formErrors.passcode
+                  ? <div style={styles.errorMessage}>
+                      {formErrors.passcode}
+                    </div>
+                  : null
+                }
             </div>
           </div>
+          {errorMessage
+            ? <div style={styles.errorMessage}>
+                {errorMessage}
+              </div>
+            : null
+          }
           <Button
             style={styles.submitButton}
             isSubmit={true}
@@ -68,10 +85,12 @@ class EditBoxModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {modalVisibilities} = state.ui.present;
-  const {editBox} = state.forms;
+  const {editBox, editBoxErrors, editBoxErrorMessage} = state.forms;
   return {
     visible: modalVisibilities[modalKey],
     form: editBox,
+    formErrors: editBoxErrors,
+    errorMessage: editBoxErrorMessage,
   };
 };
 
@@ -138,12 +157,24 @@ const styles = styler`
     color: rgba(55,67,79,0.65)
     margin-bottom: 12.5px
 
+  input
+    &normal
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+
+    &error
+      border-bottom: 1px solid rgba(217,52,35,1)
+
   sectionInput
-    border-bottom: 1px solid rgba(55,67,79,0.2)
     width: 100%
     padding: 4px 0
     outline: none
     margin-bottom: 5px
+
+  errorMessage
+    text-align: right
+    margin-bottom: 20px
+    color: rgba(217,52,35,1)
+    font-style: italic
 
   submitButton
     float: right

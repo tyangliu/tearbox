@@ -1,6 +1,9 @@
 import update from 'immutability-helper';
 
 import {
+  POST_BOX_FAILURE,
+  POST_BOX_AUTH_FAILURE,
+
   EDIT_FORM_FIELD,
   OPEN_MODAL,
 } from '../actions';
@@ -23,7 +26,11 @@ const makeEmptyEditBoxForm = () => ({
 
 const formsState = {
   newBox: makeEmptyNewBoxForm(),
+  newBoxErrors: {},
+  newBoxErrorMessage: null,
   editBox: makeEmptyEditBoxForm(),
+  editBoxErrors: {},
+  editBoxErrorMessage: null,
 };
 
 function resetForm(state, action) {
@@ -31,6 +38,7 @@ function resetForm(state, action) {
     case 'newBox':
       return update(state, {
         newBox: {$set: makeEmptyNewBoxForm()},
+        newBoxErrors: {$set: {}},
       });
     case 'editBox':
       return update(state, {
@@ -49,6 +57,16 @@ export default function forms(state = formsState, action) {
       });
     case OPEN_MODAL:
       return resetForm(state, action);
+    case POST_BOX_FAILURE:
+      return update(state, {
+        newBoxErrors: {$set: action.error.errors || {}},
+        newBoxErrorMessage: {$set: action.error.message},
+      });
+    case POST_BOX_AUTH_FAILURE:
+      return update(state, {
+        editBoxErrors: {$set: action.error.errors || {}},
+        editBoxErrorMessage: {$set: action.error.message},
+      });
     default:
       return state;
   }

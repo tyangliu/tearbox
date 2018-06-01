@@ -6,7 +6,7 @@ import ls from 'local-storage';
 import {RECEIVED, PREV_BOX_ID_KEY, PREV_BOX_TOKEN_KEY} from '../constants';
 import {loadTears} from './tears';
 import {openModal} from './ui';
-import {unpackBox, packBox, processNewBox} from '../utils/box';
+import {unpackBox, packBox, processNewBox, validateNewBox} from '../utils/box';
 
 export const RESET_STAGING = 'RESET_STAGING';
 
@@ -126,6 +126,9 @@ export const requestPostBoxAuth = () => async (dispatch, getState) => {
   const {passcode} = getState().forms.editBox;
 
   if (!id || passcode == '') {
+    dispatch(postBoxAuthFailure({
+      errors: {passcode: 'The passcode is incorrect.'},
+    }));
     return;
   }
 
@@ -136,7 +139,16 @@ export const requestPostBoxAuth = () => async (dispatch, getState) => {
   });
 
   // TODO: show error in UI
+  if (response.status === 401) {
+    dispatch(postBoxAuthFailure({
+      errors: {passcode: 'The passcode is incorrect.'},
+    }));
+    return;
+  }
   if (response.status !== 200) {
+    dispatch(postBoxAuthFailure({
+      message: 'Something went wrong. Try again later.',
+    }));
     return;
   }
 
@@ -183,6 +195,11 @@ export const requestGetBox = id => async (dispatch, getState) => {
 export const requestPostBox = () => async (dispatch, getState) => {
   const form = getState().forms.newBox;
   const newBox = processNewBox(form);
+  const errors = validateNewBox(newBox);
+  if (Object.keys(errors).length > 0) {
+    dispatch(postBoxFailure({errors}));
+    return;
+  }
   dispatch(postBox(newBox));
   
   const fullUrl = `${url}/${boxesPath}`;
@@ -193,6 +210,9 @@ export const requestPostBox = () => async (dispatch, getState) => {
 
   // TODO: show error in UI
   if (response.status !== 200) {
+    dispatch(postBoxFailure({
+      message: 'Something went wrong. Try again later.'
+    }));
     return;
   }
 
@@ -228,7 +248,13 @@ export const requestPatchBox = () => async (dispatch, getState) => {
     },
   });
   // TODO: show error in UI
+  if (response.status == 401) {
+    dispatch(openModal('editBox'));
+    return;
+  }
+
   if (response.status != 200) {
+    dispatch(patchBoxFailure('Something went wrong while saving. Try again later.'));
     return;
   }
 

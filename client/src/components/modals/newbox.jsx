@@ -10,7 +10,11 @@ import {
   Modal,
 } from '../common';
 
-import {closeModal, editFormField, requestPostBox} from '../../redux/actions';
+import {
+  closeModal,
+  editFormField,
+  requestPostBox,
+} from '../../redux/actions';
 
 const serverChoices = [
   {label: 'Solace', value: 'Solace'},
@@ -39,6 +43,8 @@ class NewBoxModal extends React.Component {
     const {
       visible,
       form,
+      formErrors,
+      errorMessage,
       closeModalFn,
       editFormFieldFn,
       requestPostBoxFn,
@@ -60,7 +66,10 @@ class NewBoxModal extends React.Component {
                 <div style={styles.name}>
                   <input
                     type='text'
-                    style={styles.nameInput}
+                    style={[
+                      styles.input[formErrors.name ? 'error' : 'normal'],
+                      styles.nameInput,
+                    ]}
                     maxLength={20}
                     placeholder='Your name'
                     defaultValue={form.name}
@@ -71,6 +80,12 @@ class NewBoxModal extends React.Component {
                     &#8217;s Box
                   </span>
                 </div>
+                {formErrors.name
+                  ? <div style={styles.inputError}>
+                      {formErrors.name}
+                    </div>
+                  : null
+                }
                 <ul style={styles.contactFields}>
                   {/* Server Select */}
                   <li style={styles.contactField}>
@@ -89,7 +104,7 @@ class NewBoxModal extends React.Component {
                     <div style={styles.clearfix}/>
                   </li>
                   {/* Contact Textfields */}
-                  {contactFields.map(({label, key, required}) =>
+                  {contactFields.map(({label, key, required}) => [
                     <li
                       style={styles.contactField}
                       key={'contactField_' + key}
@@ -102,15 +117,23 @@ class NewBoxModal extends React.Component {
                       </span>
                       <input
                         type='text'
-                        style={styles.contactFieldInput}
+                        style={[
+                          styles.input[formErrors[key] ? 'error' : 'normal'],
+                          styles.contactFieldInput,
+                        ]}
                         maxLength={80}
                         placeholder=''
                         defaultValue={form[key]}
                         onChange={e => editFormFieldFn(key, e.target.value)}
                       />
                       <div style={styles.clearfix}/>
-                    </li>
-                  )}
+                    </li>, 
+                    formErrors[key]
+                      ? <div style={styles.inputError}>
+                          {formErrors[key]}
+                        </div>
+                      : null,
+                  ])}
                 </ul>
               </div>
             </div>
@@ -126,20 +149,38 @@ class NewBoxModal extends React.Component {
                 </p>
                 <input
                   type='password'
-                  style={styles.sectionInput}
+                  style={[
+                    styles.input[formErrors.passcode ? 'error' : 'normal'],
+                    styles.sectionInput,
+                  ]}
                   maxLength={32}
                   placeholder='Create a passcode (6 or longer)'
                   defaultValue={form.passcode}
                   onChange={e => editFormFieldFn('passcode', e.target.value)}
-                />
+                />                
+                {formErrors.passcode
+                  ? <div style={styles.inputError}>
+                      {formErrors.passcode}
+                    </div>
+                  : null
+                }
                 <input
                   type='password'
-                  style={styles.sectionInput}
+                  style={[
+                    styles.input[formErrors.passcodeReenter ? 'error' : 'normal'],
+                    styles.sectionInput,
+                  ]}
                   maxLength={32}
                   placeholder='Re-enter passcode'
                   defaultValue={form.passcodeReenter}
                   onChange={e => editFormFieldFn('passcodeReenter', e.target.value)}
                 />
+                {formErrors.passcodeReenter
+                  ? <div style={styles.inputError}>
+                      {formErrors.passcodeReenter}
+                    </div>
+                  : null
+                }
               </div>
               {/* Email */}
               <div style={styles.section}>
@@ -151,15 +192,30 @@ class NewBoxModal extends React.Component {
                 </p>
                 <input
                   type='email'
-                  style={styles.sectionInput}
+                  style={[
+                    styles.input[formErrors.email ? 'error' : 'normal'],
+                    styles.sectionInput
+                  ]}
                   maxLength={32}
                   placeholder='Email Address'
                   defaultValue={form.email}
                   onChange={e => editFormFieldFn('email', e.target.value)}
                 />
+                {formErrors.email
+                  ? <div style={styles.inputError}>
+                      {formErrors.email}
+                    </div>
+                  : null
+                }
               </div>
             </div>
           </div>
+          {errorMessage
+            ? <div style={styles.errorMessage}>
+                {errorMessage}
+              </div>
+            : null
+          }
           <Button
             style={styles.submitButton}
             isSubmit={true}
@@ -180,10 +236,12 @@ class NewBoxModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {modalVisibilities} = state.ui.present;
-  const {newBox} = state.forms;
+  const {newBox, newBoxErrors, newBoxErrorMessage} = state.forms;
   return {
     visible: modalVisibilities[modalKey],
     form: newBox,
+    formErrors: newBoxErrors,
+    errorMessage: newBoxErrorMessage,
   };
 };
 
@@ -250,6 +308,29 @@ const styles = styler`
     display: flex
     flex-direction: row
     align-items: flex-start
+    position: relative
+
+  input
+    &normal
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+
+    &error
+      border-bottom: 1px solid rgba(217,52,35,1)
+
+  errorMessage
+    text-align: right
+    margin-bottom: 20px
+    color: rgba(217,52,35,1)
+    font-style: italic
+
+  inputError
+    display: block
+    text-align: right
+    font-size: 13px
+    font-weight: normal
+    font-style: italic
+    color: rgba(217,52,35,1)
+    margin-bottom: 13px
 
   nameInput
     min-width: 0
@@ -257,7 +338,6 @@ const styles = styler`
     font-weight: bold
     outline: none
     color: inherit
-    border-bottom: 1px solid rgba(55,67,79,0.2)
 
   nameText
     display: block
@@ -285,7 +365,6 @@ const styles = styler`
     flex: 1
 
   contactFieldInput
-    border-bottom: 1px solid rgba(55,67,79,0.2)
     flex: 1
     padding: 4px 0
     outline: none
@@ -306,7 +385,6 @@ const styles = styler`
     margin-bottom: 12.5px
 
   sectionInput
-    border-bottom: 1px solid rgba(55,67,79,0.2)
     width: 100%
     padding: 4px 0
     outline: none
