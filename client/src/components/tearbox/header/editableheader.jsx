@@ -1,6 +1,7 @@
 import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import styler from 'react-styling';
 import {ActionCreators} from 'redux-undo';
 import ReactTooltip from 'react-tooltip';
@@ -21,10 +22,27 @@ class EditableHeader extends React.Component {
     window.onbeforeunload = null;
   }
 
+  confirmCancel = () => {
+    const {isDirty} = this.props;
+    if (!isDirty) {
+      return true;
+    }
+    return confirm(leaveMessage);
+  }
+
   onCancel = () => {
     const {id, cancelEditFn} = this.props;
-    cancelEditFn(id);
-    window.onbeforeunload = null;
+    if (this.confirmCancel()) {
+      cancelEditFn(id);
+      window.onbeforeunload = null;
+    }
+  };
+
+  onNavHome = () => {
+    const {goToFn} = this.props;
+    if (this.confirmCancel()) {
+      goToFn('/');
+    }
   };
 
   onSave = () => {
@@ -48,7 +66,11 @@ class EditableHeader extends React.Component {
     return (
       <div style={[styles.container, styles.header, style]}>
         <div style={styles.left}>
-          <Logo style={styles.logo}/>
+          <Logo
+            shouldLink={false}
+            style={styles.logo}
+            onClick={this.onNavHome}
+          />
         </div>
         <div style={[styles.right, styles.headerRight]}>
           <div style={styles.controlContainer}>
@@ -128,6 +150,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     requestPatchBoxFn: () => dispatch(requestPatchBox()),
     undoFn: () => dispatch(ActionCreators.undo()),
     redoFn: () => dispatch(ActionCreators.redo()),
+    goToFn: url => dispatch(push(url)),
   };
 };
 

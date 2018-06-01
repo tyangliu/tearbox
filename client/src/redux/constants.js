@@ -4,5 +4,6 @@ export const RECEIVED = 2;
 export const NOT_FOUND = 3;
 
 export const PREV_BOX_ID_KEY = 'previousBoxId';
+export const PREV_BOX_TOKEN_KEY = 'previousBoxToken';
 
 export const groupTypeLabels = ['Selling', 'Buying'];

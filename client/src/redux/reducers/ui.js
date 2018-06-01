@@ -5,6 +5,8 @@ import {
   REQUEST_TEARS,
   RECEIVE_TEARS,
 
+  POST_BOX_AUTH_SUCCESS,
+
   GET_BOX,
   GET_BOX_SUCCESS,
   GET_BOX_FAILURE,
@@ -46,6 +48,7 @@ const uiState = {
     editBox: false,
   },
   ownBoxId: null,
+  ownBoxToken: null,
 };
 
 function updateBoxProps(state, action) {
@@ -62,6 +65,10 @@ function ui(state = uiState, action) {
       return {...state, tearsStatus: REQUESTED};
     case RECEIVE_TEARS:
       return {...state, tearsStatus: RECEIVED};
+    case POST_BOX_AUTH_SUCCESS:
+      return update(state, {
+        modalVisibilities: {editBox: {$set: false},},
+      }); 
     case GET_BOX:
       return {
         ...state,

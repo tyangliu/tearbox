@@ -3,6 +3,7 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 import capitalize from 'lodash.capitalize';
+import ls from 'local-storage';
 
 import {Header} from './header';
 import {Button} from '../common';
@@ -29,6 +30,7 @@ import {
   NOT_FOUND,
 
   PREV_BOX_ID_KEY,
+  PREV_BOX_TOKEN_KEY,
 
   groupTypeLabels,
 } from '../../redux/constants';
@@ -42,14 +44,18 @@ class Tearbox extends React.Component {
 
   constructor(props) {
     super(props);
-    const {setOwnBoxIdFn} = this.props;
-    this.refreshBox();
+    const {
+      boxStatus,
+      box,
+      match,
+      setOwnBoxIdFn,
+    } = this.props;
 
-    if (!localStorage) {
-      return;
+    if (boxStatus !== RECEIVED || box.id !== match.params.id) {
+      this.refreshBox();
     }
 
-    const existingBoxId = localStorage.getItem(PREV_BOX_ID_KEY);
+    const existingBoxId = ls.get(PREV_BOX_ID_KEY);
     if (!existingBoxId) {
       return;
     }
@@ -64,7 +70,6 @@ class Tearbox extends React.Component {
 
   render() {
     const {
-      tears,
       box,
       boxStatus,
       groupVisibilities,
@@ -135,8 +140,6 @@ class Tearbox extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
   return {
-    tearsStatus: ui.present.tearsStatus,
-    tears,
     boxStatus: ui.present.boxStatus,
     box: box.present.data,
     groupVisibilities: ui.present.groupVisibilities,

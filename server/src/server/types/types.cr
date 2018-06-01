@@ -2,17 +2,6 @@ require "auto_json"
 require "hashids"
 require "ulid"
 
-private macro hide_fields(fields, from obj, run)
-  {% for field, index in fields %}
-    %field{index}, {{obj}}.{{field}} = {{obj}}.{{field}}, nil    
-  {% end %}
-  %result = {{run}}
-  {% for field, index in fields %} 
-    {{obj}}.{{field}} = %field{index}
-  {% end %}
-  %result
-end
-
 ##############################################################################
 # Data Types
 ##############################################################################
@@ -31,14 +20,9 @@ private macro base
       previous_def
       if !@key && (id = @id)
         @key = decode_id id
-      end
-    end
-
-    def to_json(json : JSON::Builder)
-      if !@id && (key = @key)
+      elsif !id && (key = @key)
         @id = encode_key key
       end
-      previous_def
     end
   end
 end
@@ -54,6 +38,16 @@ module Tearbox::Types
 
   def encode_key(key : String)
     HASHER.encode [UInt64.new key]
+  end
+
+  class JWTToken
+    include AutoJson
+
+    field :sub, String
+    field :aud, Array(String)
+    field :iss, String
+    field :exp, Int64
+    field :iat, Int64
   end
 
   enum ItemColor
@@ -97,6 +91,13 @@ module Tearbox::Types
     field :label, String
     field :value, String
   end
+
+  class BoxAuth
+    include AutoJson
+
+    field :id, String
+    field :passcode, String
+  end
   
   class BoxData
     base
@@ -108,10 +109,15 @@ module Tearbox::Types
     field :email, String?
     field :fields, Array(BoxField), default: [] of BoxField
     field :groups, Array(Group), default: [] of Group
+  end
 
-    def to_json_public
-      hide_fields [passcode, passhash, email], from: self, run: to_json
-    end
+  class BoxDataPublic
+    base
+
+    field :name, String
+    field :description, String, default: ""
+    field :fields, Array(BoxField), default: [] of BoxField
+    field :groups, Array(Group), default: [] of Group
   end
 end
 
@@ -136,6 +142,45 @@ module Tearbox::PatchTypes
     field :email, String?
     field :fields, Array(Tearbox::Types::BoxField)?
     field :groups, Array(Tearbox::Types::Group)?
+  end
+end
+
+##############################################################################
+# HTTP Types
+##############################################################################
+module Tearbox::HTTPTypes
+  include Tearbox::Types
+  include Tearbox::PatchTypes
+
+  class PostBoxAuthResponse
+    include AutoJson
+
+    field :token, String
+  end
+
+  class GetBoxResponse
+    include AutoJson
+
+    field :data, BoxDataPublic
+  end
+
+  class PostBoxResponse
+    include AutoJson
+
+    field :data, BoxDataPublic
+    field :token, String
+  end
+
+  class PatchBoxResponse
+    include AutoJson
+
+    field :data, BoxDataPublic
+  end
+
+  class DeleteBoxResponse
+    include AutoJson
+
+    field :success, Bool
   end
 end
 

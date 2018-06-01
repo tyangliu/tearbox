@@ -6,4 +6,3 @@ export const editFormField = (form, field, value) => ({
   field,
   value,
 });
-

@@ -2,10 +2,10 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import debounce from 'lodash.debounce';
 
 import {Button, Modal} from '../common';
-
-import {closeModal} from '../../redux/actions';
+import {closeModal, editFormField, requestPostBoxAuth} from '../../redux/actions';
 
 export const modalKey = 'editBox';
 
@@ -18,7 +18,14 @@ class EditBoxModal extends React.Component {
   }
 
   render() {
-    const {visible, closeModalFn} = this.props;
+    const {
+      visible,
+      form,
+      closeModalFn,
+      editFormFieldFn,
+      requestPostBoxAuthFn,
+    } = this.props;
+
     return (
       <Modal visible={visible} onClose={closeModalFn}> 
         <div style={styles.container}>
@@ -39,12 +46,17 @@ class EditBoxModal extends React.Component {
                 style={styles.sectionInput}
                 maxLength={32}
                 placeholder='Passcode'
-                onChange={() => {}}
+                defaultValue={form.passcode}
+                onChange={e => editFormFieldFn('passcode', e.target.value)}
                 ref={el => {this.firstInput = el;}}
               />
             </div>
           </div>
-          <Button style={styles.submitButton} isSubmit={true}>
+          <Button
+            style={styles.submitButton}
+            isSubmit={true}
+            onClick={requestPostBoxAuthFn}
+          >
             Submit
           </Button>
           <div style={styles.clearfix}/>
@@ -56,14 +68,19 @@ class EditBoxModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {modalVisibilities} = state.ui.present;
+  const {editBox} = state.forms;
   return {
     visible: modalVisibilities[modalKey],
+    form: editBox,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    closeModalFn: () => dispatch(closeModal(modalKey)),    
+    closeModalFn: () => dispatch(closeModal(modalKey)),
+    editFormFieldFn: debounce((field, value) =>
+      dispatch(editFormField('editBox', field, value)), 200), 
+    requestPostBoxAuthFn: () => dispatch(requestPostBoxAuth()),
   };
 };
 

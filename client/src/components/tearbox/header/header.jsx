@@ -1,7 +1,9 @@
 import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
+import {replace} from 'react-router-redux';
 import styler from 'react-styling';
+import ls from 'local-storage';
 
 import {Logo, Button, Icon} from '../../common';
 import Search from './search';
@@ -9,11 +11,27 @@ import FilterMenu from './filtermenu';
 
 import {modalKey as newBoxKey} from '../../modals/newbox';
 import {modalKey as editBoxKey} from '../../modals/editbox';
-
 import {openModal} from '../../../redux/actions';
+import {PREV_BOX_TOKEN_KEY} from '../../../redux/constants';
 
 @Radium
 class Header extends React.Component {
+  handleEditClick = () => {
+    const {
+      id,
+      ownBoxId,
+      openModalFn,
+      goToFn,
+    } = this.props;
+    const token = ls.get(PREV_BOX_TOKEN_KEY);
+    
+    if (id && ownBoxId === id && token) {
+      goToFn(`/box/${id}/edit`);
+    } else {
+      openModalFn(editBoxKey);
+    }
+  };
+
   render() {
     const {ownBoxId, openModalFn} = this.props;
     return (
@@ -31,7 +49,7 @@ class Header extends React.Component {
               icon='edit'
               style={styles.button}
               key='editboxbutton'
-              onClick={() => openModalFn(editBoxKey)}
+              onClick={this.handleEditClick}
             >
               Edit this Box
             </Button>
@@ -51,13 +69,17 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const {box, ui} = state;
   return {
+    id: box.present.data.id,
+    ownBoxId: ui.present.ownBoxId,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     openModalFn: key => dispatch(openModal(key)),
+    goToFn: url => dispatch(replace(url)),
   };
 };
 

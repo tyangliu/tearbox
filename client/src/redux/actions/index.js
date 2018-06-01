@@ -1,4 +1,3 @@
-export * from './auth';
 export * from './box';
 export * from './editor';
 export * from './forms';

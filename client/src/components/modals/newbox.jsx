@@ -43,6 +43,7 @@ class NewBoxModal extends React.Component {
       editFormFieldFn,
       requestPostBoxFn,
     } = this.props;
+
     return (
       <Modal visible={visible} onClose={closeModalFn}>
         <div style={styles.container}>

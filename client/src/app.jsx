@@ -1,11 +1,12 @@
 import React from 'react';
 import Radium, {Style} from 'radium';
+import {connect} from 'react-redux';
 import {Route, Switch} from 'react-router';
 import styler from 'react-styling';
 
 import {Home, Tearbox, EditableTearbox, NotFound} from './components';
 
-export default class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <div style={styles.app}>
@@ -31,6 +32,21 @@ export default class App extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
 
 const styles = styler`
   app

@@ -1,12 +1,18 @@
 import queryString from 'query-string';
 import fetch from 'isomorphic-fetch';
 import {push, replace} from 'react-router-redux';
+import ls from 'local-storage';
 
-import {RECEIVED, PREV_BOX_ID_KEY} from '../constants';
+import {RECEIVED, PREV_BOX_ID_KEY, PREV_BOX_TOKEN_KEY} from '../constants';
 import {loadTears} from './tears';
+import {openModal} from './ui';
 import {unpackBox, packBox, processNewBox} from '../utils/box';
 
 export const RESET_STAGING = 'RESET_STAGING';
+
+export const POST_BOX_AUTH = 'POST_BOX_AUTH';
+export const POST_BOX_AUTH_SUCCESS = 'POST_BOX_AUTH_SUCCESS';
+export const POST_BOX_AUTH_FAILURE = 'POST_BOX_AUTH_FAILURE';
 
 export const GET_BOX = 'GET_BOX';
 export const GET_BOX_SUCCESS = 'GET_BOX_SUCCESS';
@@ -76,9 +82,10 @@ export const patchBox = data => ({
   data,
 });
 
-export const patchBoxSuccess = data => ({
+export const patchBoxSuccess = (data, token) => ({
   type: PATCH_BOX_SUCCESS,
   data,
+  token,
 });
 
 export const patchBoxFailure = error => ({
@@ -98,6 +105,47 @@ export const deleteBoxFailure = error => ({
   type: DELETE_BOX_FAILURE,
   error,
 });
+
+export const postBoxAuth = () => ({
+  type: POST_BOX_AUTH,
+});
+
+export const postBoxAuthSuccess = (id, token) => ({
+  type: POST_BOX_AUTH_SUCCESS,
+  id,
+  token,
+});
+
+export const postBoxAuthFailure = error => ({
+  type: POST_BOX_AUTH_FAILURE,
+  error,
+});
+
+export const requestPostBoxAuth = () => async (dispatch, getState) => {
+  const {id} = getState().box.present.data;
+  const {passcode} = getState().forms.editBox;
+
+  if (!id || passcode == '') {
+    return;
+  }
+
+  const fullUrl = `${url}/${boxesPath}/auth`;
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    body: JSON.stringify({id, passcode}),
+  });
+
+  // TODO: show error in UI
+  if (response.status !== 200) {
+    return;
+  }
+
+  const result = await response.json();
+  ls.set(PREV_BOX_ID_KEY, id);
+  ls.set(PREV_BOX_TOKEN_KEY, result.token);
+  dispatch(postBoxAuthSuccess(id, result.token));
+  dispatch(replace(`/box/${id}/edit`));
+};
 
 export const requestGetBox = id => async (dispatch, getState) => {
   if (id === '') {
@@ -127,7 +175,7 @@ export const requestGetBox = id => async (dispatch, getState) => {
   await tearsPromise; 
   const result = await response.json();
   const {tears} = getState();
-  const box = unpackBox(tears, result);
+  const box = unpackBox(tears, result.data);
   dispatch(getBoxSuccess(box));
 };
 
@@ -150,18 +198,23 @@ export const requestPostBox = () => async (dispatch, getState) => {
 
   const result = await response.json();
   const {tears} = getState();
-  const box = unpackBox(tears, result);
-  dispatch(postBoxSuccess(box));
+  const box = unpackBox(tears, result.data);
+  ls.set(PREV_BOX_ID_KEY, box.id);
+  ls.set(PREV_BOX_TOKEN_KEY, result.token);
+  dispatch(postBoxSuccess(box, result.token));
   dispatch(push(`/box/${box.id}/edit`));
-  localStorage && localStorage.setItem(PREV_BOX_ID_KEY, box.id);
 };
 
 export const requestPatchBox = () => async (dispatch, getState) => {
   const {box} = getState();
   const id = box.present.data.id;
-  if (id === '') {
+  const storedId = ls.get(PREV_BOX_ID_KEY);
+  const storedToken = ls.get(PREV_BOX_TOKEN_KEY);
+
+  if (id === '' || id !== storedId || !storedToken) {
+    dispatch(openModal('editBox'));
     return;
-  }
+  } 
 
   const data = packBox(box.present.stagingData);
   dispatch(patchBox(data));
@@ -170,6 +223,9 @@ export const requestPatchBox = () => async (dispatch, getState) => {
   const response = await fetch(fullUrl, {
     method: 'PATCH',
     body: JSON.stringify(data),
+    headers: {
+      'X-Token': storedToken,
+    },
   });
   // TODO: show error in UI
   if (response.status != 200) {
@@ -178,7 +234,7 @@ export const requestPatchBox = () => async (dispatch, getState) => {
 
   const result = await response.json();
   const {tears} = getState();
-  const newBox = unpackBox(tears, result);
+  const newBox = unpackBox(tears, result.data);
   dispatch(patchBoxSuccess(newBox));
   dispatch(replace(`/box/${id}`));
 };

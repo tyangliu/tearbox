@@ -1,11 +1,13 @@
 import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
+import {replace} from 'react-router-redux';
 import styler from 'react-styling';
 import {animateScroll as scroll} from 'react-scroll';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import {ActionCreators} from 'redux-undo';
 import keydown from 'react-keydown';
+import ls from 'local-storage';
 
 import {EditableHeader} from './header';
 import {Icon} from '../common';
@@ -21,13 +23,19 @@ import {
   toggleGroup,
   editAddGroup,
   endDrag,
+  openModal,
 } from '../../redux/actions';
-
 import {
   UNAVAILABLE,
   REQUESTED,
   RECEIVED,
   NOT_FOUND,
+} from '../../redux/constants';
+
+import {modalKey as editBoxKey} from '../modals/editbox';
+import {
+  PREV_BOX_ID_KEY,
+  PREV_BOX_TOKEN_KEY,
 } from '../../redux/constants';
 
 @Radium
@@ -57,6 +65,16 @@ class EditableTearbox extends React.Component {
     requestGetBoxFn(match.params.id);
   };
 
+  checkAuth = () => {
+    const {match, openModalFn, goToFn} = this.props;
+    const prevBoxId = ls.get(PREV_BOX_ID_KEY);
+    const prevBoxToken = ls.get(PREV_BOX_TOKEN_KEY);
+    if (prevBoxId !== match.params.id || !prevBoxToken) {
+      goToFn(`/box/${match.params.id}`);
+      openModalFn(editBoxKey);
+    }
+  };
+
   @keydown('ctrl+z')
   undo() {
     const {canUndo, undoFn} = this.props;
@@ -71,10 +89,15 @@ class EditableTearbox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.refreshBox();
+    const {boxStatus, box, match} = props;
+    this.checkAuth();
+    if (boxStatus !== RECEIVED || box.id !== match.params.id) {
+      this.refreshBox();
+    }
   }
 
   componentDidUpdate(prevProps) {
+    this.checkAuth();
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.refreshBox();
     }
@@ -85,16 +108,18 @@ class EditableTearbox extends React.Component {
       box,
       boxStatus,
       groupVisibilities,
+      match,
       toggleGroupFn,
       endDragFn,
+      openModalFn,
+      goToFn,
     } = this.props;
 
     if (boxStatus === NOT_FOUND) {
       return <NotFound/>;
     }
-
     // TODO: loading component 
-    if (!box.id) {
+    if (!box.id || !groupVisibilities) {
       return <div/>;
     }
 
@@ -200,6 +225,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     undoFn: () => dispatch(ActionCreators.undo()),
     redoFn: () => dispatch(ActionCreators.redo()),
+
+    openModalFn: key => dispatch(openModal(key)),
+    goToFn: url => dispatch(replace(url)),
   };
 };
 
