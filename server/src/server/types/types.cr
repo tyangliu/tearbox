@@ -1,4 +1,6 @@
+require "accord"
 require "auto_json"
+require "CrystalEmail"
 require "hashids"
 require "ulid"
 
@@ -94,13 +96,20 @@ module Tearbox::Types
 
   class BoxAuth
     include AutoJson
+    include Accord
 
     field :id, String
     field :passcode, String
+
+    def validate
+      errors.add(:id, "ID can't be blank.") if @id.size === 0
+      errors.add(:passcode, "Passcode can't be blank") if @passcode.size === 0
+    end
   end
   
   class BoxData
     base
+    include Accord
 
     field :name, String
     field :description, String, default: ""
@@ -109,6 +118,20 @@ module Tearbox::Types
     field :email, String?
     field :fields, Array(BoxField), default: [] of BoxField
     field :groups, Array(Group), default: [] of Group
+
+    def validate
+      errors.add(:name, "Name can't be blank.") if @name.size === 0
+      unless passcode = @passcode
+        errors.add(:passcode, "Missing passcode.")
+      else
+        errors.add(:passcode, "Invalid passcode.") \
+          unless passcode.size > 0 && passcode.split.size === 1
+      end
+
+      puts @email
+      errors.add(:email, "Invalid email.") \
+        if email && CrystalEmail::Rfc5322.validates? email.not_nil!
+    end
   end
 
   class BoxDataPublic
@@ -151,6 +174,18 @@ end
 module Tearbox::HTTPTypes
   include Tearbox::Types
   include Tearbox::PatchTypes
+
+  BAD_REQUEST = 400_i32
+  UNAUTHORIZED = 401_i32
+  NOT_FOUND = 404_i32
+
+  class ErrorResponse
+    include AutoJson
+
+    field :status, Int32, default: 500_i32
+    field :message, String, default: ""
+    field :errors, Accord::ErrorList?
+  end
 
   class PostBoxAuthResponse
     include AutoJson
@@ -210,8 +245,8 @@ module Tearbox::ArangoTypes
 
     field :error, Bool
     field :message, String, json_key: "errorMessage"
-    field :code, UInt16
-    field :error_num, UInt64, json_key: "errorNum"
+    field :code, Int32
+    field :error_num, Int32, json_key: "errorNum"
   end
 end
 

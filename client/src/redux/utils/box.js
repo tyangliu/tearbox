@@ -147,10 +147,9 @@ export function packBox(box) {
 
 export function processNewBox(data) {
   const {name, server, igns, discord, forum, other, passcode, email} = data;
-  return {
+  const newBox = {
     name,
     passcode,
-    email,
     fields: [
       {label: 'server', value: server},
       {label: 'igns', value: igns},
@@ -159,4 +158,8 @@ export function processNewBox(data) {
       {label: 'other', value: other},
     ],
   };
+  if (email.length) {
+    newBox.email = email;
+  }
+  return newBox;
 }

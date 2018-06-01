@@ -13,11 +13,17 @@ crystal: 0.24.2
 license: MIT
 
 dependencies:
+  accord:
+    github: tyangliu/accord
+    branch: master
   arangocr:
     github: tyangliu/arangocr
     branch: master
   auto_json:
     github: kostya/auto_json
+    branch: master
+  CrystalEmail:
+    github: Nephos/CrystalEmail
     branch: master
   hashids:
     github: splattael/hashids.cr

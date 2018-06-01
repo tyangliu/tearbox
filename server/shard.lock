@@ -1,5 +1,13 @@
 version: 1.0
 shards:
+  CrystalEmail:
+    github: Nephos/CrystalEmail
+    commit: f82666920aa39f1b74e5f759d34bc018716ff633
+
+  accord:
+    github: tyangliu/accord
+    commit: f681567e953e5a7d25a36c5bedd9f96d1b97d31f
+
   arangocr:
     github: tyangliu/arangocr
     commit: 06f7c8e33724b4f0a93612f11440a6aa332c9280
