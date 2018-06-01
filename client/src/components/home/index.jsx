@@ -84,7 +84,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {ownBoxId} = state.ui;
+  const {ownBoxId} = state.ui.present;
   return {
     ownBoxId,
   };

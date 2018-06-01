@@ -181,9 +181,9 @@ const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
   const {past, present, future} = box;
   return {
-    boxStatus: ui.boxStatus,
+    boxStatus: ui.present.boxStatus,
     box: present.stagingData,
-    groupVisibilities: ui.groupVisibilities,
+    groupVisibilities: ui.present.groupVisibilities,
     canRedo: future.length > 0,
     canUndo: past.length > 0,
   };

@@ -55,7 +55,7 @@ class EditBoxModal extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {modalVisibilities} = state.ui;
+  const {modalVisibilities} = state.ui.present;
   return {
     visible: modalVisibilities[modalKey],
   };

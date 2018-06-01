@@ -178,7 +178,7 @@ class NewBoxModal extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {modalVisibilities} = state.ui;
+  const {modalVisibilities} = state.ui.present;
   const {newBox} = state.forms;
   return {
     visible: modalVisibilities[modalKey],

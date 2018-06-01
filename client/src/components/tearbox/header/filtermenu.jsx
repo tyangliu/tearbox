@@ -169,7 +169,7 @@ class FilterMenu extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     filterOpts: state.box.present.options.filter,
-    visible: state.ui.filterVisibility,
+    visible: state.ui.present.filterVisibility,
   };
 };
 

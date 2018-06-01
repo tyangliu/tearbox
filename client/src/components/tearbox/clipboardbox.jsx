@@ -38,7 +38,7 @@ class ClipboardBox extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {copied} = state.ui;
+  const {copied} = state.ui.present;
   return {
     copied,
   };

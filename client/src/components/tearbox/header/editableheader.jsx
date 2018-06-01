@@ -52,7 +52,7 @@ class EditableHeader extends React.Component {
         </div>
         <div style={[styles.right, styles.headerRight]}>
           <div style={styles.controlContainer}>
-            <div style={styles.controlGroup.normal}>
+            <div style={styles.controlGroup.last}>
               <button
                 data-tip='React-tooltip'
                 data-for='undoButton'
@@ -70,18 +70,6 @@ class EditableHeader extends React.Component {
                 key='editableheaderRedoButton'
               >
                 <Icon name='redo' style={styles.icon}/>
-              </button>
-            </div>
-            <div style={styles.controlGroup.last}>
-              <button
-                style={styles.controlButton['normal']}
-                key='editableheaderDownload'
-              >
-                <Icon name='save_alt' style={styles.icon}/>
-                <div style={styles.buttonLabel}>
-                  Export
-                </div>
-                <div style={styles.clearfix}/>
               </button>
             </div>
             <ReactTooltip

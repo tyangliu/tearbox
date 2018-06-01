@@ -135,12 +135,12 @@ class Tearbox extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
   return {
-    tearsStatus: ui.tearsStatus,
+    tearsStatus: ui.present.tearsStatus,
     tears,
-    boxStatus: ui.boxStatus,
+    boxStatus: ui.present.boxStatus,
     box: box.present.data,
-    groupVisibilities: ui.groupVisibilities,
-    ownBoxId: ui.ownBoxId,
+    groupVisibilities: ui.present.groupVisibilities,
+    ownBoxId: ui.present.ownBoxId,
   };
 };
 

@@ -1,3 +1,4 @@
+import undoable, {includeAction, groupByActionTypes} from 'redux-undo';
 import update from 'immutability-helper';
 
 import {
@@ -55,7 +56,7 @@ function updateBoxProps(state, action) {
   });
 }
 
-export default function ui(state = uiState, action) {
+function ui(state = uiState, action) {
   switch (action.type) {
     case REQUEST_TEARS:
       return {...state, tearsStatus: REQUESTED};
@@ -143,3 +144,12 @@ export default function ui(state = uiState, action) {
       return state;
   }
 }
+
+export default undoable(ui, {
+  limit: 20,
+  syncFilter: true,
+  filter: includeAction([  
+    EDIT_DELETE_GROUP,
+    END_DRAG,
+  ]),
+});
