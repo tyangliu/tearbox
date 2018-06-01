@@ -158,12 +158,12 @@ export const requestPostBox = () => async (dispatch, getState) => {
 
 export const requestPatchBox = () => async (dispatch, getState) => {
   const {box} = getState();
-  const id = box.data.id;
+  const id = box.present.data.id;
   if (id === '') {
     return;
   }
 
-  const data = packBox(box.stagingData);
+  const data = packBox(box.present.stagingData);
   dispatch(patchBox(data));
 
   const fullUrl = `${url}/${boxesPath}/${id}`;

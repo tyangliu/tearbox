@@ -92,19 +92,25 @@ class FilterMenu extends React.Component {
 
     return (
       <div style={[styles.filterMenu, style]}>
-        <button style={styles.filterButton[visible ? 'active' : 'normal']}
-                onClick={this.handleButtonClick}>
+        <button
+          style={styles.filterButton[visible ? 'active' : 'normal']}
+          onClick={this.handleButtonClick}
+        >
           <Icon name='filter_list' style={styles.icon}/>
           <div style={styles.filterLabel}>
             Filter
           </div>
           <div style={styles.clearfix}/>
         </button>
-        <Popover style={styles.popover}
-                 visible={visible}
-                 onClose={closeFilterMenuFn}>
-          <button style={styles.closeButton}
-                  onClick={this.handleButtonClick}>
+        <Popover
+          style={styles.popover}
+          visible={visible}
+          onClose={closeFilterMenuFn}
+        >
+          <button
+            style={styles.closeButton}
+            onClick={this.handleButtonClick}
+          >
             <Icon name='close' style={styles.closeIcon}/>
           </button>
           <ul style={styles.popoverSections}>
@@ -115,18 +121,21 @@ class FilterMenu extends React.Component {
                 </span>
                 <ul style={styles.sectionList[opt.layout]}>
                   {opt.choices.map((choice, j) =>
-                    <li style={[
-                          styles.sectionChoice[opt.layout],
-                          styles.sectionChoiceVisibility[filterOpts[opt.key][choice.value] ? 'normal' : 'dim'],
-                          {
-                            color: getChoiceColor(opt.key, choice, filterOpts),
-                          }]}
-                        onClick={event => {
-                          toggleFilterFn(opt.key, choice.value);
-                          event.stopPropagation();
-                          event.nativeEvent.stopImmediatePropagation();
-                        }}
-                        key={`filterChoice${i}${j}`}>
+                    <li
+                      style={[
+                        styles.sectionChoice[opt.layout],
+                        styles.sectionChoiceVisibility[filterOpts[opt.key][choice.value] ? 'normal' : 'dim'],
+                        {
+                          color: getChoiceColor(opt.key, choice, filterOpts),
+                        }
+                      ]}
+                      onClick={event => {
+                        toggleFilterFn(opt.key, choice.value);
+                        event.stopPropagation();
+                        event.nativeEvent.stopImmediatePropagation();
+                      }}
+                      key={`filterChoice${i}${j}`}
+                    >
                       {choice.label}
                     </li>
                   )}
@@ -136,14 +145,18 @@ class FilterMenu extends React.Component {
             )}
           </ul>
           <div style={styles.buttonContainer}>
-            <Button style={styles.selectButton}
-                    key={'unselectAll'}
-                    onClick={unselectAllFilterFn}>
+            <Button
+              style={styles.selectButton}
+              key={'unselectAll'}
+              onClick={unselectAllFilterFn}
+            >
               Clear
             </Button>
-            <Button style={styles.selectButton}
-                    key={'selectAll'}
-                    onClick={selectAllFilterFn}>
+            <Button
+              style={styles.selectButton}
+              key={'selectAll'}
+              onClick={selectAllFilterFn}
+            >
               Select All
             </Button>
           </div>
@@ -155,7 +168,7 @@ class FilterMenu extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    filterOpts: state.box.options.filter,
+    filterOpts: state.box.present.options.filter,
     visible: state.ui.filterVisibility,
   };
 };

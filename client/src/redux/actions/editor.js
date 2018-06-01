@@ -10,6 +10,7 @@ export const EDIT_GROUP_TITLE = 'EDIT_GROUP_TITLE';
 export const EDIT_GROUP_TYPE = 'EDIT_GROUP_TYPE';
 
 export const EDIT_ITEM_FIELD = 'EDIT_ITEM_FIELD';
+export const EDIT_ITEM_FIELD_BATCHED = 'EDIT_ITEM_FIELD_BATCHED';
 export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
 
 export const END_DRAG = 'END_DRAG';
@@ -59,8 +60,18 @@ export const editGroupType = (groupIdx, typeId) => ({
   typeId,
 });
 
+
 export const editItemField = (tears, groupIdx, itemIdx, key, value) => ({
   type: EDIT_ITEM_FIELD,
+  tears,
+  groupIdx,
+  itemIdx,
+  key,
+  value,
+});
+
+export const editItemFieldBatched = (tears, groupIdx, itemIdx, key, value) => ({
+  type: EDIT_ITEM_FIELD_BATCHED,
   tears,
   groupIdx,
   itemIdx,

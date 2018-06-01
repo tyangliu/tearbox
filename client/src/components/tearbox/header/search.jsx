@@ -43,7 +43,7 @@ class Search extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {searchTerm} = state.box.options;
+  const {searchTerm} = state.box.present.options;
   return {
     searchTerm,
   };
@@ -67,12 +67,13 @@ const styles = styler`
   searchIcon
     float: left
     margin-top: 1px
-    line-height: 21px
+    line-height: 18.5px
 
   closeButton
     color: rgba(55,67,79,0.7)
     border: 0
     padding: 0 2px
+    line-height: 19.5px
     float: right
     margin: 0
 
@@ -89,12 +90,11 @@ const styles = styler`
 
   closeIcon
     margin-top: 1px
-    line-height: 21px
     font-size: 16px
 
   searchInput
     margin-left: 10px
-    line-height: 22px
+    line-height: 19.5px
     float: left
     width: 220px
     outline: none

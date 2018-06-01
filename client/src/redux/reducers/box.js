@@ -1,3 +1,4 @@
+import undoable, {includeAction, groupByActionTypes} from 'redux-undo';
 import Fuse from 'fuse.js';
 import cloneDeep from 'lodash.clonedeep';
 import update from 'immutability-helper';
@@ -35,6 +36,7 @@ import {
   EDIT_GROUP_TYPE,
 
   EDIT_ITEM_FIELD,
+  EDIT_ITEM_FIELD_BATCHED,
   SEARCH_ITEM_EFFECTS,
   END_DRAG,
 } from '../actions';
@@ -155,7 +157,7 @@ function updateBox(state, action) {
   }));
 }
 
-export default function box(state = boxState, action) {
+function box(state = boxState, action) {
   switch (action.type) {
     case RESET_STAGING:
       return copyToStaging(state);
@@ -282,6 +284,7 @@ export default function box(state = boxState, action) {
         }},
       }});
     case EDIT_ITEM_FIELD:
+    case EDIT_ITEM_FIELD_BATCHED:
       return updateItemField(
         state,
         action,
@@ -324,3 +327,28 @@ export default function box(state = boxState, action) {
       return state;
   }
 }
+
+export default undoable(box, {
+  limit: 20,
+  syncFilter: true,
+  groupBy: groupByActionTypes([
+    EDIT_GROUP_TITLE,
+    EDIT_ITEM_FIELD_BATCHED,
+  ]),
+  filter: includeAction([  
+    EDIT_ADD_ITEM,
+    EDIT_DELETE_ITEM,
+    EDIT_MOVE_ITEM,
+
+    EDIT_ADD_GROUP,
+    EDIT_DELETE_GROUP,
+    EDIT_MOVE_GROUP,
+
+    EDIT_GROUP_TITLE,
+    EDIT_GROUP_TYPE,
+
+    EDIT_ITEM_FIELD,
+    EDIT_ITEM_FIELD_BATCHED,
+    END_DRAG,
+  ]),
+});

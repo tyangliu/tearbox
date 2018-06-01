@@ -2,6 +2,8 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import {ActionCreators} from 'redux-undo';
+import ReactTooltip from 'react-tooltip';
 
 import {Logo, Icon, Button} from '../../common';
 import {cancelEdit, requestPatchBox} from '../../../redux/actions';
@@ -32,14 +34,74 @@ class EditableHeader extends React.Component {
   };
 
   render() {
-    const {id, style, cancelEditFn, requestPatchBoxFn} = this.props;
+    const {
+      id,
+      style,
+      cancelEditFn,
+      requestPatchBoxFn,
+      canRedo,
+      canUndo,
+      undoFn,
+      redoFn,
+    } = this.props;
+
     return (
       <div style={[styles.container, styles.header, style]}>
         <div style={styles.left}>
           <Logo style={styles.logo}/>
         </div>
         <div style={[styles.right, styles.headerRight]}>
-          <div style={styles.buttonGroup}>
+          <div style={styles.controlContainer}>
+            <div style={styles.controlGroup.normal}>
+              <button
+                data-tip='React-tooltip'
+                data-for='undoButton'
+                style={styles.controlButton[canUndo ? 'normal' : 'disabled']}
+                onClick={canUndo ? undoFn : undefined}
+                key='editableheaderUndoButton'
+              >
+                <Icon name='undo' style={styles.icon}/>
+              </button>
+              <button
+                data-tip='React-tooltip'
+                data-for='redoButton'
+                style={styles.controlButton[canRedo ? 'normal' : 'disabled']}
+                onClick={canRedo ? redoFn : undefined}
+                key='editableheaderRedoButton'
+              >
+                <Icon name='redo' style={styles.icon}/>
+              </button>
+            </div>
+            <div style={styles.controlGroup.last}>
+              <button
+                style={styles.controlButton['normal']}
+                key='editableheaderDownload'
+              >
+                <Icon name='save_alt' style={styles.icon}/>
+                <div style={styles.buttonLabel}>
+                  Export
+                </div>
+                <div style={styles.clearfix}/>
+              </button>
+            </div>
+            <ReactTooltip
+              class='tooltip'
+              place='bottom'
+              id='undoButton'
+              effect='solid'
+            >
+              Undo (Ctrl+Z)
+            </ReactTooltip>
+            <ReactTooltip
+              class='tooltip'
+              place='bottom'
+              id='redoButton'
+              effect='solid'
+            >
+              Redo (Ctrl+Y)
+            </ReactTooltip>
+          </div>
+          <div style={styles.buttonContainer}>
             <Button
               style={styles.button}
               onClick={this.onCancel}
@@ -63,9 +125,12 @@ class EditableHeader extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const {past, present, future} = state.box;
   return {
-    id: state.box.data.id,
-    isDirty: state.box.stagingData.isDirty,
+    id: present.data.id,
+    isDirty: present.stagingData.isDirty,
+    canRedo: future.length > 0,
+    canUndo: past.length > 0,
   };
 };
 
@@ -73,6 +138,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     cancelEditFn: id => dispatch(cancelEdit(id)),
     requestPatchBoxFn: () => dispatch(requestPatchBox()),
+    undoFn: () => dispatch(ActionCreators.undo()),
+    redoFn: () => dispatch(ActionCreators.redo()),
   };
 };
 
@@ -97,6 +164,8 @@ const styles = styler`
     order: 1
 
   right
+    display: flex
+    flex-direction: row
     flex-grow: 1
     order: 2
 
@@ -104,25 +173,56 @@ const styles = styler`
     margin-bottom: 20px
 
   headerRight
-    padding-top: 32px
+    padding-top: 31px
 
   logo
     width: 141px
     height: 73px
     margin-left: -12px
 
+  controlContainer
+    display: flex
+    flex-direction: row
+    padding: 2px 0
+    flex: 1
+
+  controlGroup
+    margin: 0 8px 6px 0
+    padding: 0 8px 0 0
+
+    &normal
+      border-right: 1px solid rgba(55,67,79,0.2)
+
+    &last  
+
   icon
     float: left
 
-  buttonGroup
-    float: right
-    display: flex
-    flex-direction: row
-    align-items: flex-start
+  controlButton
+    user-select: none
+    border: none
+    padding: 6px 3px
+    margin-right: 6px
+    line-height: 19.5px
+
+    &normal
+      cursor: pointer
+
+      :hover
+        color: rgba(217,52,35,1)
+
+    &disabled
+      color: rgba(55,67,79,0.4)
+
+  buttonLabel
+    float: left
+    margin-left: 5px
+    margin-right: 10px
 
   button
+    display: inline-block
     padding: 6px 16px
-    margin-left: 6px
+    margin-left: 6px 
 
   clearfix
     clear: both

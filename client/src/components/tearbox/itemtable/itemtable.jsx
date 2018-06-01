@@ -88,7 +88,7 @@ class ItemTable extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    sort: state.box.options.sort,
+    sort: state.box.present.options.sort,
   };
 };
 

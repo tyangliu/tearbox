@@ -15,6 +15,7 @@ import {
   editMoveItem,
   searchItemEffects,
   editItemField,
+  editItemFieldBatched,
 } from '../../../redux/actions';
 
 const white = 'rgba(255,255,255,1)';
@@ -57,13 +58,6 @@ const rarityOpts = [
   {label: 'Unique', value: 1},
 ];
 
-const filterConfig = {
-  ignoreCase: false,
-  ignoreAccents: false,
-  trim: false,
-  matchFrom: 'any',
-};
-
 @Radium
 class EditableItemTable extends React.Component {
   handleEffectsInputChange = (inputValue) => {
@@ -93,6 +87,13 @@ class EditableItemTable extends React.Component {
     this.handleAddItemClick();
   };
 
+  handleInputKeyDown = e => {
+    if (e.ctrlKey && (e.key === 'z' || e.key === 'y')) {
+      e.preventDefault();
+      e.nativeEvent.preventDefault();
+    }
+  };
+
   filterOptions = (opts, item) => opts.filter(opt =>
     item.effect.x_piece_id == null || opt.value === item.effect.x_piece_id
   );
@@ -109,7 +110,7 @@ class EditableItemTable extends React.Component {
       editDeleteItemFn,
 
       editItemFieldFn,
-      debouncedEditItemFieldFn,
+      editItemFieldBatchedFn,
     } = this.props;
 
     const effectOpts = effects.map(effect => ({
@@ -222,10 +223,12 @@ class EditableItemTable extends React.Component {
                             style={styles.noteInput}
                             maxLength={80}
                             placeholder=''
-                            defaultValue={item.note}
-                            onChange={e =>
-                              debouncedEditItemFieldFn(tears, groupIdx, i, 'note', e.target.value)
-                            }/>
+                            value={item.note}
+                            onKeyDown={this.handleInputKeyDown}
+                            onChange={e => {
+                              if (e.ctrlKey) return;
+                              editItemFieldBatchedFn(tears, groupIdx, i, 'note', e.target.value);
+                            }}/>
                         </li>
                         <li style={[styles.itemCol8]}>
                           <div onClick={() => editDeleteItemFn(groupIdx, i)}>
@@ -282,8 +285,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(searchItemEffects(searchTerm)), 150),
     editItemFieldFn: (tears, groupIdx, idx, key, value) =>
       dispatch(editItemField(tears, groupIdx, idx, key, value)),
-    debouncedEditItemFieldFn: debounce((tears, groupIdx, idx, key, value) =>
-      dispatch(editItemField(tears, groupIdx, idx, key, value)), 100),
+    editItemFieldBatchedFn: (tears, groupIdx, idx, key, value) =>
+      dispatch(editItemFieldBatched(tears, groupIdx, idx, key, value)),
   };
 };
 

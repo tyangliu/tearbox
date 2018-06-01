@@ -24,6 +24,13 @@ class EditableSection extends React.Component {
     onToggle: () => {},
   };
 
+  handleInputKeyDown = e => {
+    if (e.ctrlKey && (e.key === 'z' || e.key === 'y')) {
+      e.preventDefault();
+      e.nativeEvent.preventDefault();
+    }
+  };
+
   render() {
     const {
       provided,
@@ -56,10 +63,14 @@ class EditableSection extends React.Component {
                 <input
                   type='text'
                   maxLength={24}
-                  defaultValue={title}
+                  value={title}
                   placeholder={'Section Title'}
                   style={styles.sectionHeadingInput}
-                  onChange={e => editGroupTitleFn(groupIdx, e.target.value)}
+                  onKeyDown={this.handleInputKeyDown}
+                  onChange={e => {
+                    if (e.ctrlKey) return;
+                    editGroupTitleFn(groupIdx, e.target.value);
+                  }}
                   ref={getRef}
                 />
                 <SelectBox
@@ -110,7 +121,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     editDeleteGroupFn: groupIdx => dispatch(editDeleteGroup(groupIdx)),
     editMoveGroupFn: (srcIdx, destIdx) =>
       dispatch(editMoveGroup(srcIdx, destIdx)),
-    editGroupTitleFn: debounce((groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)), 100),
+    editGroupTitleFn: (groupIdx, title) => dispatch(editGroupTitle(groupIdx, title)),
     editGroupTypeFn: (groupIdx, type) => dispatch(editGroupType(groupIdx, type)),
   };
 };

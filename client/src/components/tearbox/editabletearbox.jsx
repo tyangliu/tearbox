@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 import {animateScroll as scroll} from 'react-scroll';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+import {ActionCreators} from 'redux-undo';
+import keydown from 'react-keydown';
 
 import {EditableHeader} from './header';
 import {Icon} from '../common';
@@ -55,6 +57,18 @@ class EditableTearbox extends React.Component {
     requestGetBoxFn(match.params.id);
   };
 
+  @keydown('ctrl+z')
+  undo() {
+    const {canUndo, undoFn} = this.props;
+    canUndo && undoFn();
+  };
+
+  @keydown('ctrl+y', 'ctrl+shift+z')
+  redo() {
+    const {canRedo, redoFn} = this.props;
+    canRedo && redoFn();
+  };
+
   constructor(props) {
     super(props);
     this.refreshBox();
@@ -78,6 +92,7 @@ class EditableTearbox extends React.Component {
     if (boxStatus === NOT_FOUND) {
       return <NotFound/>;
     }
+
     // TODO: loading component 
     if (!box.id) {
       return <div/>;
@@ -164,10 +179,13 @@ class EditableTearbox extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
+  const {past, present, future} = box;
   return {
     boxStatus: ui.boxStatus,
-    box: box.stagingData,
+    box: present.stagingData,
     groupVisibilities: ui.groupVisibilities,
+    canRedo: future.length > 0,
+    canUndo: past.length > 0,
   };
 };
 
@@ -179,6 +197,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     editAddGroupFn: () => dispatch(editAddGroup()),
     endDragFn: result => dispatch(endDrag(result)),
+
+    undoFn: () => dispatch(ActionCreators.undo()),
+    redoFn: () => dispatch(ActionCreators.redo()),
   };
 };
 

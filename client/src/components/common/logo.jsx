@@ -3,8 +3,6 @@ import {Link} from 'react-router-dom';
 import Radium from 'radium';
 import styler from 'react-styling';
 
-console.log(Link);
-
 @Radium
 export default class Logo extends React.Component {
   render() {

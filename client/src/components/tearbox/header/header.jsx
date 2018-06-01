@@ -22,8 +22,10 @@ class Header extends React.Component {
           <Logo style={styles.logo}/>
         </div>
         <div style={[styles.right, styles.headerRight]}>
-          <Search style={styles.search}/>
-          <FilterMenu style={styles.filterMenu}/>
+          <div style={styles.controlContainer}>
+            <Search style={styles.search}/>
+            <FilterMenu style={styles.filterMenu}/>
+          </div>
           <div style={styles.buttonContainer}>
             <Button
               icon='edit'
@@ -80,6 +82,8 @@ const styles = styler`
     order: 1
 
   right
+    display: flex
+    flex-direction: row
     flex-grow: 1
     order: 2
 
@@ -87,31 +91,27 @@ const styles = styler`
     margin-bottom: 20px
 
   headerRight
-    padding-top: 32px
+    padding-top: 31px
 
   logo
     width: 141px
     height: 73px
     margin-left: -12px
 
-  search
-    padding: 4px 4px 4px 0
-    margin-top: 4px
-    float: left
+  controlContainer
+    padding: 2px 0
+    flex: 1
 
-  icon
-    float: left
+  search
+    padding: 6px 6px 4px 0
+    display: inline-block
 
   filterMenu
-    float: left
-    margin-top: 4px
-
-  buttonContainer
-    float: right
+    display: inline-block
 
   button
-    padding: 6px 20px 6px 11px
     display: inline-block
+    padding: 6px 20px 6px 11px
     margin-left: 6px
 
   clearfix

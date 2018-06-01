@@ -138,7 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     tearsStatus: ui.tearsStatus,
     tears,
     boxStatus: ui.boxStatus,
-    box: box.data,
+    box: box.present.data,
     groupVisibilities: ui.groupVisibilities,
     ownBoxId: ui.ownBoxId,
   };

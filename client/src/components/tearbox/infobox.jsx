@@ -26,7 +26,7 @@ class InfoBox extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const {ui, tears, box} = state;
   return {
-    box: box.data,
+    box: box.present.data,
   };
 };
 

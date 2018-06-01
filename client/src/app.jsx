@@ -9,7 +9,17 @@ export default class App extends React.Component {
   render() {
     return (
       <div style={styles.app}>
-        <Style rules={styles.appRules}/>
+        <Style
+          rules={{...styles.appRules, ...{
+            '.tooltip': {
+              backgroundColor: 'rgba(55,67,79,.9) !important',
+              padding: '4px 10px',
+            },
+            '.tooltip.place-bottom:after': {
+              borderBottomColor: 'rgba(55,67,79,.9) !important',
+            },
+          }}}
+        />
         <Switch>
           <Route exact path='/' component={Home}/>
           <Route exact path='/box/:id' component={Tearbox}/>
