@@ -3,6 +3,7 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 import capitalize from 'lodash.capitalize';
+import isUrl from 'is-url';
 
 export default class ContactList extends React.Component {
   render() {
@@ -13,12 +14,15 @@ export default class ContactList extends React.Component {
           .filter(field => field.value !== '')
           .map(field => 
             <li style={styles.contactItem} key={field.label}>
-              <span style={styles.contactItemLabel}>
+              <div style={styles.contactItemLabel}>
                 {capitalize(field.label)}
-              </span>
-              <span style={styles.contactItemValue}>
-                {field.value}
-              </span>
+              </div>
+              <div style={styles.contactItemValue}>
+                {isUrl(field.value)
+                  ? <a href={field.value}>{field.value}</a>
+                  : field.value
+                }
+              </div>
             </li>
           )
       } 
@@ -31,13 +35,17 @@ const styles = styler`
   contactList
     margin-bottom: 24px
 
+  contactItem
+    display: flex
+    flex-direction: row
+
   contactItemLabel
     color: rgba(55,67,79,0.65)
     font-style: italic
-    display: inline-block
-    width: 70px
+    min-width: 70px
+    flex-basis: 70px
 
   contactItemValue
     margin-left: 10px
-    display: inline-block
+    word-break: break-all
 `;

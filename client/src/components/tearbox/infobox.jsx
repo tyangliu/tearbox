@@ -33,8 +33,10 @@ class InfoBox extends React.Component {
           {box.name}'s Box
         </h2>
         <ContactList fields={box.fields || []}/>
-        <ClipboardBox value={`https://tearbox.io/box/${box.id}`}
-                      style={styles.linkshare}/>
+        <ClipboardBox
+          value={`https://tearbox.io/box/${box.id}`}
+          style={styles.linkshare}
+        />
       </div>
     );
   }

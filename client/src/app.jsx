@@ -157,6 +157,10 @@ const styles = styler`
       outline: none
       user-select: none
 
+    a
+      color: rgba(37,174,215,1)
+      text-decoration: none
+
     h2
       font-size: 21px
       font-weight: bold
