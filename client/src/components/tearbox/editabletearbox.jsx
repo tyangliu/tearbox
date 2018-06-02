@@ -260,18 +260,11 @@ const styles = styler`
   tearbox
     width: 100%
     min-width: 1120px
-    display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: center
-    height: 100vh
 
   tearboxContainer
     width: 100%
     max-width: 1600px
-    display: flex
-    flex-direction: column
-    flex: 1
+    margin: 0 auto
 
   headerContainer
     position: sticky

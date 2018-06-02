@@ -98,11 +98,8 @@ const styles = styler`
   app
     background: rgba(255,255,255,1)
     color: rgba(55,67,79,1)
-    display: flex
-    flex-direction: column
     font-family: "ff-tisa-sans-web-pro", sans-serif
     font-size: 13px
-    height: 100vh
     line-height: 1.5em
 
   notificationSystem
