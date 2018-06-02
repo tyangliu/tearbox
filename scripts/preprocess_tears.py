@@ -211,6 +211,7 @@ def generate_effects(
   d = []
   for i in range(0, len(d_data)):
     desc = d_data[i][D_D].replace('{}', '{0:g}')
+    desc = desc + ' (' + d_data[i][D_CHR] + ')'
     values = vt[d_data[i][D_VT]]
     descs_with_values = enumerate_values(
       desc,
