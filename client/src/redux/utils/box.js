@@ -136,10 +136,15 @@ export function packItem(item) {
   ]);
 }
 
+export function isItemNonEmpty(item) {
+  const {id, effect_id, piece_id} = item;
+  return [id, effect_id, piece_id].some(v => v != null);
+}
+
 export function packBox(box) {
   const packedGroups = box.groups.map(group => omit({
     ...group,
-    items: group.items.map(item => packItem(item)),
+    items: group.items.map(packItem).filter(isItemNonEmpty),
   }), ['idx', 'nextItemIdx']);
   return omit({
     ...box,
