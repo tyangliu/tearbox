@@ -105,7 +105,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     closeModalFn: () => dispatch(closeModal(modalKey)),
     editFormFieldFn: debounce((field, value) =>
-      dispatch(editFormField('editBox', field, value)), 100), 
+      dispatch(editFormField(modalKey, field, value)), 100), 
     requestPostBoxAuthFn: () => dispatch(requestPostBoxAuth()),
   };
 };

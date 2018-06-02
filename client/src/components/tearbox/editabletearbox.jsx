@@ -16,6 +16,7 @@ import InfoBox from './infobox';
 import {EditableItemTable} from './itemtable';
 import EditableSection from './editablesection';
 import EditBoxModal from '../modals/editbox';
+import BoxInfoModal from '../modals/boxinfo';
 import Footer from './footer';
 import NotFound from '../errors/NotFound';
 
@@ -150,7 +151,7 @@ class EditableTearbox extends React.Component {
                 <div style={styles.left}>
                   <div style={styles.mainLeftContent}>
                     <div style={styles.leftTop}>
-                      <InfoBox/>
+                      <InfoBox showEdit={true}/>
                     </div>
                   </div>
                   <Footer/>
@@ -197,12 +198,14 @@ class EditableTearbox extends React.Component {
                       </div>
                     )}
                   </Droppable>
-                  <div style={styles.addSection}
-                       key='addGroupButton'
-                       tabIndex={0}
-                       onClick={this.handleAddGroupClick}
-                       onKeyPress={this.handleAddGroupKeyPress}
-                       ref={e => {this.addGroupEl = e}}>
+                  <div
+                    style={styles.addSection}
+                    key='addGroupButton'
+                    tabIndex={0}
+                    onClick={this.handleAddGroupClick}
+                    onKeyPress={this.handleAddGroupKeyPress}
+                    ref={e => {this.addGroupEl = e}}
+                  >
                     <Icon style={styles.addIcon} name='create_new_folder'/>
                     <span style={styles.addSectionText}>Add Section</span>
                   </div>
@@ -211,6 +214,7 @@ class EditableTearbox extends React.Component {
               </div>
             </div>
             <EditBoxModal/>
+            <BoxInfoModal/>
           </div>
         </DragDropContext>
       </DocumentTitle>

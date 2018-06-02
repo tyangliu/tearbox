@@ -162,6 +162,7 @@ module Tearbox::Routes
       end
 
       data.passhash = create_passhash(data.passcode.not_nil!)
+      data.passcode = nil
 
       db_resp = boxes.document.create data
       unless db_resp.success?
@@ -217,6 +218,25 @@ module Tearbox::Routes
       rescue
         error_resp BAD_REQUEST
       end
+      patch_data.passhash = nil
+
+      # Handle passcode change.
+      if (old = patch_data.old_passcode) && (new = patch_data.passcode) 
+        db_resp = boxes.document.get key
+
+        unless db_resp.success?
+          raise db_resp.body
+        end
+
+        data = BoxData.from_json db_resp.body
+        unless validate_passhash(old, data.passhash.not_nil!)
+          error_resp(FORBIDDEN, INVALID_PASSCODE_MSG)
+        end
+ 
+        patch_data.passhash = create_passhash new
+      end
+      patch_data.old_passcode = nil
+      patch_data.passcode = nil
 
       db_resp = boxes.document.update(key, patch_data)
       unless db_resp.success?

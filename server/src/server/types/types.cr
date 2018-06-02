@@ -176,7 +176,9 @@ module Tearbox::PatchTypes
 
     field :name, String?
     field :description, String?
+    field :old_passcode, String?
     field :passcode, String?
+    field :passhash, String?
     field :email, String?
     field :fields, Array(Tearbox::Types::BoxField)?
     field :groups, Array(Tearbox::Types::Group)?
@@ -192,6 +194,7 @@ module Tearbox::HTTPTypes
 
   BAD_REQUEST = 400_i32
   UNAUTHORIZED = 401_i32
+  FORBIDDEN = 403_i32
   NOT_FOUND = 404_i32
 
   class ErrorResponse

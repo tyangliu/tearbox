@@ -16,6 +16,7 @@ import {
 
   POST_BOX_SUCCESS,
   PATCH_BOX_SUCCESS,
+  PATCH_BOX_INFO_SUCCESS,
 
   SEARCH,
   TOGGLE_GROUP,
@@ -157,6 +158,19 @@ function updateBox(state, action) {
   }));
 }
 
+function updateBoxInfo(state, action) {
+  return update(state, {
+    data: {
+      name: {$set: action.data.name},
+      fields: {$set: action.data.fields},
+    },
+    stagingData: {
+      name: {$set: action.data.name},
+      fields: {$set: action.data.fields},
+    },
+  });
+}
+
 function box(state = boxState, action) {
   switch (action.type) {
     case RESET_STAGING:
@@ -170,6 +184,8 @@ function box(state = boxState, action) {
     case POST_BOX_SUCCESS:
     case PATCH_BOX_SUCCESS:
       return updateBox(state, action);
+    case PATCH_BOX_INFO_SUCCESS:
+      return updateBoxInfo(state, action);
     case SEARCH:
       const optionsWithNewSearch = {
         ...state.options,

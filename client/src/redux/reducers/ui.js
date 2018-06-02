@@ -14,6 +14,8 @@ import {
 
   POST_BOX_SUCCESS,
 
+  PATCH_BOX_INFO_SUCCESS,
+
   SET_COPIED,
   UNSET_COPIED,
 
@@ -47,6 +49,7 @@ const uiState = {
   modalVisibilities: {
     newBox: false,
     editBox: false,
+    boxInfo: false,
   },
   ownBoxId: null,
   ownBoxToken: null,
@@ -74,6 +77,10 @@ function ui(state = uiState, action) {
     case POST_BOX_REFRESH_SUCCESS:
       return update(state, {
         ownBoxId: {$set: action.id},
+      });
+    case PATCH_BOX_INFO_SUCCESS:
+      return update(state, {
+        modalVisibilities: {boxInfo: {$set: false}},
       });
     case GET_BOX:
       return {

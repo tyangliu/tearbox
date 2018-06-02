@@ -8,13 +8,12 @@ import {
   SelectBox,
   Button,
   Modal,
-  Checkbox,
 } from '../common';
 
 import {
   closeModal,
   editFormField,
-  requestPostBox,
+  requestPatchBoxInfo,
 } from '../../redux/actions';
 
 const serverChoices = [
@@ -29,10 +28,10 @@ const contactFields = [
   {label: 'Other', key: 'other', required: false},
 ];
 
-export const modalKey = 'newBox';
+export const modalKey = 'boxInfo';
 
 @Radium
-class NewBoxModal extends React.Component {
+class BoxInfoModal extends React.Component {
   componentDidUpdate(prevProps) {
     const {visible} = this.props;
     if (!prevProps.visible && visible) {
@@ -48,7 +47,7 @@ class NewBoxModal extends React.Component {
       errorMessage,
       closeModalFn,
       editFormFieldFn,
-      requestPostBoxFn,
+      requestPatchBoxInfoFn,
     } = this.props;
 
     return (
@@ -57,7 +56,7 @@ class NewBoxModal extends React.Component {
           <div style={styles.headingContainer}>
             <div style={styles.modalHeadingImage}/>
             <h2 style={styles.modalHeading}>
-              New Box
+              Edit Box Info
             </h2>
             <div style={styles.clearfix}/>
           </div>
@@ -142,43 +141,59 @@ class NewBoxModal extends React.Component {
               {/* Passcode */}
               <div style={styles.section}>
                 <h3 style={styles.sectionHeading}>
-                  Passcode
-                  <span style={styles.required}>*</span>
+                  Change Box Passcode
                 </h3>
                 <p style={styles.sectionCaption}>
-                  You'll need this to edit your box later.
+                  Optional&mdash;If you want a new passcode for your box.
                 </p>
                 <input
                   type='password'
                   style={[
-                    styles.input[formErrors.passcode ? 'error' : 'normal'],
+                    styles.input[formErrors.oldPasscode ? 'error' : 'normal'],
                     styles.sectionInput,
                   ]}
                   maxLength={32}
-                  placeholder='Create a passcode (6 or longer)'
-                  defaultValue={form.passcode}
-                  onChange={e => editFormFieldFn('passcode', e.target.value)}
+                  placeholder='Previous passcode'
+                  defaultValue={form.oldPasscode}
+                  onChange={e => editFormFieldFn('oldPasscode', e.target.value)}
                 />                
-                {formErrors.passcode
+                {formErrors.oldPasscode
                   ? <div style={styles.inputError}>
-                      {formErrors.passcode}
+                      {formErrors.oldPasscode}
                     </div>
                   : null
                 }
                 <input
                   type='password'
                   style={[
-                    styles.input[formErrors.passcodeReenter ? 'error' : 'normal'],
+                    styles.input[formErrors.newPasscode ? 'error' : 'normal'],
                     styles.sectionInput,
                   ]}
                   maxLength={32}
-                  placeholder='Re-enter passcode'
-                  defaultValue={form.passcodeReenter}
-                  onChange={e => editFormFieldFn('passcodeReenter', e.target.value)}
-                />
-                {formErrors.passcodeReenter
+                  placeholder='New passcode (6 or longer)'
+                  defaultValue={form.newPasscode}
+                  onChange={e => editFormFieldFn('newPasscode', e.target.value)}
+                />                
+                {formErrors.newPasscode
                   ? <div style={styles.inputError}>
-                      {formErrors.passcodeReenter}
+                      {formErrors.newPasscode}
+                    </div>
+                  : null
+                }
+                <input
+                  type='password'
+                  style={[
+                    styles.input[formErrors.newPasscodeReenter ? 'error' : 'normal'],
+                    styles.sectionInput,
+                  ]}
+                  maxLength={32}
+                  placeholder='Re-enter new passcode'
+                  defaultValue={form.newPasscodeReenter}
+                  onChange={e => editFormFieldFn('newPasscodeReenter', e.target.value)}
+                />
+                {formErrors.newPasscodeReenter
+                  ? <div style={styles.inputError}>
+                      {formErrors.newPasscodeReenter}
                     </div>
                   : null
                 }
@@ -186,7 +201,7 @@ class NewBoxModal extends React.Component {
               {/* Email */}
               <div style={styles.section}>
                 <h3 style={styles.sectionHeading}>
-                  Email
+                  Change Email
                 </h3>
                 <p style={styles.sectionCaption}>
                   Optional&mdash;In case you forget your passcode or box link.
@@ -220,17 +235,11 @@ class NewBoxModal extends React.Component {
           <Button
             style={styles.submitButton}
             isSubmit={true}
-            onClick={requestPostBoxFn}
+            onClick={requestPatchBoxInfoFn}
           >
-            Create
+            Submit
           </Button>
           {/* Remember Me */}
-          <Checkbox
-            label='Remember my Box'
-            style={styles.checkbox}
-            checked={form.rememberMe}
-            onChange={() => editFormFieldFn('rememberMe', !form.rememberMe)}
-          />
           <p style={styles.footnote}>
             <span style={styles.required}>*</span>
             Required
@@ -244,12 +253,12 @@ class NewBoxModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {modalVisibilities} = state.ui.present;
-  const {newBox, newBoxErrors, newBoxErrorMessage} = state.forms;
+  const {boxInfo, boxInfoErrors, boxInfoErrorMessage} = state.forms;
   return {
     visible: modalVisibilities[modalKey],
-    form: newBox,
-    formErrors: newBoxErrors,
-    errorMessage: newBoxErrorMessage,
+    form: boxInfo,
+    formErrors: boxInfoErrors,
+    errorMessage: boxInfoErrorMessage,
   };
 };
 
@@ -258,14 +267,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeModalFn: () => dispatch(closeModal(modalKey)),    
     editFormFieldFn: debounce((field, value) =>
       dispatch(editFormField(modalKey, field, value)), 100),
-    requestPostBoxFn: () => dispatch(requestPostBox()),
+    requestPatchBoxInfoFn: () => dispatch(requestPatchBoxInfo()),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(NewBoxModal);
+)(BoxInfoModal);
 
 const styles = styler`
   container

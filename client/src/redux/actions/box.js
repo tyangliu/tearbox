@@ -12,8 +12,15 @@ import {
   PREV_BOX_EXPIRES_AT_KEY,
 } from '../constants';
 import {loadTears} from './tears';
-import {openModal} from './ui';
-import {unpackBox, packBox, processNewBox, validateNewBox} from '../utils/box';
+import {openModal, closeModal} from './ui';
+import {
+  unpackBox,
+  packBox,
+  processNewBox,
+  validateNewBox,
+  processBoxInfo,
+  validateBoxInfo,
+} from '../utils/box';
 
 export const RESET_STAGING = 'RESET_STAGING';
 
@@ -37,6 +44,10 @@ export const PATCH_BOX = 'PATCH_BOX';
 export const PATCH_BOX_SUCCESS = 'PATCH_BOX_SUCCESS';
 export const PATCH_BOX_FAILURE = 'PATCH_BOX_FAILURE';
 
+export const PATCH_BOX_INFO = 'PATCH_BOX_INFO';
+export const PATCH_BOX_INFO_SUCCESS = 'PATCH_BOX_INFO_SUCCESS';
+export const PATCH_BOX_INFO_FAILURE = 'PATCH_BOX_INFO_FAILURE';
+
 export const DELETE_BOX = 'DELETE_BOX';
 export const DELETE_BOX_SUCCESS = 'DELETE_BOX_SUCCESS';
 export const DELETE_BOX_FAILURE = 'DELETE_BOX_FAILURE';
@@ -57,6 +68,36 @@ export const cancelEdit = id => (dispatch, getState) => {
   dispatch(resetStaging());
   dispatch(replace(`/box/${id}`));
 };
+
+export const postBoxAuth = () => ({
+  type: POST_BOX_AUTH,
+});
+
+export const postBoxAuthSuccess = (id, token) => ({
+  type: POST_BOX_AUTH_SUCCESS,
+  id,
+  token,
+});
+
+export const postBoxAuthFailure = error => ({
+  type: POST_BOX_AUTH_FAILURE,
+  error,
+});
+
+export const postBoxRefresh = () => ({
+  type: POST_BOX_REFRESH,
+});
+
+export const postBoxRefreshSuccess = (id, token) => ({
+  type: POST_BOX_REFRESH_SUCCESS,
+  id,
+  token,
+});
+
+export const postBoxRefreshFailure = error => ({
+  type: POST_BOX_REFRESH_FAILURE,
+  error,
+});
 
 export const getBox = id => ({
   type: GET_BOX,
@@ -93,14 +134,28 @@ export const patchBox = data => ({
   data,
 });
 
-export const patchBoxSuccess = (data, token) => ({
+export const patchBoxSuccess = data => ({
   type: PATCH_BOX_SUCCESS,
   data,
-  token,
 });
 
 export const patchBoxFailure = error => ({
   type: PATCH_BOX_FAILURE,
+  error,
+});
+
+export const patchBoxInfo = data => ({
+  type: PATCH_BOX_INFO,
+  data,
+});
+
+export const patchBoxInfoSuccess = data => ({
+  type: PATCH_BOX_INFO_SUCCESS,
+  data,
+});
+
+export const patchBoxInfoFailure = error => ({
+  type: PATCH_BOX_INFO_FAILURE,
   error,
 });
 
@@ -114,36 +169,6 @@ export const deleteBoxSuccess = () => ({
 
 export const deleteBoxFailure = error => ({
   type: DELETE_BOX_FAILURE,
-  error,
-});
-
-export const postBoxAuth = () => ({
-  type: POST_BOX_AUTH,
-});
-
-export const postBoxAuthSuccess = (id, token) => ({
-  type: POST_BOX_AUTH_SUCCESS,
-  id,
-  token,
-});
-
-export const postBoxAuthFailure = error => ({
-  type: POST_BOX_AUTH_FAILURE,
-  error,
-});
-
-export const postBoxRefresh = () => ({
-  type: POST_BOX_REFRESH,
-});
-
-export const postBoxRefreshSuccess = (id, token) => ({
-  type: POST_BOX_REFRESH_SUCCESS,
-  id,
-  token,
-});
-
-export const postBoxRefreshFailure = error => ({
-  type: POST_BOX_REFRESH_FAILURE,
   error,
 });
 
@@ -164,7 +189,6 @@ export const requestPostBoxAuth = () => async (dispatch, getState) => {
     body: JSON.stringify({id, passcode}),
   });
 
-  // TODO: show error in UI
   if (response.status === 401) {
     dispatch(postBoxAuthFailure({
       errors: {passcode: 'The passcode is incorrect.'},
@@ -213,7 +237,6 @@ export const requestPostBoxRefresh = () => async (dispatch, getState) => {
     body: JSON.stringify({id, refresh_token: refreshToken}),
   });
 
-  // TODO: show error in UI
   if (response.status === 401) {
     dispatch(postBoxRefreshFailure({
       message: 'Refresh token invalid.',
@@ -260,7 +283,9 @@ export const requestGetBox = id => async (dispatch, getState) => {
   });
 
   if (response.status !== 200) {
-    dispatch(getBoxFailure('Not found'));
+    dispatch(getBoxFailure({
+      message: 'Not found'
+    }));
     return;
   }
 
@@ -293,7 +318,6 @@ export const requestPostBox = () => async (dispatch, getState) => {
     body: JSON.stringify(newBox),
   });
 
-  // TODO: show error in UI
   if (response.status !== 200) {
     dispatch(postBoxFailure({
       message: 'Something went wrong. Try again later.'
@@ -339,14 +363,16 @@ export const requestPatchBox = () => async (dispatch, getState) => {
       'X-Token': storedToken,
     },
   });
-  // TODO: show error in UI
-  if (response.status == 401) {
+
+  if (response.status === 401) {
     dispatch(openModal('editBox'));
     return;
   }
 
-  if (response.status != 200) {
-    dispatch(patchBoxFailure('Something went wrong while saving. Try again later.'));
+  if (response.status !== 200) {
+    dispatch(patchBoxFailure({
+      message: 'Something went wrong while saving. Try again later.'
+    }));
     return;
   }
 
@@ -355,4 +381,62 @@ export const requestPatchBox = () => async (dispatch, getState) => {
   const newBox = unpackBox(tears, result.data);
   dispatch(patchBoxSuccess(newBox));
   dispatch(replace(`/box/${id}`));
+};
+
+export const requestPatchBoxInfo = () => async (dispatch, getState) => {
+  const {box} = getState();
+  const form = getState().forms.boxInfo;
+  const id = box.present.data.id;
+  const storedId = localMap.get(PREV_BOX_ID_KEY);
+  const storedToken = localMap.get(PREV_BOX_TOKEN_KEY);
+
+  if (id === '' || id !== storedId || !storedToken) {
+    dispatch(closeModal('boxInfo'));
+    dispatch(openModal('editBox'));
+    return;
+  } 
+
+
+  const errors = validateBoxInfo(form);
+  if (Object.keys(errors).length > 0) {
+    dispatch(patchBoxInfoFailure({errors}));
+    return;
+  }
+
+  const newBoxInfo = processBoxInfo(form);
+  dispatch(patchBoxInfo(newBoxInfo));
+
+  const fullUrl = `${url}/${boxesPath}/${id}`;
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    body: JSON.stringify(newBoxInfo),
+    headers: {
+      'X-Token': storedToken,
+    },
+  });
+
+  // Incorrect previous password.
+  if (response.status === 403) {
+    dispatch(patchBoxInfoFailure({
+      errors: {oldPasscode: 'Previous passcode is incorrect.'},
+    }));
+    return;
+  }
+
+  // Auth error.
+  if (response.status === 401) {
+    dispatch(closeModal('boxInfo'));
+    dispatch(openModal('editBox'));
+    return;
+  }
+
+  if (response.status !== 200) {
+    dispatch(patchBoxInfoFailure({
+      message: 'Something went wrong while saving. Try again later.'
+    }));
+    return;
+  }
+
+  const result = await response.json();
+  dispatch(patchBoxInfoSuccess(result.data));
 };

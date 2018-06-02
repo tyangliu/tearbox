@@ -173,6 +173,16 @@ export function processNewBox(data, originId = null) {
   return newBox;
 }
 
+function validateForm(form, validator) {
+  const result = {};
+  forOwn(validator, ({req, message}, key) => {
+    if (!req(form[key], form)) {
+      result[key] = message;
+    }
+  });
+  return result;
+}
+
 const newBoxValidator = {
   name: {
     req: v => v.length > 0 && v.length < 24,
@@ -196,12 +206,64 @@ const newBoxValidator = {
   },
 };
 
-export function validateNewBox(form) { 
-  const result = {};
-  forOwn(newBoxValidator, ({req, message}, key) => {
-    if (!req(form[key], form)) {
-      result[key] = message;
-    }
-  });
-  return result;
+export const validateNewBox = form => validateForm(form, newBoxValidator);
+
+export function processBoxInfo(data) {
+  const {
+    name, server, igns, discord, forum, other,
+    oldPasscode, newPasscode, email,
+  } = data;
+
+  const newBoxInfo = {
+    name: name.trim(),
+    fields: [
+      {label: 'server', value: server.trim()},
+      {label: 'igns', value: igns.trim()},
+      {label: 'discord', value: discord.trim()},
+      {label: 'forum', value: forum.trim()},
+      {label: 'other', value: other.trim()},
+    ],
+  };
+
+  if (oldPasscode.length && newPasscode.length) {
+    newBoxInfo.old_passcode = oldPasscode;
+    newBoxInfo.passcode = newPasscode;
+  }
+
+  const trimmedEmail = email.trim();
+  if (trimmedEmail.length) {
+    newBoxInfo.email = trimmedEmail;
+  }
+  return newBoxInfo;
 }
+
+const boxInfoValidator = {
+  name: {
+    req: v => v.length > 0 && v.length < 24,
+    message: 'Name is required.',
+  },
+  oldPasscode: {
+    req: (v, obj) => (!v.length && !obj.newPasscode.length) || /^\S{6,}$/.test(v),
+    message: 'Previous passcode is incorrect.',
+  },
+  newPasscode: {
+    req: (v, obj) => (!v.length && !obj.oldPasscode.length) || /^\S{6,}$/.test(v),
+    message: 'New passcode must be 6 or more characters, no spaces.',
+  },
+  newPasscodeReenter: {
+    req: (v, obj) =>
+      (!obj.oldPasscode.length && !obj.newPasscode.length) ||
+      v === obj.newPasscode,
+    message: 'New passcodes must match.',
+  },
+  email: {
+    req: v => !v || emailValidator.validate(v),
+    message: 'Email must be valid.',
+  },
+  igns: {
+    req: v => v && v.length > 0,
+    message: 'IGNs are required.',
+  },
+};
+
+export const validateBoxInfo = form => validateForm(form, boxInfoValidator);
