@@ -282,11 +282,15 @@ function box(state = boxState, action) {
         ? state.stagingData.groups[action.groupIdx].items.length
         : 0;
       if (len) {
-        // Copy previous color for convenience
+        // Copy previous color and piece for convenience
         const lastItem = state.stagingData.groups[action.groupIdx].items[len-1];
         emptyItem.color_id = lastItem.color_id;
+        emptyItem.piece_id = lastItem.piece_id;
         emptyItem.color = {
           ...lastItem.color,
+        };
+        emptyItem.piece = {
+          ...lastItem.piece,
         };
       }
       return update(state, {stagingData: {
