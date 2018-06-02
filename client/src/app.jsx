@@ -96,6 +96,7 @@ export default connect(
 
 const styles = styler`
   app
+    background: rgba(255,255,255,1)
     color: rgba(55,67,79,1)
     display: flex
     flex-direction: column
@@ -145,6 +146,7 @@ const styles = styler`
       font-family: inherit
       font-size: inherit
       color: inherit
+      background: rgba(255,255,255,1)
       border: none
   
     button
