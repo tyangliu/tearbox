@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
+import DocumentTitle from 'react-document-title';
 import capitalize from 'lodash.capitalize';
 
 import localMap from '../../localMap';
@@ -79,60 +80,73 @@ class Tearbox extends React.Component {
     } = this.props;
 
     if (boxStatus === NOT_FOUND) {
-      return <NotFound/>;
+      return (
+        <DocumentTitle title='Not Found - Tearbox'>
+          <NotFound/>
+        </DocumentTitle>
+      );
     }
+
+    const title = box.name ? `${box.name}'s Box - Tearbox` : 'Tearbox';
+
     // TODO: loading component 
     if (!box.id) {
-      return <div/>;
+      return (
+        <DocumentTitle title={title}>
+          <div/>
+        </DocumentTitle>
+      );
     }
 
     return (
-      <div style={styles.tearbox}>
-        <div style={styles.tearboxContainer}>
-          <div style={styles.headerContainer}>
-            <Header
-              ownBoxId={ownBoxId}
-            />
-          </div>
-          <div style={styles.container}>
-            <div style={styles.left}>
-              <div style={styles.mainLeftContent}>
-                <div style={styles.leftTop}>
-                  <InfoBox/>
+      <DocumentTitle title={title}>
+        <div style={styles.tearbox}>
+          <div style={styles.tearboxContainer}>
+            <div style={styles.headerContainer}>
+              <Header
+                ownBoxId={ownBoxId}
+              />
+            </div>
+            <div style={styles.container}>
+              <div style={styles.left}>
+                <div style={styles.mainLeftContent}>
+                  <div style={styles.leftTop}>
+                    <InfoBox/>
+                  </div>
+                  <Footer/>
                 </div>
-                <Footer/>
               </div>
-            </div>
 
-            <div style={styles.right}>
-              {(box.groupDisplays || []).map((group, i) => 
-                <Section
-                  title={
-                    <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
-                      <span style={styles.sectionTitleLabel}>
-                        {group.name !== '' ? group.name : groupTypeLabels[group.type]}
+              <div style={styles.right}>
+                {(box.groupDisplays || []).map((group, i) => 
+                  <Section
+                    title={
+                      <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
+                        <span style={styles.sectionTitleLabel}>
+                          {group.name !== '' ? group.name : groupTypeLabels[group.type]}
+                        </span>
+                        {group.name !== '' ?
+                          <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
+                            {capitalize(groupTypeLabels[group.type])}
+                          </span> : null
+                        }
                       </span>
-                      {group.name !== '' ?
-                        <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
-                          {capitalize(groupTypeLabels[group.type])}
-                        </span> : null
-                      }
-                    </span>
-                  }
-                  key={i}
-                  visible={groupVisibilities[i]}
-                  onToggle={() => toggleGroupFn(i)}
-                >
-                  <ItemTable items={group.items}/>
-                </Section>
-              )}
+                    }
+                    key={i}
+                    visible={groupVisibilities[i]}
+                    onToggle={() => toggleGroupFn(i)}
+                  >
+                    <ItemTable items={group.items}/>
+                  </Section>
+                )}
+              </div>
+              <div style={styles.clearfix}/>
             </div>
-            <div style={styles.clearfix}/>
           </div>
+          <NewBoxModal/>
+          <EditBoxModal/>
         </div>
-        <NewBoxModal/>
-        <EditBoxModal/>
-      </div>
+      </DocumentTitle>
     );
   }
 }

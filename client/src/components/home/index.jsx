@@ -3,6 +3,7 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import styler from 'react-styling';
+import DocumentTitle from 'react-document-title';
 
 import localMap from '../../localMap';
 import {Logo, Button} from '../common';
@@ -27,56 +28,58 @@ class Home extends React.Component {
   render() {
     const {ownBoxId, openModalFn, goToFn} = this.props;
     return (
-      <div style={styles.home}>
-        <div style={styles.homeContainer}>
-          <header style={styles.header}>
-            <div style={styles.headerContainer}>
-              <div style={styles.buttonGroup}>
-                {ownBoxId &&
+      <DocumentTitle title='Tearbox'>
+        <div style={styles.home}>
+          <div style={styles.homeContainer}>
+            <header style={styles.header}>
+              <div style={styles.headerContainer}>
+                <div style={styles.buttonGroup}>
+                  {ownBoxId &&
+                    <Button
+                      icon='navigate_next'
+                      style={styles.button}
+                      onClick={() => goToFn(`/box/${ownBoxId}`)}
+                    >
+                      Open my Box
+                    </Button>
+                  }
                   <Button
-                    icon='navigate_next'
+                    icon='note_add'
                     style={styles.button}
-                    onClick={() => goToFn(`/box/${ownBoxId}`)}
+                    onClick={() => openModalFn(newBoxKey)}
                   >
-                    Open my Box
+                    {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
                   </Button>
-                }
-                <Button
-                  icon='note_add'
-                  style={styles.button}
-                  onClick={() => openModalFn(newBoxKey)}
-                >
-                  {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
-                </Button>
+                </div>
+                <Logo style={styles.logo}/>
               </div>
-              <Logo style={styles.logo}/>
-            </div>
-          </header>
-          <section style={styles.hero}>
-            <div style={styles.heroImage}/>
-            <h2 style={styles.heroHeading}>
-              <span style={styles.em}>tearbox</span> helps you create & share El Tear lists.
-            </h2>
-          </section>
-          <section style={styles.infoSection}>
-            <h3 style={styles.infoHeading}>
-              How it Works
-            </h3>
-            <div style={styles.infoContainer}>
-              <p style={[styles.infoText, styles.infoText1]}>Create a tearbox and add your items</p>
-              <p style={[styles.infoText, styles.infoText2]}>Copy the unique box link</p>
-              <p style={[styles.infoText, styles.infoText3]}>Share it on Discord, forums, wherever!</p>
-            </div>
-          </section>
-          <footer style={styles.footer}>
-            <ul style={styles.creditsList}>
-              <li style={styles.creditsItem}>Made by <span style={styles.em}>tom</span> with help from many friends</li>
-              <li style={styles.creditsItem}>Logo drawn by <span style={styles.em}>Sourcream</span></li>
-            </ul>
-          </footer>
+            </header>
+            <section style={styles.hero}>
+              <div style={styles.heroImage}/>
+              <h2 style={styles.heroHeading}>
+                <span style={styles.em}>tearbox</span> helps you create & share El Tear lists.
+              </h2>
+            </section>
+            <section style={styles.infoSection}>
+              <h3 style={styles.infoHeading}>
+                How it Works
+              </h3>
+              <div style={styles.infoContainer}>
+                <p style={[styles.infoText, styles.infoText1]}>Create a tearbox and add your items</p>
+                <p style={[styles.infoText, styles.infoText2]}>Copy the unique box link</p>
+                <p style={[styles.infoText, styles.infoText3]}>Share it on Discord, forums, wherever!</p>
+              </div>
+            </section>
+            <footer style={styles.footer}>
+              <ul style={styles.creditsList}>
+                <li style={styles.creditsItem}>Made by <span style={styles.em}>tom</span> with help from many friends</li>
+                <li style={styles.creditsItem}>Logo drawn by <span style={styles.em}>Sourcream</span></li>
+              </ul>
+            </footer>
+          </div>
+          <NewBoxModal/>
         </div>
-        <NewBoxModal/>
-      </div>
+      </DocumentTitle>
     );
   }
 }
