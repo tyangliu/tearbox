@@ -319,7 +319,7 @@ const styles = styler`
     user-select: none
     display: flex
     flex-direction: row
-    margin: 2px 0 30px 0
+    margin: 2px 0 240px 0
     padding: 1px 0
     border: 2px dashed rgba(55,67,79,0.15)
     border-radius: 3px

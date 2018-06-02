@@ -207,6 +207,7 @@ const styles = styler`
   right
     background: rgba(255,255,255,1)
     overflow: hidden
+    margin-bottom: 60px
 
   button
     width: 100%
