@@ -7,11 +7,9 @@ export const effectsSearchOpts = {
   minMatchCharLength: 1,
   tokenize: true,
   keys: [
-    {name: 'name', weight: 0.33},
-    {name: 'tags', weight: 0.33},
-    {name: 'value', weight: 0.32},
-    {name: 'alt_value', weight: 0.01},
-    {name: 'char', weight: 0.01},
+    {name: 'name', weight: 0.3},
+    {name: 'tags', weight: 0.35},
+    {name: 'value', weight: 0.35},
   ],
 };
 
