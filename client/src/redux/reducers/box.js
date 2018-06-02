@@ -24,6 +24,8 @@ import {
   TOGGLE_FILTER,
   SELECT_ALL_FILTER,
   UNSELECT_ALL_FILTER,
+  
+  EDIT_TOGGLE_SORT,
 
   EDIT_ADD_ITEM,
   EDIT_DELETE_ITEM,
@@ -41,7 +43,13 @@ import {
   SEARCH_ITEM_EFFECTS,
   END_DRAG,
 } from '../actions';
-import {unpackItem, filterSortGroups, searchOpts} from '../utils/box';
+
+import {
+  unpackItem,
+  sortGroups,
+  filterSortGroups,
+  searchOpts,
+} from '../utils/box';
 
 const filterSelectAll = {
   color:  [true, true, true],
@@ -66,10 +74,18 @@ const boxDisplayOptions = {
   searchTerm: '',
 };
 
+const boxEditOptions = {
+  sort: {
+    key: null,
+    order: ASCENDING,
+  },
+};
+
 const boxState = {
   data: {},
   stagingData: {},
   options: boxDisplayOptions,
+  editOptions: boxEditOptions,
 };
 
 
@@ -97,6 +113,25 @@ const makeEmptyGroup = idx => ({
   items: [],
 });
 
+const updateSortOpts = (sort, key) => {
+  const newSort = {};
+  if (
+    key == sort.key &&
+    ((sort.order == ASCENDING && key != 'created') ||
+     (sort.order == DESCENDING && key == 'created'))
+  ) {
+    newSort.key = key;
+    newSort.order = !sort.order;
+  } else if (key == sort.key) {
+    newSort.key = null,
+    newSort.order = ASCENDING;
+  } else {
+    newSort.key = key;
+    newSort.order = key == 'created' ? DESCENDING : ASCENDING;
+  }
+  return newSort;
+};
+
 const updateOptions = (state, options) => { 
   const newData = state.data.groups ? {
     ...state.data,
@@ -107,11 +142,34 @@ const updateOptions = (state, options) => {
     ),
   } : {};
 
-  return {
-    ...state,
-    data: newData,
-    options,
-  };
+  const {groups, groupIndices} = state.data;
+  if (!groups) {
+    return state;
+  }
+
+  return update(state, {
+    data: {
+      groupDisplays: {$set: filterSortGroups(
+        groups,
+        groupIndices,
+        options,
+      )},
+    },
+    options: {$set: options},
+  });
+};
+
+const updateEditOptions = (state, editOptions) => {
+  const {groups} = state.stagingData;
+  if (!groups) {
+    return state;
+  }
+  return update(state, {
+    stagingData: {
+      groups: {$set: sortGroups(groups, editOptions)},
+    },
+    editOptions: {$set: editOptions},
+  });
 };
 
 function updateItemField(state, action) {
@@ -139,6 +197,7 @@ function copyToStaging(state) {
   };
   return update(state, {
     stagingData: {$set: newStagingData},
+    editOptions: {$set: boxEditOptions},
   });
 }
 
@@ -193,25 +252,9 @@ function box(state = boxState, action) {
       };
       return updateOptions(state, optionsWithNewSearch);
     case TOGGLE_SORT:
-      const {sort} = state.options;
-      const newSort = {};
-      if (
-        action.key == sort.key &&
-        ((sort.order == ASCENDING && action.key != 'created') ||
-         (sort.order == DESCENDING && action.key == 'created'))
-      ) {
-        newSort.key = action.key;
-        newSort.order = !sort.order;
-      } else if (action.key == sort.key) {
-        newSort.key = null,
-        newSort.order = ASCENDING;
-      } else {
-        newSort.key = action.key;
-        newSort.order = action.key == 'created' ? DESCENDING : ASCENDING;
-      }
       const optionsWithNewSort = {
         ...state.options,
-        sort: newSort,
+        sort: updateSortOpts(state.options.sort, action.key),
       };
       return updateOptions(state, optionsWithNewSort);
     case TOGGLE_FILTER:
@@ -224,6 +267,12 @@ function box(state = boxState, action) {
     case UNSELECT_ALL_FILTER: 
       return updateOptions(state, {...state.options, filter: filterUnselectAll});
 
+    case EDIT_TOGGLE_SORT:
+      const editOptionsWithNewSort = {
+        ...state.editOptions,
+        sort: updateSortOpts(state.editOptions.sort, action.key),
+      };
+      return updateEditOptions(state, editOptionsWithNewSort);
     case EDIT_ADD_ITEM: 
       const nextItemIdx = state.stagingData.groups
         ? state.stagingData.groups[action.groupIdx].nextItemIdx
@@ -352,6 +401,8 @@ export default undoable(box, {
     EDIT_ITEM_FIELD_BATCHED,
   ]),
   filter: includeAction([  
+    EDIT_TOGGLE_SORT,
+
     EDIT_ADD_ITEM,
     EDIT_DELETE_ITEM,
     EDIT_MOVE_ITEM,

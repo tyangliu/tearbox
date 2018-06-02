@@ -73,6 +73,16 @@ export function filterItems(items, filterOpts) {
   );
 }
 
+export function sortGroups(groups, options) {
+  if (!groups) {
+    return groups;
+  }
+  return groups.map((group, i) => ({
+    ...group,
+    items: sortItems(group.items, options.sort),
+  }));
+};
+
 export function filterSortGroups(groups, indices, options) {
   if (!groups) {
     return groups;

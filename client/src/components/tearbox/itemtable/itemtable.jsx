@@ -6,11 +6,11 @@ import XDate from 'xdate';
 
 import TearIcon from './tearicon';
 import {Icon} from '../../common';
+import {toggleSort} from '../../../redux/actions';
 
 const white = 'rgba(255,255,255,1)';
 const grey = 'rgba(243,244,245,1)';
 
-import {toggleSort} from '../../../redux/actions';
 
 const headers = [
   {key: 'icon', text: '', isSortable: false},
@@ -56,24 +56,31 @@ class ItemTable extends React.Component {
             const isActive = key == sort.key;
             // Disable icon and note columns
             return (
-              <li style={[
-                    styles.itemTableLabel[isActive ? 'active' : 'normal'],
-                    styles['itemCol'+i]
-                  ]}
-                  key={i}>
-                <div style={styles.itemTableLabelContainer[isSortable ? 'normal' : 'disabled']}
-                     key={'itemTableLabelContainer'+i}
-                     onClick={isSortable
-                      ? () => toggleSortFn(key)
-                      : () => {}
-                     }>
+              <li
+                style={[
+                  styles.itemTableLabel[isActive ? 'active' : 'normal'],
+                  styles['itemCol'+i]
+                ]}
+                key={i}
+              >
+                <div
+                  style={styles.itemTableLabelContainer[isSortable ? 'normal' : 'disabled']}
+                  key={'itemTableLabelContainer'+i}
+                  onClick={isSortable
+                    ? () => toggleSortFn(key)
+                    : undefined
+                  }
+                >
                   <span style={styles.itemTableLabelText}>
                     {text}
                   </span>
-                  <Icon name='keyboard_arrow_down' style={[
-                    styles.sortIcon[isActive ? 'visible' : 'hidden'],
-                    styles.sortIconRotation[sort.order ? 'flipped' : 'normal'],
-                  ]}/>
+                  <Icon
+                    name='keyboard_arrow_down'
+                    style={[
+                      styles.sortIcon[isActive ? 'visible' : 'hidden'],
+                      styles.sortIconRotation[sort.order ? 'flipped' : 'normal'],
+                    ]}
+                  />
                 </div>
                 <div style={styles.clearfix}/>
               </li>

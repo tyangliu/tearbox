@@ -53,6 +53,7 @@ class App extends React.Component {
               '.tooltip': {
                 backgroundColor: 'rgba(55,67,79,.9) !important',
                 padding: '4px 10px',
+                lineHeight: '19.5px',
               },
               '.tooltip.place-bottom:after': {
                 borderBottomColor: 'rgba(55,67,79,.9) !important',

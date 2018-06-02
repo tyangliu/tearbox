@@ -1,3 +1,5 @@
+export const EDIT_TOGGLE_SORT = 'EDIT_TOGGLE_SORT';
+
 export const EDIT_ADD_ITEM = 'EDIT_ADD_ITEM';
 export const EDIT_DELETE_ITEM = 'EDIT_DELETE_ITEM';
 export const EDIT_MOVE_ITEM = 'EDIT_MOVE_ITEM';
@@ -14,6 +16,11 @@ export const EDIT_ITEM_FIELD_BATCHED = 'EDIT_ITEM_FIELD_BATCHED';
 export const SEARCH_ITEM_EFFECTS = 'SEARCH_ITEM_EFFECTS';
 
 export const END_DRAG = 'END_DRAG';
+
+export const editToggleSort = key => ({
+  type: EDIT_TOGGLE_SORT,
+  key,
+});
 
 export const editAddItem = groupIdx => ({
   type: EDIT_ADD_ITEM,

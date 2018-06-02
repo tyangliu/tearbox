@@ -5,11 +5,13 @@ import styler from 'react-styling';
 import debounce from 'lodash.debounce';
 import {Droppable, Draggable} from 'react-beautiful-dnd';
 import {animateScroll as scroll} from 'react-scroll';
+import ReactTooltip from 'react-tooltip';
 
 import TearIcon from './tearicon';
 import {Icon, SelectBox} from '../../common';
 
 import {
+  editToggleSort,
   editAddItem,
   editDeleteItem,
   editMoveItem,
@@ -22,15 +24,15 @@ const white = 'rgba(255,255,255,1)';
 const grey = 'rgba(243,244,245,1)';
 
 const headers = [
-  {key: 'drag', text: ''},
-  {key: 'icon', text: ''},
-  {key: 'color', text: 'Color'},
-  {key: 'effect', text: 'Effect'},
-  {key: 'piece', text: 'Piece'},
-  {key: 'type', text: 'Type'},
-  {key: 'rarity', text: 'Rarity'},
-  {key: 'note', text: 'Note'},
-  {key: 'delete', text: ''},
+  {key: 'drag', text: '', isSortable: false},
+  {key: 'icon', text: '', isSortable: false},
+  {key: 'color', text: 'Color', isSortable: true},
+  {key: 'effect', text: 'Effect', isSortable: true},
+  {key: 'piece', text: 'Piece', isSortable: true},
+  {key: 'type', text: 'Type', isSortable: true},
+  {key: 'rarity', text: 'Rarity', isSortable: true},
+  {key: 'note', text: 'Note', isSortable: false},
+  {key: 'delete', text: '', isSortable: false},
 ];
 
 const colorOpts = [
@@ -106,9 +108,10 @@ class EditableItemTable extends React.Component {
       groupStableIdx,
       searchTerm,
       effects,
+      sort,
 
+      editToggleSortFn,
       editDeleteItemFn,
-
       editItemFieldFn,
       editItemFieldBatchedFn,
     } = this.props;
@@ -121,21 +124,50 @@ class EditableItemTable extends React.Component {
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
-          {headers.map(({key, text}, i) => {
-            // Disable first and last columns (icons, notes)
+          {headers.map(({key, text, isSortable}, i) => {
+            const isActive = key == sort.key;
+            // Disable drag, icon, note, delete columns
             return (
-              <li style={[
-                    styles.itemTableLabel.normal,
-                    styles['itemCol'+i]
-                  ]}
-                  key={i}>
-                <div style={styles.itemTableLabelContainer.disabled}
-                     key={'itemTableLabelContainer'+i}>
+              <li
+                style={[
+                  styles.itemTableLabel[isActive ? 'active' : 'normal'],
+                  styles['itemCol'+i]
+                ]}
+                key={`header_${i}`}
+              >
+                <div
+                  data-tip='React-tooltip'
+                  data-for={`header_${key}`}
+                  style={styles.itemTableLabelContainer[isSortable ? 'normal' : 'disabled']}
+                  key={'itemTableLabelContainer'+i}
+                  onClick={isSortable
+                    ? () => editToggleSortFn(key)
+                    : undefined
+                  }
+                >
                   <span style={styles.itemTableLabelText}>
                     {text}
                   </span>
+                  <Icon
+                    name='keyboard_arrow_down'
+                    style={[
+                      styles.sortIcon[isActive ? 'visible' : 'hidden'],
+                      styles.sortIconRotation[sort.order ? 'flipped' : 'normal'],
+                    ]}
+                  />
                 </div>
                 <div style={styles.clearfix}/>
+                {isSortable
+                  ? <ReactTooltip
+                      class='tooltip'
+                      place='bottom'
+                      id={`header_${key}`}
+                      effect='float'
+                    >
+                      Sort by {text}
+                    </ReactTooltip>
+                  : null
+                }
               </li>
             );
           })}
@@ -271,11 +303,13 @@ const mapStateToProps = (state, ownProps) => {
     tears,
     effects: filteredEffects,
     searchTerm: effectsSearchTerm,
+    sort: state.box.present.editOptions.sort,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    editToggleSortFn: key => dispatch(editToggleSort(key)),
     editAddItemFn: groupIdx => dispatch(editAddItem(groupIdx)),
     editDeleteItemFn: (groupIdx, idx) => dispatch(editDeleteItem(groupIdx, idx)),
     editMoveItemFn: (groupIdx, srcIdx, destIdx) =>
@@ -346,6 +380,29 @@ const styles = styler`
     border-bottom: 1px solid rgba(55,67,79,0.2)
     padding: 3px 0
     outline: none
+
+  sortIcon
+    font-size: 15px
+    line-height: 28px
+    margin-left: 4px
+    width: 14px
+
+    &visible
+      pointer-events: auto
+      
+    &hidden
+      opacity: 0
+      pointer-events: none
+
+  sortIconRotation
+    transition: transform 0.15s ease-in-out
+    transform-origin: 50% 49%
+
+    &normal
+      transform: rotateX(0deg)
+
+    &flipped
+      transform: rotateX(-180deg)
 
   itemCol0
     text-align: center
