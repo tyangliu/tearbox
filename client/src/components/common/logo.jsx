@@ -33,7 +33,7 @@ const styles = styler`
     cursor: pointer
     width: 100%
     height: 100%
-    background-image: url("${require('../../images/tearbox_logo.svg')}")
+    background-image: url("${require('../../images/tearbox_logo_beta.svg')}")
     background-repeat: no-repeat
     background-size: contain
 `;
