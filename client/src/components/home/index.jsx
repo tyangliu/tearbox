@@ -5,26 +5,13 @@ import {push} from 'react-router-redux';
 import styler from 'react-styling';
 import DocumentTitle from 'react-document-title';
 
-import localMap from '../../localMap';
 import {Logo, Button} from '../common';
 import NewBoxModal, {modalKey as newBoxKey} from '../modals/newbox';
 
-import {openModal, setOwnBoxId} from '../../redux/actions';
-import {PREV_BOX_ID_KEY} from '../../redux/constants';
+import {openModal} from '../../redux/actions';
 
 @Radium
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    const {setOwnBoxIdFn} = this.props;
-
-    const existingBoxId = localMap.get(PREV_BOX_ID_KEY);
-    if (!existingBoxId) {
-      return;
-    }
-    setOwnBoxIdFn(existingBoxId);
-  }
-
   render() {
     const {ownBoxId, openModalFn, goToFn} = this.props;
     return (
@@ -94,7 +81,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     openModalFn: key => dispatch(openModal(key)),
-    setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
     goToFn: url => dispatch(push(url)),
   };
 };

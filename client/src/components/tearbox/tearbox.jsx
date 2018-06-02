@@ -5,7 +5,6 @@ import styler from 'react-styling';
 import DocumentTitle from 'react-document-title';
 import capitalize from 'lodash.capitalize';
 
-import localMap from '../../localMap';
 import {Header} from './header';
 import {Button} from '../common';
 import InfoBox from './infobox';
@@ -21,7 +20,6 @@ import {
   requestGetBox,
   toggleGroup,
   openModal,
-  setOwnBoxId,
 } from '../../redux/actions';
 
 import {
@@ -29,9 +27,6 @@ import {
   REQUESTED,
   RECEIVED,
   NOT_FOUND,
-
-  PREV_BOX_ID_KEY,
-  PREV_BOX_TOKEN_KEY,
 
   groupTypeLabels,
 } from '../../redux/constants';
@@ -49,18 +44,11 @@ class Tearbox extends React.Component {
       boxStatus,
       box,
       match,
-      setOwnBoxIdFn,
     } = this.props;
 
     if (boxStatus !== RECEIVED || box.id !== match.params.id) {
       this.refreshBox();
     }
-
-    const existingBoxId = localMap.get(PREV_BOX_ID_KEY);
-    if (!existingBoxId) {
-      return;
-    }
-    setOwnBoxIdFn(existingBoxId);
   }
 
   componentDidUpdate(prevProps) {
@@ -167,7 +155,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     requestGetBoxFn: id => dispatch(requestGetBox(id)),
     toggleGroupFn: idx => dispatch(toggleGroup(idx)),
     openModalFn: key => dispatch(openModal(key)),
-    setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
   };
 };
 

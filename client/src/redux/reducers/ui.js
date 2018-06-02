@@ -6,6 +6,7 @@ import {
   RECEIVE_TEARS,
 
   POST_BOX_AUTH_SUCCESS,
+  POST_BOX_REFRESH_SUCCESS,
 
   GET_BOX,
   GET_BOX_SUCCESS,
@@ -67,8 +68,13 @@ function ui(state = uiState, action) {
       return {...state, tearsStatus: RECEIVED};
     case POST_BOX_AUTH_SUCCESS:
       return update(state, {
-        modalVisibilities: {editBox: {$set: false},},
+        modalVisibilities: {editBox: {$set: false}},
+        ownBoxId: {$set: action.id},
       }); 
+    case POST_BOX_REFRESH_SUCCESS:
+      return update(state, {
+        ownBoxId: {$set: action.id},
+      });
     case GET_BOX:
       return {
         ...state,
@@ -76,8 +82,11 @@ function ui(state = uiState, action) {
         groupVisibilities: null,
       };
     case GET_BOX_SUCCESS:
-    case POST_BOX_SUCCESS:
       return updateBoxProps(state, action);
+    case POST_BOX_SUCCESS:
+      return update(updateBoxProps(state, action), {
+        ownBoxId: {$set: action.data.id},
+      });
     case GET_BOX_FAILURE:
       return {...state, boxStatus: NOT_FOUND};
     case TOGGLE_GROUP:

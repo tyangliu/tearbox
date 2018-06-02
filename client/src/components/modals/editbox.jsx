@@ -105,7 +105,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     closeModalFn: () => dispatch(closeModal(modalKey)),
     editFormFieldFn: debounce((field, value) =>
-      dispatch(editFormField('editBox', field, value)), 200), 
+      dispatch(editFormField('editBox', field, value)), 100), 
     requestPostBoxAuthFn: () => dispatch(requestPostBoxAuth()),
   };
 };
@@ -186,7 +186,7 @@ const styles = styler`
   checkbox
     float: right
     text-align: right
-    padding: 10px
+    padding: 8px
     margin-right: 20px
 
   submitButton

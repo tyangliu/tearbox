@@ -4,9 +4,24 @@ import {connect} from 'react-redux';
 import {Route, Switch} from 'react-router';
 import styler from 'react-styling';
 
+import localMap from './localMap';
 import {Home, Tearbox, EditableTearbox, NotFound} from './components';
+import {setOwnBoxId, requestPostBoxRefresh} from './redux/actions';
+import {PREV_BOX_ID_KEY} from './redux/constants';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    const {requestPostBoxRefreshFn, setOwnBoxIdFn} = this.props;
+
+    const existingBoxId = localMap.get(PREV_BOX_ID_KEY);
+    if (!existingBoxId) {
+      return;
+    }
+    requestPostBoxRefreshFn();
+    setOwnBoxIdFn(existingBoxId);
+  }
+
   render() {
     return (
       <div style={styles.app}>
@@ -40,6 +55,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
+    requestPostBoxRefreshFn: () => dispatch(requestPostBoxRefresh()),
   };
 };
 

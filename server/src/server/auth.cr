@@ -21,15 +21,14 @@ module Tearbox::Auth
   def create_token(
     sub : String,
     aud : String,
-    exp : Int64 = 3600_i64,
+    exp : Int64,
   ) : String
-    now = Time.now.epoch
     payload = JWTToken.new(
       sub: sub,
       aud: [aud],
       iss: "Tearbox-Server",
-      exp: now + exp,
-      iat: now,
+      exp: exp,
+      iat: Time.now.epoch,
     )
     JWT.encode(payload, SECRET_KEY, "HS256")
   end

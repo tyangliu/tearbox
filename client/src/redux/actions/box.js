@@ -3,7 +3,14 @@ import fetch from 'isomorphic-fetch';
 import {push, replace} from 'react-router-redux';
 
 import localMap from '../../localMap';
-import {RECEIVED, PREV_BOX_ID_KEY, PREV_BOX_TOKEN_KEY} from '../constants';
+import {
+  RECEIVED,
+  REMEMBER_BOX_KEY,
+  PREV_BOX_ID_KEY,
+  PREV_BOX_TOKEN_KEY,
+  PREV_BOX_REFRESH_TOKEN_KEY,
+  PREV_BOX_EXPIRES_AT_KEY,
+} from '../constants';
 import {loadTears} from './tears';
 import {openModal} from './ui';
 import {unpackBox, packBox, processNewBox, validateNewBox} from '../utils/box';
@@ -13,6 +20,10 @@ export const RESET_STAGING = 'RESET_STAGING';
 export const POST_BOX_AUTH = 'POST_BOX_AUTH';
 export const POST_BOX_AUTH_SUCCESS = 'POST_BOX_AUTH_SUCCESS';
 export const POST_BOX_AUTH_FAILURE = 'POST_BOX_AUTH_FAILURE';
+
+export const POST_BOX_REFRESH = 'POST_BOX_REFRESH';
+export const POST_BOX_REFRESH_SUCCESS = 'POST_BOX_REFRESH_SUCCESS';
+export const POST_BOX_REFRESH_FAILURE = 'POST_BOX_REFRESH_FAILURE';
 
 export const GET_BOX = 'GET_BOX';
 export const GET_BOX_SUCCESS = 'GET_BOX_SUCCESS';
@@ -121,6 +132,21 @@ export const postBoxAuthFailure = error => ({
   error,
 });
 
+export const postBoxRefresh = () => ({
+  type: POST_BOX_REFRESH,
+});
+
+export const postBoxRefreshSuccess = (id, token) => ({
+  type: POST_BOX_REFRESH_SUCCESS,
+  id,
+  token,
+});
+
+export const postBoxRefreshFailure = error => ({
+  type: POST_BOX_REFRESH_FAILURE,
+  error,
+});
+
 export const requestPostBoxAuth = () => async (dispatch, getState) => {
   const {id} = getState().box.present.data;
   const {passcode, rememberMe} = getState().forms.editBox;
@@ -153,10 +179,65 @@ export const requestPostBoxAuth = () => async (dispatch, getState) => {
   }
 
   const result = await response.json();
-  localMap.set(PREV_BOX_ID_KEY, id, rememberMe);
-  localMap.set(PREV_BOX_TOKEN_KEY, result.token, rememberMe);
+
+  [
+    [PREV_BOX_ID_KEY, id],
+    [PREV_BOX_TOKEN_KEY, result.token],
+    [PREV_BOX_REFRESH_TOKEN_KEY, result.refresh_token],
+    [PREV_BOX_EXPIRES_AT_KEY, result.expires_at],
+    [REMEMBER_BOX_KEY, rememberMe],
+  ].map(([k, v]) => localMap.set(k, v, rememberMe));
+
   dispatch(postBoxAuthSuccess(id, result.token));
   dispatch(replace(`/box/${id}/edit`));
+};
+
+export const requestPostBoxRefresh = () => async (dispatch, getState) => {
+  const rememberMe = localMap.get(REMEMBER_BOX_KEY) || false;
+  const id = localMap.get(PREV_BOX_ID_KEY);
+  const refreshToken = localMap.get(PREV_BOX_REFRESH_TOKEN_KEY);
+  const expiresAt = localMap.get(PREV_BOX_EXPIRES_AT_KEY);
+
+  if (!id || !refreshToken) {
+    return;
+  }
+
+  // Refresh only if token has less than 48 hours to live.
+  if (expiresAt > new Date().getTime() + 3600 * 48) {
+    return;
+  }
+
+  const fullUrl = `${url}/${boxesPath}/refresh`;
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    body: JSON.stringify({id, refresh_token: refreshToken}),
+  });
+
+  // TODO: show error in UI
+  if (response.status === 401) {
+    dispatch(postBoxRefreshFailure({
+      message: 'Refresh token invalid.',
+    }));
+    return;
+  }
+  if (response.status !== 200) {
+    dispatch(postBoxAuthFailure({
+      message: 'Something went wrong with refreshing token.',
+    }));
+    return;
+  }
+
+  const result = await response.json();
+
+  [
+    [PREV_BOX_ID_KEY, id],
+    [PREV_BOX_TOKEN_KEY, result.token],
+    [PREV_BOX_REFRESH_TOKEN_KEY, result.refresh_token],
+    [PREV_BOX_EXPIRES_AT_KEY, result.expires_at],
+    [REMEMBER_BOX_KEY, rememberMe],
+  ].map(([k, v]) => localMap.set(k, v, rememberMe));
+
+  dispatch(postBoxRefreshSuccess(id, result.token));
 };
 
 export const requestGetBox = id => async (dispatch, getState) => {
@@ -194,6 +275,8 @@ export const requestGetBox = id => async (dispatch, getState) => {
 
 export const requestPostBox = () => async (dispatch, getState) => {
   const form = getState().forms.newBox;
+  const {rememberMe} = form;
+
   const errors = validateNewBox(form);
   if (Object.keys(errors).length > 0) {
     dispatch(postBoxFailure({errors}));
@@ -220,8 +303,15 @@ export const requestPostBox = () => async (dispatch, getState) => {
   const result = await response.json();
   const {tears} = getState();
   const box = unpackBox(tears, result.data);
-  localMap.set(PREV_BOX_ID_KEY, box.id, form.rememberMe);
-  localMap.set(PREV_BOX_TOKEN_KEY, result.token, form.rememberMe);
+
+  [
+    [PREV_BOX_ID_KEY, box.id],
+    [PREV_BOX_TOKEN_KEY, result.token],
+    [PREV_BOX_REFRESH_TOKEN_KEY, result.refresh_token],
+    [PREV_BOX_EXPIRES_AT_KEY, result.expires_at],
+    [REMEMBER_BOX_KEY, rememberMe],
+  ].map(([k, v]) => localMap.set(k, v, rememberMe));
+
   dispatch(postBoxSuccess(box, result.token));
   dispatch(push(`/box/${box.id}/edit`));
 };

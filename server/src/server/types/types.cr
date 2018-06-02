@@ -106,6 +106,20 @@ module Tearbox::Types
       errors.add(:passcode, "Passcode can't be blank") if @passcode.size === 0
     end
   end
+
+  class BoxAuthRefresh
+    include AutoJson
+    include Accord
+
+    field :id, String
+    field :refresh_token, String
+
+    def validate
+      errors.add(:id, "ID can't be blank.") if @id.size === 0
+      errors.add(:refresh_token, "Refresh token can't be blank") \
+        if @refresh_token.size === 0
+    end
+  end
   
   class BoxData
     base
@@ -191,6 +205,8 @@ module Tearbox::HTTPTypes
     include AutoJson
 
     field :token, String
+    field :refresh_token, String
+    field :expires_at, Int64
   end
 
   class GetBoxResponse
@@ -204,6 +220,8 @@ module Tearbox::HTTPTypes
 
     field :data, BoxDataPublic
     field :token, String
+    field :refresh_token, String
+    field :expires_at, Int64
   end
 
   class PatchBoxResponse

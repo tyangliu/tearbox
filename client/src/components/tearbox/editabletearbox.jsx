@@ -15,6 +15,7 @@ import {Icon} from '../common';
 import InfoBox from './infobox';
 import {EditableItemTable} from './itemtable';
 import EditableSection from './editablesection';
+import EditBoxModal from '../modals/editbox';
 import Footer from './footer';
 import NotFound from '../errors/NotFound';
 
@@ -140,76 +141,77 @@ class EditableTearbox extends React.Component {
         <DragDropContext
           onDragEnd={endDragFn}
         >
-            <div style={styles.tearbox}>
-              <div style={styles.tearboxContainer}>
-                <div style={styles.headerContainer}>
-                  <EditableHeader/>
-                </div>
-                <div style={styles.container}>
-                  <div style={styles.left}>
-                    <div style={styles.mainLeftContent}>
-                      <div style={styles.leftTop}>
-                        <InfoBox/>
-                      </div>
+          <div style={styles.tearbox}>
+            <div style={styles.tearboxContainer}>
+              <div style={styles.headerContainer}>
+                <EditableHeader/>
+              </div>
+              <div style={styles.container}>
+                <div style={styles.left}>
+                  <div style={styles.mainLeftContent}>
+                    <div style={styles.leftTop}>
+                      <InfoBox/>
                     </div>
-                    <Footer/>
                   </div>
+                  <Footer/>
+                </div>
 
-                  <div style={styles.right}>
-                    <Droppable
-                      droppableId='itemGroupDroppable'
-                      type='GROUP'
-                    >
-                      {(provided, snapshot) => (
-                        <div style={styles.rightInner} ref={provided.innerRef}>
-                          {(box.groups || []).map((group, i) =>
-                            <Draggable
-                              key={group.idx}
-                              draggableId={`groupDraggable_${i}`}
-                              index={i}
-                            >
-                              {(provided, snapshot) => (
-                                <EditableSection
-                                  title={group.name}
-                                  type={group.type}
+                <div style={styles.right}>
+                  <Droppable
+                    droppableId='itemGroupDroppable'
+                    type='GROUP'
+                  >
+                    {(provided, snapshot) => (
+                      <div style={styles.rightInner} ref={provided.innerRef}>
+                        {(box.groups || []).map((group, i) =>
+                          <Draggable
+                            key={group.idx}
+                            draggableId={`groupDraggable_${i}`}
+                            index={i}
+                          >
+                            {(provided, snapshot) => (
+                              <EditableSection
+                                title={group.name}
+                                type={group.type}
+                                groupIdx={i}
+                                groupStableIdx={group.idx}
+                                provided={provided}
+                                getRef={
+                                  (i === box.groups.length - 1)
+                                    ? e => {this.lastItemFirstInput = e;}
+                                    : undefined
+                                }
+                                visible={groupVisibilities[i]}
+                                onToggle={() => toggleGroupFn(i)}
+                              >
+                                <EditableItemTable
+                                  items={group.items}
                                   groupIdx={i}
                                   groupStableIdx={group.idx}
-                                  provided={provided}
-                                  getRef={
-                                    (i === box.groups.length - 1)
-                                      ? e => {this.lastItemFirstInput = e;}
-                                      : undefined
-                                  }
-                                  visible={groupVisibilities[i]}
-                                  onToggle={() => toggleGroupFn(i)}
-                                >
-                                  <EditableItemTable
-                                    items={group.items}
-                                    groupIdx={i}
-                                    groupStableIdx={group.idx}
-                                    isLast={i == box.groups.length -1}
-                                  />
-                                </EditableSection>
-                              )}
-                            </Draggable>
-                          )}
-                        </div>
-                      )}
-                    </Droppable>
-                    <div style={styles.addSection}
-                         key='addGroupButton'
-                         tabIndex={0}
-                         onClick={this.handleAddGroupClick}
-                         onKeyPress={this.handleAddGroupKeyPress}
-                         ref={e => {this.addGroupEl = e}}>
-                      <Icon style={styles.addIcon} name='create_new_folder'/>
-                      <span style={styles.addSectionText}>Add Section</span>
-                    </div>
+                                  isLast={i == box.groups.length -1}
+                                />
+                              </EditableSection>
+                            )}
+                          </Draggable>
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                  <div style={styles.addSection}
+                       key='addGroupButton'
+                       tabIndex={0}
+                       onClick={this.handleAddGroupClick}
+                       onKeyPress={this.handleAddGroupKeyPress}
+                       ref={e => {this.addGroupEl = e}}>
+                    <Icon style={styles.addIcon} name='create_new_folder'/>
+                    <span style={styles.addSectionText}>Add Section</span>
                   </div>
-                  <div style={styles.clearfix}/>
                 </div>
+                <div style={styles.clearfix}/>
               </div>
             </div>
+            <EditBoxModal/>
+          </div>
         </DragDropContext>
       </DocumentTitle>
     );
