@@ -21,6 +21,7 @@ import {
   processBoxInfo,
   validateBoxInfo,
 } from '../utils/box';
+import {url} from '../../config';
 
 export const RESET_STAGING = 'RESET_STAGING';
 
@@ -52,7 +53,6 @@ export const DELETE_BOX = 'DELETE_BOX';
 export const DELETE_BOX_SUCCESS = 'DELETE_BOX_SUCCESS';
 export const DELETE_BOX_FAILURE = 'DELETE_BOX_FAILURE';
 
-const url = 'http://127.0.0.1:3000';
 const boxesPath = 'boxes';
 
 export const resetStaging = () => ({
