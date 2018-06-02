@@ -132,6 +132,7 @@ module Tearbox::Types
     field :email, String?
     field :fields, Array(BoxField), default: [] of BoxField
     field :groups, Array(Group), default: [] of Group
+    field :origin_id, String?
 
     def validate
       errors.add(:name, "Name can't be blank.") if @name.size === 0

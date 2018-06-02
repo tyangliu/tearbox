@@ -8,7 +8,7 @@ module Tearbox::Auth
   include Tearbox::Types
 
   private SECRET_KEY = "TEST"
-  private PASS_COST = 10
+  private PASS_COST = 6
 
   def create_passhash(passcode : String) : String
     Crypto::Bcrypt::Password.create(passcode, cost: PASS_COST).to_s

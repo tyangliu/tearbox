@@ -147,7 +147,7 @@ export function packBox(box) {
   }, ['nextGroupIdx', 'isDirty']);
 }
 
-export function processNewBox(data) {
+export function processNewBox(data, originId = null) {
   const {
     name, server, igns, discord, forum, other,
     passcode, email,
@@ -166,6 +166,9 @@ export function processNewBox(data) {
   const trimmedEmail = email.trim();
   if (trimmedEmail.length) {
     newBox.email = trimmedEmail;
+  }
+  if (originId) {
+    newBox.origin_id = originId;
   }
   return newBox;
 }

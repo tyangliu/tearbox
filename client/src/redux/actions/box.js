@@ -203,7 +203,7 @@ export const requestPostBoxRefresh = () => async (dispatch, getState) => {
   }
 
   // Refresh only if token has less than 48 hours to live.
-  if (expiresAt > new Date().getTime() + 3600 * 48) {
+  if (expiresAt < new Date().getTime() + 3600 * 48) {
     return;
   }
 
@@ -275,6 +275,7 @@ export const requestGetBox = id => async (dispatch, getState) => {
 
 export const requestPostBox = () => async (dispatch, getState) => {
   const form = getState().forms.newBox;
+  const currBox = getState().box.present.data;
   const {rememberMe} = form;
 
   const errors = validateNewBox(form);
@@ -283,7 +284,7 @@ export const requestPostBox = () => async (dispatch, getState) => {
     return;
   }
 
-  const newBox = processNewBox(form);
+  const newBox = processNewBox(form, currBox.id);
   dispatch(postBox(newBox));
   
   const fullUrl = `${url}/${boxesPath}`;
