@@ -5,3 +5,4 @@
 /.shards/
 sentry
 /server
+/config/config_prod.json

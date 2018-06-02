@@ -21,27 +21,15 @@ private macro base
     def initialize(%pull : ::JSON::PullParser)
       previous_def
       if !@key && (id = @id)
-        @key = decode_id id
+        @key = Hasher.decode_id id
       elsif !id && (key = @key)
-        @id = encode_key key
+        @id = Hasher.encode_key key
       end
     end
   end
 end
 
 module Tearbox::Types
-  private HASH_SALT = "w0w"
-  private HASHER = Hashids.new(salt: HASH_SALT, min_length: 8)
-
-  def decode_id(id : String)
-    results = HASHER.decode id
-    results[0].to_s if results.size > 0
-  end
-
-  def encode_key(key : String)
-    HASHER.encode [UInt64.new key]
-  end
-
   class JWTToken
     include AutoJson
 
@@ -285,10 +273,19 @@ module Tearbox::ConfigTypes
     field :name, String
   end
 
+  class AuthConfig
+    include AutoJson
+
+    field :id_key, String
+    field :token_key, String
+    field :pass_cost, Int32
+  end
+
   class ServerConfig
     include AutoJson
 
     field :port, Int32
     field :db, DatabaseConfig
+    field :auth, AuthConfig
   end
 end
