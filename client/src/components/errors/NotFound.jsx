@@ -12,20 +12,6 @@ import {PREV_BOX_ID_KEY} from '../../redux/constants';
 
 @Radium
 class NotFound extends React.Component {
-  constructor(props) {
-    super(props);
-    const {setOwnBoxIdFn} = this.props;
-
-    if (!localStorage) {
-      return;
-    }
-    const existingBoxId = localStorage.getItem(PREV_BOX_ID_KEY);
-    if (!existingBoxId) {
-      return;
-    }
-    setOwnBoxIdFn(existingBoxId);
-  }
-
   render() {
     const {ownBoxId, openModalFn, goToFn} = this.props;
     return (
@@ -76,7 +62,7 @@ class NotFound extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {ownBoxId} = state.ui;
+  const {ownBoxId} = state.ui.present;
   return {
     ownBoxId,
   };
