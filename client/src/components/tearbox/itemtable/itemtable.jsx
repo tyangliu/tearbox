@@ -27,6 +27,28 @@ const headers = [
 class ItemTable extends React.Component {
   render() {
     const {items, sort, toggleSortFn} = this.props;
+    const inner = items.length === 0
+      ? <li style={styles.emptyItems}>No Items</li>
+      : items.map((item, i) => 
+          <li style={styles.itemEntry} key={i}>
+            <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
+              <li style={[styles.itemCol0]}>
+                <TearIcon item={item}/>
+              </li>
+              <li style={[styles.itemCol1]}>{item.color.name}</li>
+              <li style={[styles.itemCol2]}>{item.effect.name}</li>
+              <li style={[styles.itemCol3]}>{item.piece.name}</li>
+              <li style={[styles.itemCol4]}>{item.type.name}</li>
+              <li style={[styles.itemCol5]}>{item.rarity.name}</li>
+              <li style={[styles.itemCol6]}>{item.note}</li>
+              <li style={[styles.itemCol7]}>
+                {(item.created && item.created != '')
+                  ? new XDate(item.created).toString('MMM d')
+                  : ''}
+              </li>
+            </ul>
+          </li>
+        );
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
@@ -60,26 +82,7 @@ class ItemTable extends React.Component {
         </ul>
         <div style={styles.clearfix}/>
         <ul style={[styles.itemEntries]}>
-          {items.map((item, i) => 
-            <li style={styles.itemEntry} key={i}>
-              <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
-                <li style={[styles.itemCol0]}>
-                  <TearIcon item={item}/>
-                </li>
-                <li style={[styles.itemCol1]}>{item.color.name}</li>
-                <li style={[styles.itemCol2]}>{item.effect.name}</li>
-                <li style={[styles.itemCol3]}>{item.piece.name}</li>
-                <li style={[styles.itemCol4]}>{item.type.name}</li>
-                <li style={[styles.itemCol5]}>{item.rarity.name}</li>
-                <li style={[styles.itemCol6]}>{item.note}</li>
-                <li style={[styles.itemCol7]}>
-                  {(item.created && item.created != '')
-                    ? new XDate(item.created).toString('MMM d')
-                    : ''}
-                </li>
-              </ul>
-            </li>
-          )}
+          {inner}
         </ul>
       </div>
     );
@@ -140,6 +143,13 @@ const styles = styler`
   itemTableLabelText
     font-weight: bold
     display: block
+
+  emptyItems
+    text-align: center
+    padding: 20px 0
+    font-style: italic
+    font-size: 21px
+    color: rgba(55,67,79,0.6)
 
   sortIcon
     font-size: 15px

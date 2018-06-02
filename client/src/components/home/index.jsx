@@ -52,7 +52,7 @@ class Home extends React.Component {
                 How it Works
               </h3>
               <div style={styles.infoContainer}>
-                <p style={[styles.infoText, styles.infoText1]}>Create a tearbox and add your items</p>
+                <p style={[styles.infoText, styles.infoText1]}>Create a box and add your items</p>
                 <p style={[styles.infoText, styles.infoText2]}>Copy the unique box link</p>
                 <p style={[styles.infoText, styles.infoText3]}>Share it on Discord, forums, wherever!</p>
               </div>

@@ -14,6 +14,7 @@ import NewBoxModal from '../modals/newbox';
 import EditBoxModal from '../modals/editbox';
 import Footer from './footer';
 import NotFound from '../errors/NotFound';
+import Empty from './empty';
 
 import {
   loadTears,
@@ -86,6 +87,30 @@ class Tearbox extends React.Component {
       );
     }
 
+    const inner = box.groupDisplays.length === 0
+      ? <Empty style={styles.empty}/>
+      : (box.groupDisplays || []).map((group, i) => 
+          <Section
+            title={
+              <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
+                <span style={styles.sectionTitleLabel}>
+                  {group.name !== '' ? group.name : groupTypeLabels[group.type]}
+                </span>
+                {group.name !== '' ?
+                  <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
+                    {capitalize(groupTypeLabels[group.type])}
+                  </span> : null
+                }
+              </span>
+            }
+            key={i}
+            visible={groupVisibilities[i]}
+            onToggle={() => toggleGroupFn(i)}
+          >
+            <ItemTable items={group.items}/>
+          </Section>
+        ); 
+
     return (
       <DocumentTitle title={title}>
         <div style={styles.tearbox}>
@@ -105,28 +130,8 @@ class Tearbox extends React.Component {
                 </div>
               </div>
 
-              <div style={styles.right}>
-                {(box.groupDisplays || []).map((group, i) => 
-                  <Section
-                    title={
-                      <span style={styles.sectionTitle} key={`sectionTitle_${group.id}`}>
-                        <span style={styles.sectionTitleLabel}>
-                          {group.name !== '' ? group.name : groupTypeLabels[group.type]}
-                        </span>
-                        {group.name !== '' ?
-                          <span style={styles.sectionTitleTag} key={`sectionTitleTag_${group.id}`}>
-                            {capitalize(groupTypeLabels[group.type])}
-                          </span> : null
-                        }
-                      </span>
-                    }
-                    key={i}
-                    visible={groupVisibilities[i]}
-                    onToggle={() => toggleGroupFn(i)}
-                  >
-                    <ItemTable items={group.items}/>
-                  </Section>
-                )}
+              <div style={styles.right}> 
+                {inner}
               </div>
               <div style={styles.clearfix}/>
             </div>

@@ -117,12 +117,12 @@ const styles = styler`
         padding: 10px
 
       success
-        background: rgba(37,174,215,0.1)
+        background: rgba(232,247,252,1)
         color: rgba(55,67,79,1)
         border-top: 3px solid rgba(37,174,215,1)
 
       error
-        background: rgba(217,52,35,0.1)
+        background: rgba(252,234,230,1)
         color: rgba(217,52,35,1)
         border-top: 3px solid rgba(217,52,35,1)
 
