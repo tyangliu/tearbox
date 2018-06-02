@@ -31,6 +31,7 @@ import {
   END_DRAG,
 
   SET_OWN_BOX_ID,
+  SET_NOTIFICATION_CREATOR,
 } from '../actions';
 
 import {
@@ -52,7 +53,7 @@ const uiState = {
     boxInfo: false,
   },
   ownBoxId: null,
-  ownBoxToken: null,
+  notificationCreator: null,
 };
 
 function updateBoxProps(state, action) {
@@ -162,6 +163,10 @@ function ui(state = uiState, action) {
     case SET_OWN_BOX_ID:
       return update(state, {
         ownBoxId: {$set: action.id},
+      });
+    case SET_NOTIFICATION_CREATOR:
+      return update(state, {
+        notificationCreator: {$set: action.fn},
       });
     default:
       return state;

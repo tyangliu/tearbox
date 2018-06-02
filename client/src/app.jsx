@@ -3,13 +3,20 @@ import Radium, {Style} from 'radium';
 import {connect} from 'react-redux';
 import {Route, Switch} from 'react-router';
 import styler from 'react-styling';
+import NotificationSystem from 'react-notification-system';
 
 import localMap from './localMap';
 import {Home, Tearbox, EditableTearbox, NotFound} from './components';
-import {setOwnBoxId, requestPostBoxRefresh} from './redux/actions';
+import {
+  setOwnBoxId,
+  setNotificationCreator,
+  requestPostBoxRefresh,
+} from './redux/actions';
 import {PREV_BOX_ID_KEY} from './redux/constants';
 
 class App extends React.Component {
+  notificationSystem = null;
+
   constructor(props) {
     super(props);
     const {requestPostBoxRefreshFn, setOwnBoxIdFn} = this.props;
@@ -20,6 +27,21 @@ class App extends React.Component {
     }
     requestPostBoxRefreshFn();
     setOwnBoxIdFn(existingBoxId);
+  }
+
+  addNotificationCreator = (level, message) => e => {
+    e && e.preventDefault();
+    this.notificationSystem.addNotification({
+      autoDismiss: 2,
+      position: 'tc',
+      level,
+      message,
+    });
+  };
+
+  componentDidMount() {
+    const {setNotificationCreatorFn} = this.props;
+    setNotificationCreatorFn(this.addNotificationCreator);
   }
 
   render() {
@@ -35,6 +57,10 @@ class App extends React.Component {
               borderBottomColor: 'rgba(55,67,79,.9) !important',
             },
           }}}
+        />
+        <NotificationSystem
+          ref={el => this.notificationSystem = el}
+          style={styles.notificationSystem}
         />
         <Switch>
           <Route exact path='/' component={Home}/>
@@ -56,6 +82,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     setOwnBoxIdFn: id => dispatch(setOwnBoxId(id)),
+    setNotificationCreatorFn: fn => dispatch(setNotificationCreator(fn)),
     requestPostBoxRefreshFn: () => dispatch(requestPostBoxRefresh()),
   };
 };
@@ -74,6 +101,39 @@ const styles = styler`
     font-size: 13px
     height: 100vh
     line-height: 1.5em
+
+  notificationSystem
+    Containers
+      DefaultStyle
+        width: 360
+      tc
+        margin-left: -180
+
+    NotificationItem
+      DefaultStyle
+        box-shadow: 0 2px 3px 1px rgba(55,67,79,0.2)
+        border-radius: 3px
+        text-align: center
+        padding: 10px
+
+      success
+        background: rgba(37,174,215,0.1)
+        color: rgba(55,67,79,1)
+        border-top: 3px solid rgba(37,174,215,1)
+
+      error
+        background: rgba(217,52,35,0.1)
+        color: rgba(217,52,35,1)
+        border-top: 3px solid rgba(217,52,35,1)
+
+    Dismiss
+      success
+        background-color: none
+        color: rgba(37,174,215,1)
+
+      error
+        background-color: none
+        color: rgba(217,52,35,1) 
 
   appRules 
     *

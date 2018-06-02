@@ -18,6 +18,7 @@ export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 
 export const SET_OWN_BOX_ID = 'SET_OWN_BOX_ID';
+export const SET_NOTIFICATION_CREATOR = 'SET_NOTIFICATION_CREATOR';
 
 export const toggleGroup = idx => ({
   type: TOGGLE_GROUP,
@@ -77,4 +78,9 @@ export const closeModal = key => ({
 export const setOwnBoxId = id => ({
   type: SET_OWN_BOX_ID,
   id,
+});
+
+export const setNotificationCreator = fn => ({
+  type: SET_NOTIFICATION_CREATOR,
+  fn,
 });

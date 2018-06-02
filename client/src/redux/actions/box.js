@@ -342,7 +342,10 @@ export const requestPostBox = () => async (dispatch, getState) => {
 };
 
 export const requestPatchBox = () => async (dispatch, getState) => {
-  const {box} = getState();
+  const {
+    box,
+    ui: {present: {notificationCreator}}
+  } = getState();
   const id = box.present.data.id;
   const storedId = localMap.get(PREV_BOX_ID_KEY);
   const storedToken = localMap.get(PREV_BOX_TOKEN_KEY);
@@ -369,9 +372,20 @@ export const requestPatchBox = () => async (dispatch, getState) => {
     return;
   }
 
-  if (response.status !== 200) {
+  if (response.status === 400) {
+    const message = 'Please fill blank item fields before saving.';
+    notificationCreator('error', message)();
     dispatch(patchBoxFailure({
-      message: 'Something went wrong while saving. Try again later.'
+      message,
+    }));
+    return;
+  }
+
+  if (response.status !== 200) {
+    const message = 'Something went wrong while saving. Try again later.';
+    notificationCreator('error', message)();
+    dispatch(patchBoxFailure({
+      message,
     }));
     return;
   }
@@ -379,6 +393,8 @@ export const requestPatchBox = () => async (dispatch, getState) => {
   const result = await response.json();
   const {tears} = getState();
   const newBox = unpackBox(tears, result.data);
+  const message = 'Box saved successfully.'
+  notificationCreator('success', message)();
   dispatch(patchBoxSuccess(newBox));
   dispatch(replace(`/box/${id}`));
 };
@@ -431,8 +447,9 @@ export const requestPatchBoxInfo = () => async (dispatch, getState) => {
   }
 
   if (response.status !== 200) {
+    const message = 'Something went wrong while saving. Try again later.';
     dispatch(patchBoxInfoFailure({
-      message: 'Something went wrong while saving. Try again later.'
+      message,
     }));
     return;
   }
