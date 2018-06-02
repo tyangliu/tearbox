@@ -1,8 +1,8 @@
 import queryString from 'query-string';
 import fetch from 'isomorphic-fetch';
 import {push, replace} from 'react-router-redux';
-import ls from 'local-storage';
 
+import localMap from '../../localMap';
 import {RECEIVED, PREV_BOX_ID_KEY, PREV_BOX_TOKEN_KEY} from '../constants';
 import {loadTears} from './tears';
 import {openModal} from './ui';
@@ -123,7 +123,7 @@ export const postBoxAuthFailure = error => ({
 
 export const requestPostBoxAuth = () => async (dispatch, getState) => {
   const {id} = getState().box.present.data;
-  const {passcode} = getState().forms.editBox;
+  const {passcode, rememberMe} = getState().forms.editBox;
 
   if (!id || passcode == '') {
     dispatch(postBoxAuthFailure({
@@ -153,8 +153,8 @@ export const requestPostBoxAuth = () => async (dispatch, getState) => {
   }
 
   const result = await response.json();
-  ls.set(PREV_BOX_ID_KEY, id);
-  ls.set(PREV_BOX_TOKEN_KEY, result.token);
+  localMap.set(PREV_BOX_ID_KEY, id, rememberMe);
+  localMap.set(PREV_BOX_TOKEN_KEY, result.token, rememberMe);
   dispatch(postBoxAuthSuccess(id, result.token));
   dispatch(replace(`/box/${id}/edit`));
 };
@@ -194,12 +194,13 @@ export const requestGetBox = id => async (dispatch, getState) => {
 
 export const requestPostBox = () => async (dispatch, getState) => {
   const form = getState().forms.newBox;
-  const newBox = processNewBox(form);
-  const errors = validateNewBox(newBox);
+  const errors = validateNewBox(form);
   if (Object.keys(errors).length > 0) {
     dispatch(postBoxFailure({errors}));
     return;
   }
+
+  const newBox = processNewBox(form);
   dispatch(postBox(newBox));
   
   const fullUrl = `${url}/${boxesPath}`;
@@ -219,8 +220,8 @@ export const requestPostBox = () => async (dispatch, getState) => {
   const result = await response.json();
   const {tears} = getState();
   const box = unpackBox(tears, result.data);
-  ls.set(PREV_BOX_ID_KEY, box.id);
-  ls.set(PREV_BOX_TOKEN_KEY, result.token);
+  localMap.set(PREV_BOX_ID_KEY, box.id, form.rememberMe);
+  localMap.set(PREV_BOX_TOKEN_KEY, result.token, form.rememberMe);
   dispatch(postBoxSuccess(box, result.token));
   dispatch(push(`/box/${box.id}/edit`));
 };
@@ -228,8 +229,8 @@ export const requestPostBox = () => async (dispatch, getState) => {
 export const requestPatchBox = () => async (dispatch, getState) => {
   const {box} = getState();
   const id = box.present.data.id;
-  const storedId = ls.get(PREV_BOX_ID_KEY);
-  const storedToken = ls.get(PREV_BOX_TOKEN_KEY);
+  const storedId = localMap.get(PREV_BOX_ID_KEY);
+  const storedToken = localMap.get(PREV_BOX_TOKEN_KEY);
 
   if (id === '' || id !== storedId || !storedToken) {
     dispatch(openModal('editBox'));

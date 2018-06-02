@@ -8,6 +8,7 @@ import {
   SelectBox,
   Button,
   Modal,
+  Checkbox,
 } from '../common';
 
 import {
@@ -223,6 +224,13 @@ class NewBoxModal extends React.Component {
           >
             Create
           </Button>
+          {/* Remember Me */}
+          <Checkbox
+            label='Remember my Box'
+            style={styles.checkbox}
+            checked={form.rememberMe}
+            onChange={() => editFormFieldFn('rememberMe', !form.rememberMe)}
+          />
           <p style={styles.footnote}>
             <span style={styles.required}>*</span>
             Required
@@ -399,6 +407,12 @@ const styles = styler`
     color: rgba(217,52,35,1)
     font-style: normal
     font-weight: normal
+
+  checkbox
+    float: right
+    text-align: right
+    padding: 10px
+    margin-right: 20px
 
   submitButton
     float: right

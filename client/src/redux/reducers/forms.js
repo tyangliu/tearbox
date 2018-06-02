@@ -18,10 +18,12 @@ const makeEmptyNewBoxForm = () => ({
   passcode: '',
   passcodeReenter: '',
   email: '',
+  rememberMe: true,
 });
 
 const makeEmptyEditBoxForm = () => ({
   passcode: '',
+  rememberMe: true,
 });
 
 const formsState = {
@@ -39,10 +41,13 @@ function resetForm(state, action) {
       return update(state, {
         newBox: {$set: makeEmptyNewBoxForm()},
         newBoxErrors: {$set: {}},
+        newBoxErrorMessage: {$set: null},
       });
     case 'editBox':
       return update(state, {
         editBox: {$set: makeEmptyEditBoxForm()},
+        editBoxErrors: {$set: {}},
+        editBoxErrorMessage: {$set: null},
       });
     default:
       return state;

@@ -3,8 +3,8 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import styler from 'react-styling';
-import ls from 'local-storage';
 
+import localMap from '../../localMap';
 import {Logo, Button} from '../common';
 import NewBoxModal, {modalKey as newBoxKey} from '../modals/newbox';
 
@@ -17,7 +17,7 @@ class Home extends React.Component {
     super(props);
     const {setOwnBoxIdFn} = this.props;
 
-    const existingBoxId = ls.get(PREV_BOX_ID_KEY);
+    const existingBoxId = localMap.get(PREV_BOX_ID_KEY);
     if (!existingBoxId) {
       return;
     }

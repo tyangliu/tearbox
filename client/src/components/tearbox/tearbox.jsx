@@ -3,8 +3,8 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import styler from 'react-styling';
 import capitalize from 'lodash.capitalize';
-import ls from 'local-storage';
 
+import localMap from '../../localMap';
 import {Header} from './header';
 import {Button} from '../common';
 import InfoBox from './infobox';
@@ -55,7 +55,7 @@ class Tearbox extends React.Component {
       this.refreshBox();
     }
 
-    const existingBoxId = ls.get(PREV_BOX_ID_KEY);
+    const existingBoxId = localMap.get(PREV_BOX_ID_KEY);
     if (!existingBoxId) {
       return;
     }

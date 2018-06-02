@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import styler from 'react-styling';
 import debounce from 'lodash.debounce';
 
-import {Button, Modal} from '../common';
+import {Button, Modal, Checkbox} from '../common';
 import {closeModal, editFormField, requestPostBoxAuth} from '../../redux/actions';
 
 export const modalKey = 'editBox';
@@ -76,6 +76,13 @@ class EditBoxModal extends React.Component {
           >
             Submit
           </Button>
+          {/* Remember Me */}
+          <Checkbox
+            label='Remember my Box'
+            style={styles.checkbox}
+            checked={form.rememberMe}
+            onChange={() => editFormFieldFn('rememberMe', !form.rememberMe)}
+          />
           <div style={styles.clearfix}/>
         </div>
       </Modal>
@@ -175,6 +182,12 @@ const styles = styler`
     margin-bottom: 20px
     color: rgba(217,52,35,1)
     font-style: italic
+
+  checkbox
+    float: right
+    text-align: right
+    padding: 10px
+    margin-right: 20px
 
   submitButton
     float: right

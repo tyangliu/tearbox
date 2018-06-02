@@ -7,8 +7,8 @@ import {animateScroll as scroll} from 'react-scroll';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import {ActionCreators} from 'redux-undo';
 import keydown from 'react-keydown';
-import ls from 'local-storage';
 
+import localMap from '../../localMap';
 import {EditableHeader} from './header';
 import {Icon} from '../common';
 import InfoBox from './infobox';
@@ -67,8 +67,8 @@ class EditableTearbox extends React.Component {
 
   checkAuth = () => {
     const {match, openModalFn, goToFn} = this.props;
-    const prevBoxId = ls.get(PREV_BOX_ID_KEY);
-    const prevBoxToken = ls.get(PREV_BOX_TOKEN_KEY);
+    const prevBoxId = localMap.get(PREV_BOX_ID_KEY);
+    const prevBoxToken = localMap.get(PREV_BOX_TOKEN_KEY);
     if (prevBoxId !== match.params.id || !prevBoxToken) {
       goToFn(`/box/${match.params.id}`);
       openModalFn(editBoxKey);

@@ -3,8 +3,8 @@ import Radium from 'radium';
 import {connect} from 'react-redux';
 import {replace} from 'react-router-redux';
 import styler from 'react-styling';
-import ls from 'local-storage';
 
+import localMap from '../../../localMap';
 import {Logo, Button, Icon} from '../../common';
 import Search from './search';
 import FilterMenu from './filtermenu';
@@ -23,7 +23,7 @@ class Header extends React.Component {
       openModalFn,
       goToFn,
     } = this.props;
-    const token = ls.get(PREV_BOX_TOKEN_KEY);
+    const token = localMap.get(PREV_BOX_TOKEN_KEY);
     
     if (id && ownBoxId === id && token) {
       goToFn(`/box/${id}/edit`);

@@ -188,7 +188,7 @@ const newBoxValidator = {
     message: 'Email must be valid.',
   },
   igns: {
-    req: (v, obj) => obj.fields.igns && obj.fields.igns.length > 0,
+    req: v => v && v.length > 0,
     message: 'IGNs are required.',
   },
 };
