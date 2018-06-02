@@ -309,6 +309,13 @@ export const requestPostBox = () => async (dispatch, getState) => {
     return;
   }
 
+  const tearsPromise = new Promise(async (resolve, reject) => {
+    if (getState().ui.tearStatus !== RECEIVED) {
+      await dispatch(loadTears());
+    }
+    resolve();
+  });
+
   const newBox = processNewBox(form, currBox.id);
   dispatch(postBox(newBox));
   
@@ -325,6 +332,8 @@ export const requestPostBox = () => async (dispatch, getState) => {
     return;
   }
 
+  // Wait for tears before releasing result
+  await tearsPromise; 
   const result = await response.json();
   const {tears} = getState();
   const box = unpackBox(tears, result.data);
