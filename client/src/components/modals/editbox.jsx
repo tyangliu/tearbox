@@ -117,7 +117,6 @@ export default connect(
 
 const styles = styler`
   container
-    width: 360px
     padding: 34px 24px 22px
 
   headingContainer

@@ -269,7 +269,6 @@ export default connect(
 
 const styles = styler`
   container
-    width: 700px
     padding: 34px 24px 22px
 
   innerContainer
@@ -278,13 +277,24 @@ const styles = styler`
     align-items: flex-start
     margin-bottom: 13px
 
+    @media (max-width: 700px)
+      display: block
+
   left
     flex-basis: 50%
     padding-right: 15px
 
+    @media (max-width: 700px)
+      display: block
+      padding-right: 0
+
   right
     flex: 1
     padding-left: 15px
+
+    @media (max-width: 700px)
+      display: block
+      padding-left: 0
 
   headingContainer
     margin-bottom: 16px
@@ -369,10 +379,14 @@ const styles = styler`
     font-style: italic
     color: rgba(55,67,79,0.65)
 
+    @media (max-width: 700px)
+      width: 60px
+
   contactFieldSelect
     flex: 1
 
   contactFieldInput
+    min-width: 0
     flex: 1
     padding: 4px 0
     outline: none
@@ -393,6 +407,7 @@ const styles = styler`
     margin-bottom: 12.5px
 
   sectionInput
+    min-width: 0
     width: 100%
     padding: 4px 0
     outline: none
@@ -402,6 +417,9 @@ const styles = styler`
     color: rgba(55,67,79,0.65)
     padding: 7px 0
     font-style: italic
+
+    @media (max-width: 700px)
+      display: none
 
   required
     color: rgba(217,52,35,1)
@@ -413,6 +431,9 @@ const styles = styler`
     text-align: right
     padding: 8px
     margin-right: 20px
+
+    @media (max-width: 700px)
+      margin-right: 10px
 
   submitButton
     float: right

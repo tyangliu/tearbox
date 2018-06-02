@@ -1,5 +1,5 @@
 import React from 'react';
-import Radium, {Style} from 'radium';
+import Radium, {Style, StyleRoot} from 'radium';
 import {connect} from 'react-redux';
 import {Route, Switch} from 'react-router';
 import styler from 'react-styling';
@@ -46,30 +46,32 @@ class App extends React.Component {
 
   render() {
     return (
-      <div style={styles.app}>
-        <Style
-          rules={{...styles.appRules, ...{
-            '.tooltip': {
-              backgroundColor: 'rgba(55,67,79,.9) !important',
-              padding: '4px 10px',
-            },
-            '.tooltip.place-bottom:after': {
-              borderBottomColor: 'rgba(55,67,79,.9) !important',
-            },
-          }}}
-        />
-        <NotificationSystem
-          ref={el => this.notificationSystem = el}
-          style={styles.notificationSystem}
-        />
-        <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route exact path='/box/:id' component={Tearbox}/>
-          <Route path='/box/:id/edit' component={EditableTearbox}/>
-          <Route component={NotFound}/>
-        </Switch>
-        {this.props.children}
-      </div>
+      <StyleRoot>
+        <div style={styles.app}>
+          <Style
+            rules={{...styles.appRules, ...{
+              '.tooltip': {
+                backgroundColor: 'rgba(55,67,79,.9) !important',
+                padding: '4px 10px',
+              },
+              '.tooltip.place-bottom:after': {
+                borderBottomColor: 'rgba(55,67,79,.9) !important',
+              },
+            }}}
+          />
+          <NotificationSystem
+            ref={el => this.notificationSystem = el}
+            style={styles.notificationSystem}
+          />
+          <Switch>
+            <Route exact path='/' component={Home}/>
+            <Route exact path='/box/:id' component={Tearbox}/>
+            <Route path='/box/:id/edit' component={EditableTearbox}/>
+            <Route component={NotFound}/>
+          </Switch>
+          {this.props.children}
+        </div>
+      </StyleRoot>
     );
   }
 }

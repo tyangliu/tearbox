@@ -22,7 +22,6 @@ export default class Modal extends React.Component {
     const {visible, onClose} = this.props;
     return (
       <ModalBase open={visible}
-             center
              styles={styles.modalStyles}
              animationDuration={500}
              onClose={onClose}
