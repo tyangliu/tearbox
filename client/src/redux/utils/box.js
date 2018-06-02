@@ -15,8 +15,7 @@ export const searchOpts = {
   keys: [
     {name: 'effect.name',      weight: 0.3},
     {name: 'effect.tags',      weight: 0.1},
-    {name: 'effect.char',      weight: 0.05},
-    {name: 'effect.class' ,    weight: 0.05},
+    {name: 'effect.char',      weight: 0.1},
     {name: 'effect.tier',      weight: 0.05},
     {name: 'piece.name',       weight: 0.1},
     {name: 'type.name',        weight: 0.05},

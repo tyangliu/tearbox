@@ -9,7 +9,8 @@ export const effectsSearchOpts = {
   keys: [
     {name: 'name', weight: 0.3},
     {name: 'tags', weight: 0.35},
-    {name: 'value', weight: 0.35},
+    {name: 'value', weight: 0.3},
+    {name: 'char', weight: 0.05},
   ],
 };
 

@@ -225,7 +225,8 @@ def generate_effects(
     tags = parse_tags(d_data[i][D_TAG])
 
     for desc, value, rarity in descs_with_values:
-      desc = desc + ' (' + d_data[i][D_CHR] + ')'
+      if len(d_data[i][D_CHR]) > 0:
+        desc = desc + (' (' + d_data[i][D_CHR] + ')')
       d.append({
         'id': get_next_id(),
         'v_id': i,
