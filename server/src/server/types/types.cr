@@ -131,9 +131,8 @@ module Tearbox::Types
           unless passcode.size > 0 && passcode.split.size === 1
       end
 
-      puts @email
       errors.add(:email, "Invalid email.") \
-        if email && CrystalEmail::Rfc5322.validates? email.not_nil!
+        if email && !CrystalEmail::Rfc5322.validates? email.not_nil!
     end
   end
 
