@@ -279,6 +279,7 @@ export default connect(
 const styles = styler`
   container
     padding: 34px 24px 22px
+    max-width: 660px
 
   innerContainer
     display: flex
