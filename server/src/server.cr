@@ -16,14 +16,13 @@ module Tearbox
     @database : Arango::Database
 
     def initialize(@config : ServerConfig)
+      @db_client = Arango::Client.new(@config.db.host, @config.db.user, @config.db.pass)
+      @database = @db_client.database(@config.db.name)
       Auth.new @config
       Hasher.new @config
 
-      @db_client = Arango::Client.new(@config.db.host, @config.db.user, @config.db.pass)
-      @database = @db_client.database(@config.db.name)
-
       init_errors
-      BoxesRoutes.new(@config, @db_client, @database).init_routes
+      BoxesRoutes.new(@database).init_routes
     end
 
     def run

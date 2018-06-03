@@ -30,22 +30,10 @@ module Tearbox::Routes
 
 
   class BoxesRoutes
-    property config : ServerConfig
-    property db_client : Arango::Client
     property database : Arango::Database
     property boxes : Arango::Collection
 
-    def initialize(
-      @config : ServerConfig,
-      @db_client : Arango::Client,
-      @database : Arango::Database,
-    )
-      @boxes = database.collection("boxes")
-    end
-
-    def init_db
-      @db_client = Arango::Client.new(@config.db.host, @config.db.user, @config.db.pass)
-      @database = @db_client.database(@config.db.name)
+    def initialize(@database = database)
       @boxes = database.collection("boxes")
     end
 
@@ -86,7 +74,6 @@ module Tearbox::Routes
         db_resp = boxes.document.get key
 
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
@@ -147,7 +134,6 @@ module Tearbox::Routes
         db_resp = boxes.document.get key
 
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
@@ -185,7 +171,6 @@ module Tearbox::Routes
 
         db_resp = boxes.document.create data
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
@@ -193,7 +178,6 @@ module Tearbox::Routes
 
         db_resp = boxes.document.get key
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
@@ -261,13 +245,11 @@ module Tearbox::Routes
 
         db_resp = boxes.document.update(key, patch_data)
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
         db_resp = boxes.document.get key
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
 
@@ -302,7 +284,6 @@ module Tearbox::Routes
 
         db_resp = boxes.document.delete key
         unless db_resp.success?
-          init_db
           raise db_resp.body
         end
         DeleteBoxResponse.new(true).to_json
