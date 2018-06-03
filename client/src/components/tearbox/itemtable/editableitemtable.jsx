@@ -76,7 +76,7 @@ class EditableItemTable extends React.Component {
     editAddItemFn(groupIdx);
     this.addItemEl.blur();
     if (isLast) {
-      scroll.scrollToBottom();
+      scroll.scrollToBottom({duration: 300, delay: 0});
     }
     // Focus the newly created item once it's rendered.
     setTimeout(this.focusNewItem, 200);

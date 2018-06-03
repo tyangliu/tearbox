@@ -51,7 +51,7 @@ class EditableTearbox extends React.Component {
     const {editAddGroupFn} = this.props;
     editAddGroupFn();
     this.addGroupEl.blur();
-    scroll.scrollToBottom();
+    scroll.scrollToBottom({duration: 300, delay: 0});
     // Focus the newly created group once it's rendered.
     setTimeout(this.focusNewGroup, 200);
   };
