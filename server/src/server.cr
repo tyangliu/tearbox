@@ -21,6 +21,7 @@ module Tearbox
       Auth.new @config
       Hasher.new @config
 
+      init_base(@config.origin)
       init_errors
       BoxesRoutes.new(@database).init_routes
     end

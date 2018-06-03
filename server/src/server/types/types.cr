@@ -283,6 +283,7 @@ module Tearbox::ConfigTypes
   class ServerConfig
     include AutoJson
 
+    field :origin, String
     field :port, Int32
     field :db, DatabaseConfig
     field :auth, AuthConfig
