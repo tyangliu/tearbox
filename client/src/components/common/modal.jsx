@@ -18,6 +18,11 @@ export default class Modal extends React.Component {
     this.props.onClose();
   };
 
+  componentWillUnmount() {
+    // Undo react-responsive-modal's locked document style.
+    document.documentElement.style = '';
+  }
+
   render() {
     const {visible, onClose} = this.props;
     return (
