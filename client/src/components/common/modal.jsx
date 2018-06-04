@@ -20,7 +20,7 @@ export default class Modal extends React.Component {
 
   componentWillUnmount() {
     // Undo react-responsive-modal's locked document style.
-    document.documentElement.style = '';
+    document.documentElement.style.cssText = '';
   }
 
   render() {
