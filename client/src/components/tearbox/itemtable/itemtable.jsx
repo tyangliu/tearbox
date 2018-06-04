@@ -44,25 +44,30 @@ class ItemTable extends React.Component {
               <li style={[styles.itemCol7]}>
                 {(item.created && item.created != '')
                   ? new XDate(item.created).toString('MMM d')
-                  : ''}
+                  : ''
+                }
               </li>
               <li style={styles.itemRowInnerSmallContainer}>
-                <div style={styles.itemRowInnerSmallList}>
-                  <div style={styles.itemInnerRow}>
+                <ul style={styles.itemRowInnerSmallList}>
+                  <li style={styles.itemInnerRow.normal}>
                     <div style={[styles.itemCol0.small]}>
                       <TearIcon item={item}/>
                     </div>
                     <div style={[styles.itemCol2.small]}>
                       {item.effect.name}
                     </div>
-                  </div>
-                  <div style={styles.itemInnerRow}>
+                  </li>
+                  <li style={
+                    styles.itemInnerRow[item.note.length ? 'normal' : 'borderless']
+                  }>
                     <div style={[styles.itemCol1.small]}>{item.color.name}</div>
                     <div style={[styles.itemCol3.small]}>{item.piece.name}</div>
                     <div style={[styles.itemCol4.small]}>{item.type.name}</div>
                     <div style={[styles.itemCol5.small]}>{item.rarity.name}</div>
-                  </div>
-                  <li style={[styles.itemCol6.small]}>
+                  </li>
+                  <li style={[
+                    styles.itemCol6.small[item.note.length ? 'normal' : 'hidden']
+                  ]}>
                     <div style={styles.itemCol6LabelSmall}>
                       Note
                     </div>
@@ -70,11 +75,12 @@ class ItemTable extends React.Component {
                       {item.note}
                     </div>
                   </li>
-                </div>
+                </ul>
               </li>
             </ul>
           </li>
         );
+
     return (
       <div style={styles.itemTable}>
         <ul style={[styles.itemRow, styles.itemTableLabels]}>
@@ -161,20 +167,12 @@ const styles = styler`
     flex-direction: row
     justify-content: left
     padding: 6px 0
-    border-bottom: 1px solid rgba(55,67,79,0.2)
 
-  itemInnerRowNote
-    flex-direction: row
-    justify-content: left
-    border-bottom: 0
+    &normal
+      border-bottom: 1px solid rgba(55,67,79,0.2)
 
-    hidden
-      display: none
-
-    normal:
-      display: flex
-
-  itemInnerRow
+    &borderless
+      border-bottom: 0
 
   itemTableLabels
     border-bottom: 1px solid rgba(55,67,79,0.15)
@@ -335,14 +333,24 @@ const styles = styler`
     small
       display: none
 
-      @media (max-width: 800px)
-        padding: 8px 0 8px 3px
-        display: flex
+      &normal
+        @media (max-width: 800px)
+          padding: 6px 0 4px 3px
+          display: flex
+          margin-right: 10px
+          font-style: italic
+          color: rgba(55,67,79,0.6)
+
+      &hidden
 
   itemCol6LabelSmall
     margin-right: 10px
     font-style: italic
     color: rgba(55,67,79,0.6)
+
+  itemCol6TextSmall
+    color: rgba(55,67,79,1)
+    font-style: normal
 
   itemCol7
     width: 70px

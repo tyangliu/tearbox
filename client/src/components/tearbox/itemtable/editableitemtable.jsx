@@ -624,7 +624,7 @@ const styles = styler`
       display: none
 
       @media (max-width: 800px)
-        padding: 8px 0 8px 23px
+        padding: 6px 0 4px 23px
         display: flex
 
   itemCol7LabelSmall
