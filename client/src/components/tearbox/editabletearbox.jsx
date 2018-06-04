@@ -154,7 +154,7 @@ class EditableTearbox extends React.Component {
                       <InfoBox showEdit={true}/>
                     </div>
                   </div>
-                  <Footer/>
+                  <Footer style={styles.footer}/>
                 </div>
 
                 <div style={styles.right}>
@@ -213,6 +213,7 @@ class EditableTearbox extends React.Component {
                 <div style={styles.clearfix}/>
               </div>
             </div>
+            <Footer style={styles.footerMid}/>
             <EditBoxModal/>
             <BoxInfoModal/>
           </div>
@@ -259,7 +260,6 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 1120px
 
   tearboxContainer
     width: 100%
@@ -275,6 +275,9 @@ const styles = styler`
   container
     padding: 0 30px
 
+    @media (max-width: 700px)
+      padding: 10px 20px 0
+
   left
     background: rgba(255,255,255,1)
     float: left
@@ -285,12 +288,38 @@ const styles = styler`
     top: 103px
     z-index: 1
 
+    @media (max-width: 1120px)
+      margin: 0 0 30px 0
+      border-top: 1px solid rgba(55,67,79,0.2)
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+      width: auto
+      float: none
+      flex: 1
+      position: static
+
   mainLeftContent
     flex: 1
 
   leftTop
     padding: 10px 0
     flex: 1
+
+  footer
+    @media (max-width: 1120px)
+      display: none
+
+  footerMid
+    display: none
+
+    @media (max-width: 1120px)
+      border-top: 1px solid rgba(55,67,79,0.2)
+      display: block
+
+    @media (min-width: 700px) and (max-width: 1120px)
+      padding: 30px
+
+    @media (max-width: 700px)
+      padding: 20px
 
   right
     background: rgba(255,255,255,1)

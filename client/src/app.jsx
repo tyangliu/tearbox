@@ -102,6 +102,7 @@ const styles = styler`
     font-family: "ff-tisa-sans-web-pro", sans-serif
     font-size: 13px
     line-height: 1.5em
+    min-width: 330px
 
   notificationSystem
     Containers

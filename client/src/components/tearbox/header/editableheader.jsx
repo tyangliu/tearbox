@@ -127,6 +127,19 @@ class EditableHeader extends React.Component {
               Save
             </Button>
           </div>
+          <div style={styles.buttonContainerSmall}>
+            <Button
+              icon='arrow_back'
+              style={[styles.button, styles.buttonSmall]}
+              onClick={this.onCancel}
+            />
+            <Button
+              icon='save'
+              style={[styles.button, styles.buttonSmall]}
+              key='tearboxSaveButton'
+              onClick={this.onSave}
+            />
+          </div>
           <div style={styles.clearfix}/>
         </div>
       </div>
@@ -168,17 +181,36 @@ const styles = styler`
     align-items: stretch
     padding: 10px 30px 0
 
+    @media (max-width: 1120px)
+      margin-bottom: 30px
+
+    @media (max-width: 700px)
+      padding: 10px 20px 0
+
   left
     min-width: 300px
     flex-basis: 300px
     margin: 0 30px 0 0
     order: 1
 
+    @media (max-width: 1120px)
+      flex-basis: auto
+      min-width: 0
+
+    @media (max-width: 700px)
+      flex: 1
+
   right
     display: flex
     flex-direction: row
-    flex-grow: 1
+    flex: 1
     order: 2
+
+    @media (min-width: 700px) and (max-width: 1120px)
+      margin-left: 30px
+
+    @media (max-width: 700px)
+      flex: initial
 
   header:
     margin-bottom: 20px
@@ -205,6 +237,10 @@ const styles = styler`
       border-right: 1px solid rgba(55,67,79,0.2)
 
     &last  
+
+    @media (max-width: 440px)
+      padding: 0
+      margin: 0
 
   icon
     float: left
@@ -234,6 +270,32 @@ const styles = styler`
     display: inline-block
     padding: 6px 16px
     margin-left: 6px 
+
+  buttonContainer
+    @media (max-width: 440px)
+      display: none
+
+  buttonContainerSmall
+    display: none
+
+    @media (max-width: 440px)
+      display: block
+
+  buttonSmall
+    @media (max-width: 440px)
+      padding: 6px 0
+      border: 0
+      margin-left: 16px
+      transform: scale(1.5)
+      transform-origin: 100% 50%
+      margin-right: -6px
+      background: none
+
+      :hover
+        background: inherit
+
+      :active
+        background: inherit
 
   clearfix
     clear: both

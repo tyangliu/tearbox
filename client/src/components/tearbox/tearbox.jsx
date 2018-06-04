@@ -6,6 +6,8 @@ import DocumentTitle from 'react-document-title';
 import capitalize from 'lodash.capitalize';
 
 import {Header} from './header';
+import Search from './header/search';
+import FilterMenu from './header/filtermenu';
 import {Button} from '../common';
 import InfoBox from './infobox';
 import {ItemTable} from './itemtable';
@@ -126,16 +128,21 @@ class Tearbox extends React.Component {
                   <div style={styles.leftTop}>
                     <InfoBox/>
                   </div>
-                  <Footer/>
+                  <Footer style={styles.footer}/>
                 </div>
               </div>
 
               <div style={styles.right}> 
+                <div style={styles.controlContainer}>
+                  <Search style={styles.search}/>
+                  <FilterMenu style={styles.filterMenu}/>
+                </div>
                 {inner}
               </div>
               <div style={styles.clearfix}/>
             </div>
           </div>
+          <Footer style={styles.footerMid}/>
           <NewBoxModal/>
           <EditBoxModal/>
         </div>
@@ -171,7 +178,6 @@ export default connect(
 const styles = styler`
   tearbox
     width: 100%
-    min-width: 1120px
 
   tearboxContainer
     width: 100%
@@ -187,15 +193,28 @@ const styles = styler`
   container
     padding: 0 30px
 
+    @media (max-width: 700px)
+      display: flex
+      flex-direction: column
+      padding: 0 20px
+
   left
     background: rgba(255,255,255,1)
     float: left
-    flex-direction: column
     width: 300px
     margin: 0 30px 0 0
     position: sticky
     top: 103px
     z-index: 1
+
+    @media (max-width: 1120px)
+      margin: 0 0 30px 0
+      border-top: 1px solid rgba(55,67,79,0.2)
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+      width: auto
+      float: none
+      flex: 1
+      position: static
 
   mainLeftContent
     flex: 1
@@ -208,6 +227,41 @@ const styles = styler`
     background: rgba(255,255,255,1)
     overflow: hidden
     margin-bottom: 60px
+
+    @media (max-width: 1120px)
+      overflow: visible
+
+  controlContainer
+    display: none
+
+    @media (max-width: 1120px)
+      display: flex
+      margin: 10px 0 30px
+
+  search
+    padding: 6px 6px 4px 0
+    display: inline-block
+    flex: 1
+
+  filterMenu
+    display: inline-block
+
+  footer
+    @media (max-width: 1120px)
+      display: none
+
+  footerMid
+    display: none
+
+    @media (max-width: 1120px)
+      border-top: 1px solid rgba(55,67,79,0.2)
+      display: block
+
+    @media (min-width: 700px) and (max-width: 1120px)
+      padding: 30px
+
+    @media (max-width: 700px)
+      padding: 20px
 
   button
     width: 100%
@@ -226,10 +280,15 @@ const styles = styler`
     flex-direction: row
     line-height: 19.5px
 
+    @media (max-width: 700px)
+      display: block
+
   sectionTitleLabel
+    display: block
     padding:  4px 10px 4px 0
 
   sectionTitleTag
+    display: block
     margin: 4px 0
     padding: 0 10px
     border-left: 2px solid rgba(55,67,79,0.25)
@@ -239,6 +298,10 @@ const styles = styler`
     letter-spacing: 0
     font-size: 16px
     line-height: 20.5px
+
+    @media (max-width: 700px)
+      padding: 0
+      border-left: none
 
   clearfix
     clear: both

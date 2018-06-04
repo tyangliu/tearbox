@@ -18,11 +18,13 @@ export default class Section extends React.Component {
       <section style={styles.section}>
         <div style={styles.sectionHeadingContainer}>
           <div style={styles.sectionHeadingLeft}>
-            <h3 style={styles.sectionHeading}
-                onClick={onToggle}>
-                <span style={styles.sectionHeadingText}>
-                  {title}
-                </span>
+            <h3
+              style={styles.sectionHeading}
+              onClick={onToggle}
+            >
+              <span style={styles.sectionHeadingText}>
+                {title}
+              </span>
               <span style={styles.dropdownIconContainer}>
                 <Icon name='arrow_drop_down'
                       style={styles.dropdownIcon[visible ? 'normal' : 'flipped']}/>
@@ -33,7 +35,7 @@ export default class Section extends React.Component {
           <div style={styles.clearfix}/>
         </div>
         <div style={styles.collapsableContainer[visible ? 'show' : 'hide']}>
-        {this.props.children}
+          {this.props.children}
         </div>
       </section>
     );
@@ -44,14 +46,17 @@ const styles = styler`
   section
     padding: 15px 0
 
+  sectionHeadingContainer
+    @media (max-width: 700px)
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+      margin: 0 0 10px 0
+
   sectionHeadingLeft
-    float: left
     display: flex
     flex-direction: row
 
   sectionHeading
     cursor: pointer
-    float: left
     font-size: 19px
     line-height: 1.5em
     font-weight: bold

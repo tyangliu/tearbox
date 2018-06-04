@@ -66,11 +66,13 @@ const styles = styler`
     background: rgba(55,67,79,0.1)
     border-radius: 3px
     padding: 0 6px
+    display: flex
+    flex-direction: row
 
   clipboardText
     padding: 9px 3px
     line-height: 18px
-    display: inline-block
+    flex: 1
 
   copyButton
     cursor: pointer
@@ -79,11 +81,9 @@ const styles = styler`
     letter-spacing: 0.6px
     font-weight: bold
     font-size: 11px
-    line-height: 10px
-    float: right
     border-radius: 3px
-    margin-top: 4px
-    padding: 8px 8px 7px
+    margin: 4px 0
+    padding: 0 8px
     transition: background 0.1s ease-in-out
 
     &normal

@@ -52,7 +52,7 @@ const styles = styler`
   popover
     border: 1px solid rgba(55,67,79,0.1)
     border-radius: 3px
-    box-shadow: 0 1px 1px rgba(55,67,79,0.15)
+    box-shadow: 0 1px 1px rgba(55,67,79,0.5)
     background: rgba(255,255,255,1)
     z-index: 1
     transition: opacity 0.08s ease-in-out

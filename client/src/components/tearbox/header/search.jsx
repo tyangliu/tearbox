@@ -99,4 +99,8 @@ const styles = styler`
     width: 220px
     outline: none
     padding: 0
+
+    @media (max-width: 700px)
+      min-width: 0
+      width: auto
 `;

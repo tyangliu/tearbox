@@ -193,10 +193,15 @@ class EditableItemTable extends React.Component {
                       ref={provided.innerRef}
                     >
                       <ul style={[styles.itemRow, {backgroundColor: i % 2 == 0 ? white : grey}]}>
-                        <li style={[styles.itemCol0]} {...provided.dragHandleProps} tabIndex={-1}>
-                         <Icon style={styles.dragIcon}
-                               name='drag_indicator'
-                               />
+                        <li
+                          style={[styles.itemCol0]}
+                          {...provided.dragHandleProps}
+                          tabIndex={-1}
+                        >
+                          <Icon
+                            style={styles.dragIcon}
+                            name='drag_indicator'
+                          />
                         </li>
                         <li style={[styles.itemCol1]}>
                           <TearIcon item={item} style={styles.tearIcon}/>
@@ -266,6 +271,95 @@ class EditableItemTable extends React.Component {
                           <div onClick={() => editDeleteItemFn(groupIdx, i)}>
                             <Icon style={styles.closeIcon} name='close'/>
                           </div>
+                        </li>
+                        <li style={styles.itemRowInnerSmallContainer}>
+                          <div style={styles.itemRowInnerSmallList}>
+                            <div style={styles.itemInnerRow}>
+                              <div
+                                style={[styles.itemCol0.small]}
+                                {...provided.dragHandleProps}
+                                tabIndex={-1}
+                              >
+                                <Icon style={styles.dragIcon}
+                                     name='drag_indicator'
+                                     />
+                              </div>
+                              <div style={[styles.itemCol1.small]}>
+                                <TearIcon item={item} style={styles.tearIcon}/>
+                              </div>
+                              <div style={[styles.itemCol3.small]}>
+                                <SelectBox
+                                  style={styles.itemSelect}
+                                  value={{label: item.effect.name, value: item.effect.id}}
+                                  options={effectOpts}
+                                  onChange={({label, value}) =>
+                                    editItemFieldFn(tears, groupIdx, i, 'effect_id', value)
+                                  }
+                                  onInputChange={this.handleEffectsInputChange}
+                                  filterOption={(opt, v) => true}
+                                  noOptionsMessage={() => 'Search effects'}
+                                />
+                              </div>
+                              <div style={[styles.itemCol8.small]}>
+                                <div onClick={() => editDeleteItemFn(groupIdx, i)}>
+                                  <Icon style={styles.closeIcon} name='close'/>
+                                </div>
+                              </div>
+                            </div>
+                            <div style={styles.itemInnerRow}>
+                              <div style={[styles.itemCol2.small]}>
+                                <SelectBox
+                                  style={styles.itemSelect}
+                                  value={{label: item.color.name, value: item.color.id}}
+                                  options={colorOpts}
+                                  onChange={({label, value}) =>
+                                    editItemFieldFn(tears, groupIdx, i, 'color_id', value)
+                                  }
+                                  getRef={
+                                    (i === items.length - 1)
+                                      ? e => {this.lastItemFirstSelect = e;}
+                                      : undefined
+                                  }
+                                />
+                              </div>
+                              <div style={[styles.itemCol4.small]}>
+                                <SelectBox
+                                  style={styles.itemSelect}
+                                  value={{label: item.piece.name, value: item.piece.id}}
+                                  options={this.filterOptions(pieceOpts, item)}
+                                  onChange={({label, value}) =>
+                                    editItemFieldFn(tears, groupIdx, i, 'piece_id', value)
+                                  }
+                                />
+                              </div>
+                              <div style={[styles.itemCol5.small]}>
+                                <span style={styles.itemText}>
+                                  {item.type.name || ''}
+                                </span>
+                              </div>
+                              <div style={[styles.itemCol6.small]}>
+                                <span style={styles.itemText}>
+                                  {item.rarity.name || ''}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li style={[styles.itemCol7.small]}>
+                          <div style={styles.itemCol7LabelSmall}>
+                            Note
+                          </div>
+                          <input
+                            type='text'
+                            style={styles.noteInput}
+                            maxLength={80}
+                            placeholder=''
+                            value={item.note}
+                            onKeyDown={this.handleInputKeyDown}
+                            onChange={e => {
+                              if (e.ctrlKey) return;
+                              editItemFieldBatchedFn(tears, groupIdx, i, 'note', e.target.value);
+                            }}/>
                         </li>
                       </ul>
                     </li>
@@ -337,9 +431,28 @@ const styles = styler`
     line-height: 28px
     padding: 3px 0
 
+    @media (max-width: 800px)
+      display: block
+
+  itemRowInnerSmallContainer
+    display: none
+
+    @media (max-width: 800px)
+      display: block
+
+  itemInnerRow
+    display: flex
+    flex-direction: row
+    justify-content: left
+    padding: 6px 0
+    border-bottom: 1px solid rgba(55,67,79,0.2)
+
   itemTableLabels
     border-bottom: 1px solid rgba(55,67,79,0.15)
     user-select: none
+
+    @media (max-width: 800px)
+      display: none
 
   itemTableLabel
     display: inline-block
@@ -381,6 +494,9 @@ const styles = styler`
     padding: 3px 0
     outline: none
 
+    @media (max-width: 800px)
+      flex: 1
+
   sortIcon
     font-size: 15px
     line-height: 28px
@@ -409,37 +525,119 @@ const styles = styler`
     width: 24px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        padding-right: 4px
+
   itemCol1
     width: 46px
     padding-right: 8px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        padding: 0 4px
 
   itemCol2
     width: 70px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 60px
+        padding: 0 4px
+        margin-left: 20px
+
   itemCol3
     flex: 1
     padding-right: 8px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex: 1
+        padding: 0 4px
 
   itemCol4
     width: 76px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 70px
+        padding: 0 4px
+
   itemCol5
     width: 120px
     padding-right: 8px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 120px
+        text-align: center
+        padding: 0 4px
 
   itemCol6
     width: 80px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 80px
+        text-align: center
+        padding: 0 4px
+
   itemCol7
     width: 176px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      display: none
+
+      @media (max-width: 800px)
+        padding: 8px 0 8px 23px
+        display: flex
+
+  itemCol7LabelSmall
+    margin-right: 10px
+    font-style: italic
+    color: rgba(55,67,79,0.6)
+
   itemCol8
     text-align: center
     width: 24px
+
+    @media (max-width: 800px)
+      display: none
 
   dragIcon
     color: rgba(55,67,79,0.3)

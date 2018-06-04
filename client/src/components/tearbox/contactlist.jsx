@@ -5,11 +5,12 @@ import styler from 'react-styling';
 import capitalize from 'lodash.capitalize';
 import isUrl from 'is-url';
 
+@Radium
 export default class ContactList extends React.Component {
   render() {
-    const {fields} = this.props;
+    const {fields, style} = this.props;
     return (
-      <ul style={styles.contactList}>
+      <ul style={[styles.contactList, style]}>
         {fields
           .filter(field => field.value !== '')
           .map(field => 

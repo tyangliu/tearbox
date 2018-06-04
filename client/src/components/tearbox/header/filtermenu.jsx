@@ -212,6 +212,13 @@ const styles = styler`
     :hover
       color: rgba(217,52,35,1)
 
+    @media (max-width: 1120px)
+      padding: 6px 0 6px 6px
+
+    @media (max-width: 400px)
+      transform: scale(1.5)
+      transform-origin: 100% 50%
+
   icon
     float: left
 
@@ -234,12 +241,25 @@ const styles = styler`
     margin-left: 5px
     margin-right: 10px
 
+    @media (max-width: 400px)
+      display: none
+
   popover 
     user-select: none
     position: absolute
     width: 300px
     top: 25px
     left: 15px
+
+    @media (max-width: 1120px)
+      position: absolute
+      left: -205px
+
+    @media (max-width: 400px)
+      left: -260px
+
+    @media (max-width: 340px)
+      left: -240px
 
   popoverSections
     margin-top: 4px

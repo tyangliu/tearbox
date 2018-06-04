@@ -20,7 +20,8 @@ class Home extends React.Component {
           <div style={styles.homeContainer}>
             <header style={styles.header}>
               <div style={styles.headerContainer}>
-                <div style={styles.buttonGroup}>
+                <Logo style={styles.logo}/>
+                <div style={styles.buttonContainer}>
                   {ownBoxId &&
                     <Button
                       icon='navigate_next'
@@ -38,7 +39,28 @@ class Home extends React.Component {
                     {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
                   </Button>
                 </div>
-                <Logo style={styles.logo}/>
+                <div style={styles.buttonContainerSmall}>
+                  {ownBoxId &&
+                    <Button
+                      icon='navigate_next'
+                      style={[styles.button, styles.buttonSmall]}
+                      onClick={() => goToFn(`/box/${ownBoxId}`)}
+                    >
+                      <span style={styles.buttonSmallText}>
+                        My Box
+                      </span>
+                    </Button>
+                  }
+                  <Button
+                    icon='note_add'
+                    style={[styles.button, styles.buttonSmall]}
+                    onClick={() => openModalFn(newBoxKey)}
+                  >
+                    <span style={styles.buttonSmallText}>
+                      New Box
+                    </span>
+                  </Button>
+                </div>
               </div>
             </header>
             <section style={styles.hero}>
@@ -55,6 +77,11 @@ class Home extends React.Component {
                 <p style={[styles.infoText, styles.infoText1]}>Create a box and add your items</p>
                 <p style={[styles.infoText, styles.infoText2]}>Copy the unique box link</p>
                 <p style={[styles.infoText, styles.infoText3]}>Share it on Discord, forums, wherever!</p>
+              </div>
+              <div style={styles.infoContainerMid}>
+                <p style={[styles.infoTextMid, styles.infoTextMid1]}>Create a box and add your items</p>
+                <p style={[styles.infoTextMid, styles.infoTextMid2]}>Copy the unique box link</p>
+                <p style={[styles.infoTextMid, styles.infoTextMid3]}>Share it on Discord, forums, wherever!</p>
               </div>
             </section>
             <footer style={styles.footer}>
@@ -93,7 +120,6 @@ export default connect(
 const styles = styler`
   home
     width: 100%
-    min-width: 800px
     display: flex
     flex-direction: column
     align-items: center
@@ -115,20 +141,59 @@ const styles = styler`
     max-width: 1280px
     margin: 0 auto
     padding: 0 30px
+    display: flex
+    flex-direction: row
+
+    @media (max-width: 700px)
+      padding: 0 20px
 
   logo
     width: 141px
     height: 73px
     margin-left: -12px
 
-  buttonGroup
+  buttonContainer
     margin-top: 32px
-    float: right
+    text-align: right
+    flex: 1
+
+    @media (max-width: 700px)
+      display: none
+
+  buttonContainerSmall
+    display: none
+
+    @media (max-width: 700px)
+      margin-top: 32px
+      flex: 1
+      display: block
+      text-align: right
 
   button
     margin-left: 6px
     display: inline-block
     padding: 6px 20px 6px 11px
+
+  buttonSmall
+    @media (max-width: 440px)
+      padding: 6px 0
+      border: 0
+      margin-left: 16px
+
+      :hover
+        background: inherit
+
+      :active
+        background: inherit
+
+    @media (max-width: 360px)
+      transform: scale(1.5)
+      transform-origin: 100% 50%
+      margin-right: -6px
+
+  buttonSmallText
+    @media (max-width: 360px)
+      display: none
 
   hero
     flex: 1
@@ -136,7 +201,7 @@ const styles = styler`
     justify-content: center
     display: flex
     align-items: center 
-    min-height: 300px
+    min-height: 400px
 
   heroImage
     width: 258px
@@ -149,9 +214,14 @@ const styles = styler`
 
   heroHeading
     font-size: 24px
+    line-height: 1.5em
     font-weight: normal
     font-style: normal
     display: block
+    padding: 0 20px
+
+    @media (max-width: 700px)
+      text-align: center
 
   em
     font-weight: bold
@@ -168,6 +238,9 @@ const styles = styler`
     border-top: 1px solid rgba(55,67,79, 0.15)
     border-bottom: 1px solid rgba(55, 67, 79, 0.15)
 
+    @media (max-width: 850px)
+      min-height: 700px
+
   infoContainer
     width: 780px
     flex: 1
@@ -177,6 +250,22 @@ const styles = styler`
     background-position: bottom center
     position: relative
 
+    @media (max-width: 850px)
+      display: none
+
+  infoContainerMid
+    display: none
+
+    @media (max-width: 850px)
+      display: block
+      width: 330px
+      background-image: url("${require('../../images/tearbox_instruction_mobile.svg')}")
+      flex: 1
+      background-repeat: no-repeat
+      background-size: contain
+      background-position: bottom center
+      position: relative
+
   infoHeading
     font-weight: bold
     font-size: 17px
@@ -185,6 +274,13 @@ const styles = styler`
     margin-bottom: 12px
 
   infoText
+    font-size: 15px
+    position: absolute
+
+    @media (max-width: 850px)
+      display: none
+
+  infoTextMid
     font-size: 15px
     position: absolute
 
@@ -203,16 +299,44 @@ const styles = styler`
   infoText3
     width: 280px
     text-align: center
-    top: 180px
-    left: 500px
+    left: 50%
+    margin-left: -50%
+
+  infoTextMid1
+    width: 390px
+    text-align: center
+    left: 50%
+    margin-left: -195px
+    top: 40px
+
+  infoTextMid2
+    width: 280px
+    text-align: center
+    left: 50%
+    margin-left: -140px
+    top: 346px
+
+  infoTextMid3
+    width: 280px
+    text-align: center
+    left: 50%
+    margin-left: -140px
+    top: 490px
 
   footer
     margin: 0 auto
+
+    @media (max-width: 500px)
+      padding: 24px 0 8px
 
   creditsItem
     color: rgba(55,67,79,0.65)
     display: inline-block
     padding: 24px 8px
+
+    @media (max-width: 500px)
+      display: block
+      padding: 0 8px 16px
 
   clearfix
     clear: both

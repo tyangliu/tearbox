@@ -19,7 +19,8 @@ class NotFound extends React.Component {
         <div style={styles.homeContainer}>
           <header style={styles.header}>
             <div style={styles.headerContainer}>
-              <div style={styles.buttonGroup}>
+              <Logo style={styles.logo}/>
+              <div style={styles.buttonContainer}>
                 {ownBoxId &&
                   <Button
                     icon='navigate_next'
@@ -37,7 +38,28 @@ class NotFound extends React.Component {
                   {ownBoxId ? 'Make a new Box' : 'Make your own Box'}
                 </Button>
               </div>
-              <Logo style={styles.logo}/>
+              <div style={styles.buttonContainerSmall}>
+                {ownBoxId &&
+                  <Button
+                    icon='navigate_next'
+                    style={[styles.button, styles.buttonSmall]}
+                    onClick={() => goToFn(`/box/${ownBoxId}`)}
+                  >
+                    <span style={styles.buttonSmallText}>
+                      My Box
+                    </span>
+                  </Button>
+                }
+                <Button
+                  icon='note_add'
+                  style={[styles.button, styles.buttonSmall]}
+                  onClick={() => openModalFn(newBoxKey)}
+                >
+                  <span style={styles.buttonSmallText}>
+                    New Box
+                  </span>
+                </Button>
+              </div>
             </div>
           </header>
           <section style={styles.main}>
@@ -84,7 +106,6 @@ export default connect(
 const styles = styler`
   home
     width: 100%
-    min-width: 800px
     display: flex
     flex-direction: column
     align-items: center
@@ -107,20 +128,59 @@ const styles = styler`
     max-width: 1280px
     margin: 0 auto
     padding: 0 30px
+    display: flex
+    flex-direction: row
+
+    @media (max-width: 700px)
+      padding: 0 20px
 
   logo
     width: 141px
     height: 73px
     margin-left: -12px
 
-  buttonGroup
+  buttonContainer
     margin-top: 32px
-    float: right
+    text-align: right
+    flex: 1
+
+    @media (max-width: 700px)
+      display: none
+
+  buttonContainerSmall
+    display: none
+
+    @media (max-width: 700px)
+      margin-top: 32px
+      flex: 1
+      display: block
+      text-align: right
 
   button
     margin-left: 6px
     display: inline-block
     padding: 6px 20px 6px 11px
+
+  buttonSmall
+    @media (max-width: 440px)
+      padding: 6px 0
+      border: 0
+      margin-left: 16px
+
+      :hover
+        background: inherit
+
+      :active
+        background: inherit
+
+    @media (max-width: 360px)
+      transform: scale(1.5)
+      transform-origin: 100% 50%
+      margin-right: -6px
+
+  buttonSmallText
+    @media (max-width: 360px)
+      display: none
 
   main
     flex: 1
@@ -153,10 +213,17 @@ const styles = styler`
   footer
     margin: 0 auto
 
+    @media (max-width: 500px)
+      padding: 24px 0 8px
+
   creditsItem
     color: rgba(55,67,79,0.65)
     display: inline-block
     padding: 24px 8px
+
+    @media (max-width: 500px)
+      display: block
+      padding: 0 8px 16px
 
   clearfix
     clear: both

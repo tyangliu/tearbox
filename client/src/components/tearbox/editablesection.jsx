@@ -55,11 +55,12 @@ class EditableSection extends React.Component {
         <div style={styles.sectionContainer}>
           <div style={styles.sectionHeadingContainer}>
             <div
-              style={styles.sectionHeadingLeft}>
+              style={styles.sectionHeading}
+            >
               <div {...(provided.dragHandleProps || {})} tabIndex={-1}>
                 <Icon style={styles.dragIcon} name='drag_indicator'/>
               </div>
-              <h3 style={styles.sectionHeading}>
+              <h3 style={styles.sectionHeadingLeft}>
                 <input
                   type='text'
                   maxLength={24}
@@ -91,15 +92,30 @@ class EditableSection extends React.Component {
                 </div>
                 <div style={styles.clearfix}/>
               </h3>
+              <Button
+                icon='delete'
+                style={styles.deleteButton}
+                tabIndex={-1}
+                onClick={() => editDeleteGroupFn(groupIdx)}
+              >
+                <span style={styles.deleteButtonText}>
+                  Delete&nbsp;
+                  <span style={styles.deleteButtonTextSub}>
+                    Section
+                  </span>
+                </span>
+              </Button>
             </div>
-            <Button
-              icon='delete'
-              style={styles.deleteButton}
-              tabIndex={-1}
-              onClick={() => editDeleteGroupFn(groupIdx)}
-            >
-              Delete Section
-            </Button>
+            <div style={styles.sectionHeadingMid}>
+              <SelectBox
+                value={typeOpts[type]}
+                style={styles.dropdownTypeSelect.mid}
+                options={typeOpts}
+                onChange={({label, value}) =>
+                  editGroupTypeFn(groupIdx, value)
+                }
+              />
+            </div>
             <div style={styles.clearfix}/>
           </div>
           <div style={styles.collapsableContainer[visible ? 'show' : 'hide']}>
@@ -136,14 +152,22 @@ const styles = styler`
     background: rgba(255,255,255,1)
     padding: 15px 0
 
-  sectionHeadingLeft
-    float: left
-    display: flex
-    flex-direction: row
+  sectionHeadingContainer
+    @media (max-width: 800px)
+      border-bottom: 1px solid rgba(55,67,79,0.2)
+      margin: 0 0 10px 0
 
   sectionHeading
+    display: flex
+    flex-direction: row
+    align-items: flex-start
+
+    @media (max-width: 800px)
+      float: none
+
+  sectionHeadingLeft
+    flex: 1
     cursor: pointer
-    float: left
     font-size: 19px
     line-height: 1.5em
     font-weight: bold
@@ -154,6 +178,18 @@ const styles = styler`
     user-select: none
     display: flex
     flex-direction: row
+
+    @media (max-width: 700px)
+      margin-bottom: 0
+
+  sectionHeadingMid
+    display: none
+
+    @media (max-width: 700px)
+      display: block
+      padding: 0 0 0 23px
+      max-width: 200px
+      margin-bottom: 9px
 
   sectionHeadingText
     display: block
@@ -171,6 +207,17 @@ const styles = styler`
     outline: none
     border-bottom: 1px solid rgba(55,67,79,0.2)
 
+    @media (max-width: 700px)
+      width: auto
+      flex: 1
+
+    @media (max-width: 400px)
+      width: 200px
+      flex: 0
+
+    @media (max-width: 360px)
+      width: 160px
+
   dragIcon
     line-height: 28.5px
     color: rgba(55,67,79,0.3)
@@ -184,10 +231,30 @@ const styles = styler`
       color: rgba(55,67,79,1)
 
   deleteButton
-    float: right
     color: rgba(55,67,79,0.6)
     cursor: pointer
     padding: 2px 9px
+
+    @media (max-width: 500px)
+      border: none
+      transform: scale(1.5)
+      transform-origin: 100% 50%
+      padding: 2px 0
+      margin-left: 30px
+
+      :hover
+        background: inherit
+
+      :active
+        background: inherit
+
+  deleteButtonText
+    @media (max-width: 500px)
+      display: none
+
+  deleteButtonTextSub
+    @media (max-width: 700px)
+      display: none
 
   dropdownTypeSelect
     font-size: 16px
@@ -198,6 +265,16 @@ const styles = styler`
     line-height: 27.5px
     width: 80px
     margin-left: 18px
+
+    @media (max-width: 700px)
+      display: none
+
+    mid
+      font-size: 16px
+      font-style: italic
+      font-weight: normal
+      text-transform: none
+      letter-spacing: 0
 
   dropdownIconContainer 
     outline: none

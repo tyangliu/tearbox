@@ -46,6 +46,32 @@ class ItemTable extends React.Component {
                   ? new XDate(item.created).toString('MMM d')
                   : ''}
               </li>
+              <li style={styles.itemRowInnerSmallContainer}>
+                <div style={styles.itemRowInnerSmallList}>
+                  <div style={styles.itemInnerRow}>
+                    <div style={[styles.itemCol0.small]}>
+                      <TearIcon item={item}/>
+                    </div>
+                    <div style={[styles.itemCol2.small]}>
+                      {item.effect.name}
+                    </div>
+                  </div>
+                  <div style={styles.itemInnerRow}>
+                    <div style={[styles.itemCol1.small]}>{item.color.name}</div>
+                    <div style={[styles.itemCol3.small]}>{item.piece.name}</div>
+                    <div style={[styles.itemCol4.small]}>{item.type.name}</div>
+                    <div style={[styles.itemCol5.small]}>{item.rarity.name}</div>
+                  </div>
+                  <li style={[styles.itemCol6.small]}>
+                    <div style={styles.itemCol6LabelSmall}>
+                      Note
+                    </div>
+                    <div style={styles.itemCol6TextSmall}>
+                      {item.note}
+                    </div>
+                  </li>
+                </div>
+              </li>
             </ul>
           </li>
         );
@@ -121,9 +147,41 @@ const styles = styler`
     line-height: 28px
     padding: 3px 0
 
+    @media (max-width: 800px)
+      display: block
+
+  itemRowInnerSmallContainer
+    display: none
+
+    @media (max-width: 800px)
+      display: block
+
+  itemInnerRow
+    display: flex
+    flex-direction: row
+    justify-content: left
+    padding: 6px 0
+    border-bottom: 1px solid rgba(55,67,79,0.2)
+
+  itemInnerRowNote
+    flex-direction: row
+    justify-content: left
+    border-bottom: 0
+
+    hidden
+      display: none
+
+    normal:
+      display: flex
+
+  itemInnerRow
+
   itemTableLabels
     border-bottom: 1px solid rgba(55,67,79,0.15)
     user-select: none
+
+    @media (max-width: 800px)
+      display: none
 
   itemTableLabel
     display: inline-block
@@ -185,32 +243,118 @@ const styles = styler`
     width: 46px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        padding-right: 4px
+        margin-left: 4px
+
   itemCol1
     width: 70px
     padding-right: 8px
+    padding-right: 4px
+    margin-left: 4px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 60px
+        padding: 0 4px
 
   itemCol2
     flex: 1
-    padding-right: 8px
+    padding-right: 4px
+    margin-left: 4px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex: 1
+        padding: 0 4px
 
   itemCol3
     width: 76px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block    
+        flex-basis: 70px
+        padding: 0 4px
+
   itemCol4
     width: 120px
     padding-right: 8px
+
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 120px
+        text-align: center
+        padding: 0 auto
 
   itemCol5
     width: 80px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      @media (max-width: 800px)
+        display: block
+        flex-basis: 80px
+        text-align: center
+        padding: 0 4px
+
+  hidden
+    display: none
+
   itemCol6
     width: 130px
     padding-right: 8px
 
+    @media (max-width: 800px)
+      display: none
+
+    small
+      display: none
+
+      @media (max-width: 800px)
+        padding: 8px 0 8px 3px
+        display: flex
+
+  itemCol6LabelSmall
+    margin-right: 10px
+    font-style: italic
+    color: rgba(55,67,79,0.6)
+
   itemCol7
     width: 70px
+
+    @media (max-width: 800px)
+      display: none
+
+  itemRowInnerSmallList
+    display: none
+
+    @media (max-width: 800px)
+      display: block
 
   clearfix
     clear: both
