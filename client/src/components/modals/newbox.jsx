@@ -71,7 +71,7 @@ class NewBoxModal extends React.Component {
                       styles.input[formErrors.name ? 'error' : 'normal'],
                       styles.nameInput,
                     ]}
-                    maxLength={20}
+                    maxLength={32}
                     placeholder='Your name'
                     defaultValue={form.name}
                     onChange={e => editFormFieldFn('name', e.target.value)}
@@ -122,7 +122,7 @@ class NewBoxModal extends React.Component {
                           styles.input[formErrors[key] ? 'error' : 'normal'],
                           styles.contactFieldInput,
                         ]}
-                        maxLength={80}
+                        maxLength={400}
                         placeholder=''
                         defaultValue={form[key]}
                         onChange={e => editFormFieldFn(key, e.target.value)}
@@ -154,7 +154,7 @@ class NewBoxModal extends React.Component {
                     styles.input[formErrors.passcode ? 'error' : 'normal'],
                     styles.sectionInput,
                   ]}
-                  maxLength={32}
+                  maxLength={64}
                   placeholder='Create a passcode (6 or longer)'
                   defaultValue={form.passcode}
                   onChange={e => editFormFieldFn('passcode', e.target.value)}
@@ -171,7 +171,7 @@ class NewBoxModal extends React.Component {
                     styles.input[formErrors.passcodeReenter ? 'error' : 'normal'],
                     styles.sectionInput,
                   ]}
-                  maxLength={32}
+                  maxLength={64}
                   placeholder='Re-enter passcode'
                   defaultValue={form.passcodeReenter}
                   onChange={e => editFormFieldFn('passcodeReenter', e.target.value)}
@@ -197,7 +197,7 @@ class NewBoxModal extends React.Component {
                     styles.input[formErrors.email ? 'error' : 'normal'],
                     styles.sectionInput
                   ]}
-                  maxLength={32}
+                  maxLength={64}
                   placeholder='Email Address'
                   defaultValue={form.email}
                   onChange={e => editFormFieldFn('email', e.target.value)}
