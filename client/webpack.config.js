@@ -43,6 +43,7 @@ module.exports = {
     new DashboardPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      favicon: 'src/images/favicon.png',
       file: {
         js: ['bundle.js'],
       },

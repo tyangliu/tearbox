@@ -44,6 +44,7 @@ module.exports = {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      favicon: 'src/images/favicon.png',
       file: {
         js: ['bundle.js'],
       },
