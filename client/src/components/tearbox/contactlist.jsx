@@ -19,7 +19,9 @@ export default class ContactList extends React.Component {
               </div>
               <div style={styles.contactItemValue}>
                 {isUrl(field.value)
-                  ? <a href={field.value}>{field.value}</a>
+                  ? <a href={field.value} target='_blank'>
+                      {field.value}
+                    </a>
                   : field.value
                 }
               </div>
