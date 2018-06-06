@@ -115,10 +115,20 @@ export function filterSortGroups(groups, indices, options) {
       shouldSearch
         ? indices[i].search(options.searchTerm, {
             fields: {
-              effect: {boost: 2},
-              effectTags: {boost: 1},
+              effect: {boost: 5},
+              effectTags: {boost: 4},
+              color: {boost: 1},
+              effectValue: {boost: 1},
+              effectAltValue: {boost: 1},
+              effectChar: {boost: 1},
+              effectTier: {boost: 1},
+              piece: {boost: 1},
+              pieceTags: {boost: 1},
+              type: {boost: 1},
+              typeTags: {boost: 1},
+              rarity: {boost: 1},
             },
-            bool: "OR",
+            bool: 'OR',
             expand: true,
           }).map(({ref, score}) => group.items[ref])
         : sortItems(group.items, options.sort),

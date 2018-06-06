@@ -27,8 +27,10 @@ export default function tears(state = tearsState, action) {
         ? effectsIndex
             .search(action.searchTerm, {
               fields: {
-                name: {boost: 2},
-                tags: {boost: 1},
+                name: {boost: 5},
+                tags: {boost: 4},
+                value: {boost: 1},
+                char: {boost: 1},
               },
               bool: "OR",
               expand: true,
