@@ -27,7 +27,6 @@ fs.readFile('../data/tears.json', (err, data) =>  {
   if (err) throw err;
   const raw = JSON.parse(data);
   const flatEffects = flattenTags(mergeEffects(raw.effects));
-  console.log(flatEffects);
 
   const index = elasticlunr(function () {
     this.addField('name');

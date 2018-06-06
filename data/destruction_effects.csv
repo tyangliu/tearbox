@@ -257,7 +257,7 @@ value_table,description,character,class,tier,advancement,tags
 1,Magnum Shot,Chung,Shelling Guardian,Active,1,
 1,Carpet Bombing,Chung,Tactical Trooper,Bravery,2,
 1,Tactical Field,Chung,Tactical Trooper,Strength,2,
-1,Artillery Strike - Missle Shower,Chung,Tactical Trooper,Strength,2,ASMS
+1,Artillery Strike - Missile Shower,Chung,Tactical Trooper,Strength,2,ASMS
 1,Cannon Strike,Chung,Tactical Trooper,Tenacity,2,
 1,Commander's Mark,Chung,Tactical Trooper,Active,2,
 1,Mortar,Chung,Tactical Trooper,Active,2,
@@ -517,7 +517,7 @@ value_table,description,character,class,tier,advancement,tags
 1,KS-83,Rose,Metal Heart,Flexibility,1,
 1,Robot Detonation,Rose,Metal Heart,Flexibility,1,
 1,G-0 Battleroid,Rose,Optimus,Bravery,2,
-1,G-1 Coronoa,Rose,Optimus,Tenacity,2,
+1,G-1 Corona,Rose,Optimus,Tenacity,2,
 1,G-4 Frisbee,Rose,Optimus,Strength,2,
 1,G-2 Rolling Hunter,Rose,Optimus,Strength,2,
 1,Magnetic Guard,Rose,Optimus,Flexibility,2,
