@@ -405,7 +405,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(editMoveItem(groupIdx, srcIdx, destIdx)),
 
     searchItemEffectsFn: debounce((searchTerm) =>
-      dispatch(searchItemEffects(searchTerm)), 100),
+      dispatch(searchItemEffects(searchTerm)), 150),
     editItemFieldFn: (tears, groupIdx, idx, key, value) =>
       dispatch(editItemField(tears, groupIdx, idx, key, value)),
     editItemFieldBatchedFn: (tears, groupIdx, idx, key, value) =>

@@ -52,12 +52,15 @@ import {
   searchOpts,
 } from '../utils/box';
 
+export const FILTER_COUNT_ALL = 13;
+
 const filterSelectAll = {
   color:  [true, true, true],
   piece:  [true, true, true, true],
   type:   [true, true, true, true],
   rarity: [true, true], 
 };
+
 
 const filterUnselectAll = {
   color:  [false, false, false],
@@ -72,6 +75,7 @@ const boxDisplayOptions = {
     order: ASCENDING,
   },
   filter: filterUnselectAll,
+  filterCount: 0,
   searchTerm: '',
 };
 
@@ -258,15 +262,30 @@ function box(state = boxState, action) {
       };
       return updateOptions(state, optionsWithNewSort);
     case TOGGLE_FILTER:
-      const {filter} = state.options;
-      const newFilter = cloneDeep(filter);
-      newFilter[action.key][action.choice] = !filter[action.key][action.choice];
-      return updateOptions(state, {...state.options, filter: newFilter});
-    case SELECT_ALL_FILTER:
-      return updateOptions(state, {...state.options, filter: filterSelectAll});
-    case UNSELECT_ALL_FILTER: 
-      return updateOptions(state, {...state.options, filter: filterUnselectAll});
+      const currValue = state.options.filter[action.key][action.choice];
+      const currCount = state.options.filterCount;
 
+      const optionsWithNewFilter = update(state.options, {
+        filter: {[action.key]: {[action.choice]: {
+          $set: !currValue,
+        }}},
+        filterCount: {
+          $set: state.options.filterCount + (currValue ? -1 : 1),
+        }
+      });
+      return updateOptions(state, optionsWithNewFilter);
+    case SELECT_ALL_FILTER:
+      return updateOptions(state, {
+        ...state.options,
+        filter: filterSelectAll,
+        filterCount: FILTER_COUNT_ALL,
+      });
+    case UNSELECT_ALL_FILTER: 
+      return updateOptions(state, {
+        ...state.options,
+        filter: filterUnselectAll,
+        filterCount: 0,
+      });
     case EDIT_TOGGLE_SORT:
       const editOptionsWithNewSort = {
         ...state.editOptions,

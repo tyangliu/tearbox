@@ -5,6 +5,7 @@ import forOwn from 'lodash.forown';
 import emailValidator from 'email-validator';
 
 import {color, effect, piece, rarity, type} from '../selectors';
+import {FILTER_COUNT_ALL} from '../reducers/box';
 
 const orderTemplates = [
   ['asc', 'asc', 'asc', 'asc', 'asc', 'desc'],
@@ -99,30 +100,58 @@ export function filterSortGroups(groups, indices, options) {
   if (!groups) {
     return groups;
   }
-  const shouldSearch = options.searchTerm.length > 0;
-  return groups.map((group, i) => ({
-    ...group,
-    // Since search overrides sorting, they are mutually exclusive operations.
-    items: filterItems(
-      shouldSearch
-        ? indices[i].search(options.searchTerm, {
-            fields: {
-              effect: {boost: 5},
-              effectTags: {boost: 4},
-              color: {boost: 1},
-              piece: {boost: 1},
-              pieceTags: {boost: 1},
-              type: {boost: 1},
-              typeTags: {boost: 1},
-              rarity: {boost: 1},
-            },
-            bool: 'OR',
-            expand: true,
-          }).map(({ref, score}) => group.items[ref])
-        : sortItems(group.items, options.sort),
-      options.filter,
-    ),
-  }));
+  const {searchTerm, filterCount} = options;
+
+  const shouldSearch = searchTerm.length > 0;
+  const shouldSort = options.sort.key != null;
+  const shouldFilter = filterCount > 0 && filterCount < FILTER_COUNT_ALL;
+
+  const resultGroups = groups.map((group, i) => {
+    let {items} = group;
+    // Search and sort are mutually exclusive since search
+    // also determines ordering.
+    if (shouldSearch) {
+      items = indices[i]
+        .search(searchTerm, {
+          fields: {
+            effect: {boost: 5},
+            effectTags: {boost: 4},
+            color: {boost: 1},
+            piece: {boost: 1},
+            pieceTags: {boost: 1},
+            type: {boost: 1},
+            typeTags: {boost: 1},
+            rarity: {boost: 1},
+          },
+          bool: 'OR',
+          expand: true,
+        })
+        .map(({ref}) =>
+          items[ref]
+        );
+    } else if (shouldSort) {
+      items = sortItems(items, options.sort);
+    }
+
+    if (shouldFilter) {
+      items = filterItems(items, options.filter);
+    }
+    return {
+      ...group,
+      items,
+    };
+  });
+  /*
+   * If search or filter are enabled, hide empty groups
+   * to save space (otherwise show them so people know
+   * they still exist and don't get confused.
+   *
+   * Also, if all groups are empty, show the empty groups
+   * since empty box page is non-intuitive during search.
+   */
+  return (shouldSearch || shouldFilter) && resultGroups.some(g => g.items.length)
+    ? resultGroups.filter(g => g.items.length)
+    : resultGroups;
 }
 
 export function unpackItem(tears, item) {
