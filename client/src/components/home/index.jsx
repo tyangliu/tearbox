@@ -299,8 +299,8 @@ const styles = styler`
   infoText3
     width: 280px
     text-align: center
-    left: 50%
-    margin-left: -50%
+    top: 180px
+    left: 500px
 
   infoTextMid1
     width: 390px

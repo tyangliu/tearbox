@@ -7,17 +7,23 @@ export function requestTears() {
   };
 }
 
-export function receiveTears(data) {
+export function receiveTears(data, index) {
   return {
     type: RECEIVE_TEARS,
     data,
+    index,
   };
 }
 
 export function loadTears() {
   return async dispatch => {
     dispatch(requestTears());
-    const data = await import('../../data/tears.json');
-    dispatch(receiveTears(data));
+    const indexPromise = import('../../data/effects_index.json');
+    const dataPromise = import('../../data/tears.json');
+
+    const index = await indexPromise;
+    const data = await dataPromise;
+
+    dispatch(receiveTears(data, index));
   };
 }

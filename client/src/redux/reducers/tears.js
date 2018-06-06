@@ -1,7 +1,6 @@
-import Fuse from 'fuse.js';
-
+import elasticlunr from 'elasticlunr';
 import {REQUEST_TEARS, RECEIVE_TEARS, SEARCH_ITEM_EFFECTS} from '../actions'; 
-import {mergeEffects, effectsSearchOpts} from '../utils/tears';
+import {effect} from '../selectors/tears';
 
 const tearsState = {
   colors: [],
@@ -19,13 +18,23 @@ export default function tears(state = tearsState, action) {
       return {
         ...action.data,
         filteredEffects: [],
-        effectsIndex: new Fuse(mergeEffects(action.data.effects), effectsSearchOpts),
+        effectsIndex: elasticlunr.Index.load(action.index),
         effectsSearchTerm: '',
       };
     case SEARCH_ITEM_EFFECTS:
       const {effectsIndex} = state;
       const filteredEffects = effectsIndex && action.searchTerm.length
-        ? effectsIndex.search(action.searchTerm).slice(0, 30)
+        ? effectsIndex
+            .search(action.searchTerm, {
+              fields: {
+                name: {boost: 2},
+                tags: {boost: 1},
+              },
+              bool: "OR",
+              expand: true,
+            })
+            .slice(0, 30)
+            .map(({ref, score}) => effect(state, ref))
         : [];
       return {
         ...state,

@@ -1,1 +1,1 @@
-docker run -p 8529:8529 -d -v /tmp/arangodb:/var/lib/arangodb arangodb/arangodb
+docker run -e ARANGO_NO_AUTH=1 -p 127.0.0.1:8529:8529 -d -v tearbox-dev:/var/lib/arangodb arangodb/arangodb

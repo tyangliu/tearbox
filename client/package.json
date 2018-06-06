@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "elasticlunr": "^0.9.5",
     "email-validator": "^2.0.4",
     "fuse.js": "^3.2.0",
     "history": "^4.7.2",
