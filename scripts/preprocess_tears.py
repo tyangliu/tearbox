@@ -195,15 +195,15 @@ def generate_effects(
     tags = parse_tags(b_data[i][B_TAG])
 
     for desc, value, rarity in descs_with_values:
-      extra_tags = make_value_tags(desc_pre, tags, value, False)
+      # extra_tags = make_value_tags(desc_pre, tags, value, False)
       b.append({
         'id': get_next_id(),
         'v_id': i,
         'name': desc,
-        'value': value,
+        # 'value': value,
         'rarity_id': rarity,
         'type_id': TYPE_B,
-        'tags': tags + extra_tags,
+        'tags': tags,
       })
 
   # Destruction    {id, v_id (variant), name, value, rarity_id, type_id, char, class, tier, advancement, tags}
@@ -229,15 +229,15 @@ def generate_effects(
         desc = desc + (' (' + d_data[i][D_CHR] + ')')
       d.append({
         'id': get_next_id(),
-        'v_id': i,
+        # 'v_id': i,
         'name': desc,
-        'value': value,
+        # 'value': value,
         'rarity_id': rarity,
         'type_id': TYPE_D,
-        'char': char if char else None,
-        'class': cls if cls else None,
-        'tier': tier if tier else None,
-        'advancement': adv if adv >= 0 else None,
+        # 'char': char if char else None,
+        # 'class': cls if cls else None,
+        # 'tier': tier if tier else None,
+        # 'advancement': adv if adv >= 0 else None,
         'tags': tags,
       })
         
@@ -259,19 +259,22 @@ def generate_effects(
 
 
     for desc, value, rarity in descs_with_values:
-      extra_tags = make_value_tags(desc_pre, tags, value, True)
+      extra_tags = []
+      # extra_tags = make_value_tags(desc_pre, tags, value, True)
 
       if value == plus_e_desc['2e']:
         extra_tags += two_plus_e_tags
 
+        '''
         for two_plus_e_tag in two_plus_e_tags:
           extra_tags += make_value_tags(desc_pre, tags, two_plus_e_tag, True)
+        '''
         
       p.append({
         'id': get_next_id(),
         'v_id': i,
         'name': desc,
-        'value': value,
+        # 'value': value,
         'rarity_id': rarity,
         'type_id': TYPE_P,
         'x_piece_id': x_piece,
@@ -319,12 +322,12 @@ def generate_effects(
         'id': get_next_id(),
         'v_id': i,
         'name': desc,
-        'value': value,
+        # 'value': value,
         'rarity_id': rarity,
         'type_id': TYPE_T,
-        'alt_value': alt_value,
+        # 'alt_value': alt_value,
         'value_is_pct': bool(is_pct),
-        'tags': tags + make_value_tags(desc_pre, [], value, is_pct),
+        'tags': tags #+ make_value_tags(desc_pre, [], value, is_pct),
       })
 
   return b, d, p, t

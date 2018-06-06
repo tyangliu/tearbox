@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    searchFn: debounce(term => dispatch(search(term)), 200),
+    searchFn: debounce(term => dispatch(search(term)), 100),
   };
 };
 

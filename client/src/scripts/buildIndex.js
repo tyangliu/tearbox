@@ -30,8 +30,6 @@ fs.readFile('../data/tears.json', (err, data) =>  {
 
   const index = elasticlunr(function () {
     this.addField('name');
-    this.addField('value');
-    this.addField('char');
     this.addField('tags');
     this.setRef('id');
     this.saveDocument(false);
