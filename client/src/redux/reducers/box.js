@@ -1,8 +1,9 @@
 import undoable, {includeAction, groupByActionTypes} from 'redux-undo';
-import Fuse from 'fuse.js';
 import cloneDeep from 'lodash.clonedeep';
 import update from 'immutability-helper';
 import omit from 'lodash.omit';
+
+import {buildItemsIndex} from '../utils/box';
 
 import {
   ASCENDING,
@@ -204,10 +205,9 @@ function copyToStaging(state) {
 function updateBox(state, action) {
   const {groups} = action.data;
   const {options} = state;
-  const groupIndices = (groups || []).map(group => new Fuse(
-    group.items,
-    searchOpts,
-  ));
+  const groupIndices = (groups || []).map(group =>
+    buildItemsIndex(group.items)
+  );
   const newData = update(action.data, {
     groupDisplays: {$set: filterSortGroups(groups, groupIndices, options)},
     groupIndices: {$set: groupIndices},

@@ -1,32 +1,10 @@
+import elasticlunr from 'elasticlunr';
 import orderBy from 'lodash.orderby';
 import omit from 'lodash.omit';
 import forOwn from 'lodash.forown';
 import emailValidator from 'email-validator';
 
 import {color, effect, piece, rarity, type} from '../selectors';
-
-export const searchOpts = {
-  shouldSort: true,
-  threshold: 0.5,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    {name: 'effect.name',      weight: 0.3},
-    {name: 'effect.tags',      weight: 0.1},
-    {name: 'effect.char',      weight: 0.1},
-    {name: 'effect.tier',      weight: 0.05},
-    {name: 'piece.name',       weight: 0.1},
-    {name: 'type.name',        weight: 0.05},
-    {name: 'rarity.name',      weight: 0.05},
-    {name: 'color.name',       weight: 0.05},
-    {name: 'effect.value',     weight: 0.05},
-    {name: 'effect.alt_value', weight: 0.05},
-    {name: 'piece.tags',       weight: 0.05},
-    {name: 'type.tags',        weight: 0.05},
-  ],
-};
 
 const orderTemplates = [
   ['asc', 'asc', 'asc', 'asc', 'asc', 'desc'],
@@ -55,6 +33,49 @@ const filterKeys = [
 
 const withFirst = (keys, i) => [keys[i], ...keys.slice(0).splice(i,1)];
 const getSortKeys = key => key ? withFirst(keys, keyToIdx[key]) : [[],[]];
+
+export function buildItemsIndex(items) {
+  const flatItems = items.map(item => ({
+    idx: item.idx,
+    color: item.color.name,
+    effect: item.effect.name,
+    effectTags: item.effect.tags.join(' '),
+    effectValue: item.effect.value,
+    effectAltValue: item.effect.alt_value,
+    effectChar: item.effect.char,
+    effectTier: item.effect.tier,
+    piece: item.piece.name,
+    pieceTags: item.piece.tags.join(' '),
+    type: item.type.name,
+    typeTags: item.type.tags.join(' '),
+    rarity: item.rarity.name,
+  }));
+
+  const index = elasticlunr(function () {
+    const self = this;
+    [
+      'color',
+      'effect',
+      'effectTags',
+      'effectValue',
+      'effectAltValue',
+      'effectChar',
+      'effectTier',
+      'piece',
+      'pieceTags',
+      'type',
+      'typeTags',
+      'rarity',
+    ].forEach(field => self.addField(field));
+    this.setRef('idx');
+    this.saveDocument(false);
+  });
+
+  for (let i = 0; i < flatItems.length; ++i) {
+    index.addDoc(flatItems[i]);
+  }
+  return index;
+}
 
 export function sortItems(items, sortOpts) {
   const keys = getSortKeys(sortOpts.key);
@@ -92,7 +113,14 @@ export function filterSortGroups(groups, indices, options) {
     // Since search overrides sorting, they are mutually exclusive operations.
     items: filterItems(
       shouldSearch
-        ? indices[i].search(options.searchTerm)
+        ? indices[i].search(options.searchTerm, {
+            fields: {
+              effect: {boost: 2},
+              effectTags: {boost: 1},
+            },
+            bool: "OR",
+            expand: true,
+          }).map(({ref, score}) => group.items[ref])
         : sortItems(group.items, options.sort),
       options.filter,
     ),

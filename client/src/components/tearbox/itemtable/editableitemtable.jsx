@@ -315,11 +315,6 @@ class EditableItemTable extends React.Component {
                                   onChange={({label, value}) =>
                                     editItemFieldFn(tears, groupIdx, i, 'color_id', value)
                                   }
-                                  getRef={
-                                    (i === items.length - 1)
-                                      ? e => {this.lastItemFirstSelect = e;}
-                                      : undefined
-                                  }
                                 />
                               </div>
                               <div style={[styles.itemCol4.small]}>
