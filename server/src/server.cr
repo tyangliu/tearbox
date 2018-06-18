@@ -2,6 +2,7 @@ require "arangocr"
 require "kemal"
 require "option_parser"
 
+require "./server/auth"
 require "./server/types"
 require "./server/routes/*"
 
