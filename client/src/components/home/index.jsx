@@ -325,18 +325,20 @@ const styles = styler`
 
   footer
     margin: 0 auto
+    padding: 20px 10px
 
     @media (max-width: 500px)
-      padding: 24px 0 8px
+      padding: 20px
+      margin: 0
 
   creditsItem
     color: rgba(55,67,79,0.65)
     display: inline-block
-    padding: 24px 8px
+    padding: 0px 10px
 
     @media (max-width: 500px)
+      padding: 0
       display: block
-      padding: 0 8px 16px
 
   clearfix
     clear: both
