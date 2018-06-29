@@ -37,9 +37,9 @@ T_IP = 3
 T_TAG = 4
 
 plus_e_desc = {
-  '0e': '[0 +Enhancement Stats]',
-  '1e': '[0.25 * (1 +Enhancement Stats)]',
-  '2e': '[2 +Enhancement Stats]',
+  '0e': '[Enhancement Lv. +0]',
+  '1e': '[0.25*(Enhancement Lv. +1)]',
+  '2e': '[Enhancement Lv. +2]',
 }
 
 two_plus_e_tags = [
