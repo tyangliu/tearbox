@@ -591,7 +591,7 @@ const styles = styler`
       @media (max-width: 800px)
         display: block
         flex-basis: 120px
-        text-align: center
+        text-align: left
         padding: 0 4px
 
   itemCol6
@@ -605,7 +605,7 @@ const styles = styler`
       @media (max-width: 800px)
         display: block
         flex-basis: 80px
-        text-align: center
+        text-align: left
         padding: 0 4px
 
   itemCol7
