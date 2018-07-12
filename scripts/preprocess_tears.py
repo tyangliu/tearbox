@@ -40,10 +40,15 @@ plus_e_desc = {
   '0e': '[Enhancement Lv. +0]',
   '1e': '[0.25*(Enhancement Lv. +1)]',
   '2e': '[Enhancement Lv. +2]',
+  '5e': '[5*Enhancement Lv.]',
 }
 
 two_plus_e_tags = [
   '2+enhance', '2+e', '+enhance', '2e', 'enh+2', 'enhance+2'
+]
+
+five_times_e_tags = [
+  '5e',
 ]
 
 COLOR_R = 0
@@ -269,6 +274,8 @@ def generate_effects(
         for two_plus_e_tag in two_plus_e_tags:
           extra_tags += make_value_tags(desc_pre, tags, two_plus_e_tag, True)
         '''
+      elif value == plus_e_desc['5e']:
+        extra_tags += five_times_e_tags
         
       p.append({
         'id': get_next_id(),

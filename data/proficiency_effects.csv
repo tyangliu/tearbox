@@ -30,4 +30,5 @@ value_table,description,description_orig,exclusive_piece,tags
 4,Strength Skill's Damage for 10 seconds +{}% (5 Stacks),Upon using Strength Skill Strength Skill's Damage for 10 seconds +{}% (5 Stacks) (Dungeon),g,Strength Stack!Str Stack
 4,Bravery Skill's Damage for 15 seconds +{}% (5 Stacks),Upon using Bravery Skill Bravery Skill's Damage for 15 seconds +{}% (5 Stacks) (Dungeon),g,Brav Stack!Bravery Stack
 3,Party's Maximize +{}%,,s,max!maximize!maxi
-5,Command Attack Reduce Defense {}%,During a Command Attack reduce the opponent's defense for 5 sec. +{}% (10 Stacks) (Dungeon),s,cmd atk
+6,Command Attack Reduce Defense {}%,During a Command Attack reduce the opponent's defense for 5 sec. +{}% (10 Stacks) (Dungeon),s,cmd atk
+5,All Skill Damage +{}%,,g,

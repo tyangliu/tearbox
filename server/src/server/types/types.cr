@@ -192,6 +192,15 @@ module Tearbox::HTTPTypes
     field :errors, Accord::ErrorList?
   end
 
+  STATUS_RUNNING = "running"
+
+  class GetStatusResponse
+    include AutoJson
+
+    field :status, String
+    field :uptime, Int64
+  end
+
   class PostBoxAuthResponse
     include AutoJson
 

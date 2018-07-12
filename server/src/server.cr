@@ -24,6 +24,7 @@ module Tearbox
 
       init_base(@config.origin)
       init_errors
+      StatusRoutes.new.init_routes
       BoxesRoutes.new(@database).init_routes
     end
 
